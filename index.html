@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inchiostro e Tempesta</title>
+<meta name="description" content="Gioco di storia su Martin Lutero e la Riforma, per la scuola media.">
+<meta name="theme-color" content="#0b0b0b">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header id="barra">
+    <span id="luogo">Tipografia di Mastro Grunenberg</span>
+    <span id="data">Wittenberg, primavera 1517</span>
+  </header>
+
+  <main id="scena-box">
+    <svg id="scena" viewBox="0 0 400 224" preserveAspectRatio="xMidYMid slice" aria-label="Scena di gioco">
+      <defs>
+        <radialGradient id="luce-grad">
+          <stop offset="0" stop-color="#000"/>
+          <stop offset="0.55" stop-color="#000" stop-opacity="0.6"/>
+          <stop offset="1" stop-color="#000" stop-opacity="0"/>
+        </radialGradient>
+        <mask id="buio-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="400" height="224">
+          <rect width="400" height="224" fill="#fff"/>
+          <g id="luci"></g>
+        </mask>
+        <filter id="alone-oro" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="2.2"/>
+        </filter>
+      </defs>
+      <image id="sfondo" x="0" y="0" width="400" height="224" preserveAspectRatio="xMidYMid slice"/>
+      <rect id="buio" width="400" height="224" fill="#000" mask="url(#buio-mask)"/>
+      <g id="oggetti"></g>
+      <g id="lena" class="personaggio">
+        <image id="lena-img" width="112" height="144"/>
+      </g>
+      <g id="uscite"></g>
+    </svg>
+    <button id="mostra-oggetti" class="aiuto" aria-label="Mostra gli oggetti">👁 Oggetti</button>
+  </main>
+
+  <section id="dialogo" aria-live="polite">
+    <div id="chi"></div>
+    <div id="testo"></div>
+    <div id="scelte"></div>
+  </section>
+</div>
+<script src="js/stanze.js"></script>
+<script src="js/gioco.js"></script>
+</body>
+</html>

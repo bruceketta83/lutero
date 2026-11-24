@@ -57,9 +57,28 @@ test('ogni oggetto si può toccare: Lena ci va e lo descrive', async ({ page }) 
     await page.waitForFunction(() => !stato.cammina, null, { timeout: 15000 });
     await expect(page.locator('#chi')).toHaveText('Lena');
     const testi = await page.evaluate((i) => STANZE.tipografia.oggetti.find(o => o.id === i).testo, id);
-    const mostrato = await page.locator('#testo').innerHTML();
-    expect(testi, id).toContain(mostrato.replace(/&nbsp;/g, ' '));
+    await page.waitForFunction(() => !document.querySelector('#testo .l[style*="hidden"]'), null, { timeout: 10000 });
+    const mostrato = await page.locator('#testo').textContent();
+    expect(testi.map(t => t.replace(/<[^>]+>/g, '')), id).toContain(mostrato);
   }
+});
+
+test('il testo compare lettera per lettera; un tocco lo mostra tutto', async ({ page }) => {
+  await page.goto('./');
+  await page.click('[data-id="torchio"] .area', { force: true });
+  await page.waitForFunction(() => !stato.cammina, null, { timeout: 15000 });
+  await page.waitForTimeout(60);
+  const nascoste = await page.locator('#testo .l[style*="hidden"]').count();
+  expect(nascoste).toBeGreaterThan(0);
+  await page.click('#dialogo');
+  await expect(page.locator('#testo .l[style*="hidden"]')).toHaveCount(0);
+});
+
+test('i caratteri da stampa sono nel sito e si caricano', async ({ page }) => {
+  await page.goto('./');
+  await page.evaluate(() => document.fonts.ready);
+  expect(await page.evaluate(() => document.fonts.check('20px Fell'))).toBe(true);
+  expect(await page.evaluate(() => document.fonts.check('20px Fraktur'))).toBe(true);
 });
 
 test('il pulsante Oggetti mostra per un momento tutte le zone da toccare', async ({ page }) => {

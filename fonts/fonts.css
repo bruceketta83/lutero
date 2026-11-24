@@ -1,0 +1,6 @@
+/* Caratteri da stampa antica (SIL Open Font License 1.1, licenze in questa cartella).
+   IM Fell DW Pica: tipi fusi a Oxford (XVII sec.), digitalizzati da Igino Marini. Per i testi.
+   UnifrakturMaguntia: gotico tedesco (Fraktur). Solo per titoli e luoghi. */
+@font-face { font-family: "Fell"; src: url("fell-pica.woff2") format("woff2"); font-style: normal; font-display: swap; }
+@font-face { font-family: "Fell"; src: url("fell-pica-italic.woff2") format("woff2"); font-style: italic; font-display: swap; }
+@font-face { font-family: "Fraktur"; src: url("fraktur.woff2") format("woff2"); font-display: swap; }

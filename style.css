@@ -1,0 +1,81 @@
+/* Inchiostro e Tempesta — colori e regole in GRAFICA.md */
+:root {
+  --nero: #0b0b0b;
+  --carta: #ece6d8;
+  --inchiostro: #1d1a16;
+  --grigio: #6b6357;
+  --oro: #c9a227;
+  --rosso: #8b1e1e;
+  --azzurro: #7fa7c9;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--nero);
+  color: var(--inchiostro);
+  font: 18px/1.45 Georgia, "Times New Roman", serif;
+  -webkit-tap-highlight-color: transparent;
+}
+#app {
+  max-width: 900px; margin: 0 auto; min-height: 100%;
+  display: flex; flex-direction: column;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Barra in alto: luogo e data */
+#barra {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+  padding: max(10px, env(safe-area-inset-top)) 14px 8px;
+  color: var(--carta); background: var(--nero);
+  font-variant: small-caps; letter-spacing: .04em;
+}
+#luogo { font-weight: 700; }
+#data { color: #a39a8a; font-size: 15px; font-style: italic; font-variant: normal; }
+
+/* Scena */
+#scena-box { position: relative; width: 100%; aspect-ratio: 400 / 224; background: #000; overflow: hidden; }
+#scena { display: block; width: 100%; height: 100%; touch-action: manipulation; cursor: pointer; }
+#buio { opacity: .82; pointer-events: none; }
+.luce-tremola { animation: tremola 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes tremola { 0%, 100% { transform: scale(1); } 30% { transform: scale(.94); } 55% { transform: scale(1.04); } 80% { transform: scale(.97); } }
+
+/* Oggetti da toccare: invisibili, alone oro quando richiesto o toccati */
+.oggetto .area { fill: transparent; }
+.oggetto .alone { fill: none; stroke: var(--oro); stroke-width: 1.6; opacity: 0; filter: url(#alone-oro); pointer-events: none; transition: opacity .3s; }
+.oggetto .bordo { fill: none; stroke: var(--oro); stroke-width: .7; opacity: 0; pointer-events: none; transition: opacity .3s; }
+#scena.mostra .oggetto .alone, .oggetto.attivo .alone { opacity: .9; }
+#scena.mostra .oggetto .bordo, .oggetto.attivo .bordo { opacity: 1; }
+
+/* Uscite verso altre stanze */
+.uscita text { font: italic 700 12px Georgia, serif; fill: var(--carta); paint-order: stroke; stroke: #000; stroke-width: 2px; }
+.uscita .area { fill: transparent; }
+
+/* Personaggio */
+#lena { pointer-events: none; }
+
+/* Pulsante di aiuto (azzurro = aiuto, vedi GRAFICA.md) */
+.aiuto {
+  position: absolute; right: 8px; top: 8px;
+  font: 600 14px Georgia, serif; color: #0b0b0b;
+  background: var(--azzurro); border: 0; border-radius: 6px; padding: 6px 10px;
+  opacity: .9; cursor: pointer;
+}
+
+/* Dialogo: carta chiara, inchiostro nero */
+#dialogo {
+  flex: 1; background: var(--carta); padding: 14px 16px 18px; min-height: 180px;
+  border-top: 3px solid var(--inchiostro);
+}
+#chi { font-variant: small-caps; font-weight: 700; letter-spacing: .05em; color: var(--grigio); margin-bottom: 4px; min-height: 1.2em; }
+#testo { font-size: 19px; }
+#testo em { font-style: italic; }
+#scelte { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+#scelte button {
+  font: 600 17px Georgia, serif; text-align: left; color: var(--inchiostro);
+  background: transparent; border: 2px solid var(--inchiostro); border-radius: 4px; padding: 10px 12px; cursor: pointer;
+}
+#scelte button:active { background: #d8cfbc; }
+
+@media (prefers-reduced-motion: reduce) {
+  .luce-tremola { animation: none; }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "lutero",
+  "private": true,
+  "description": "Test automatici del gioco Inchiostro e Tempesta",
+  "scripts": {
+    "test": "playwright test",
+    "serve": "python3 -m http.server 4176"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0"
+  }
+}

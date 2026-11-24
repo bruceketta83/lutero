@@ -5,7 +5,7 @@ Avventura punta-e-clicca in stile fumetto in bianco e nero.
 
 Indirizzo (quando sarà pubblicato): https://bruceketta83.github.io/lutero/
 
-Stato: **progettazione** del prologo e del capitolo 1. Stile grafico confermato: tipografia, Lena e la sua camminata sono pronte.
+Stato: **prima stanza giocabile**, la tipografia con Lena che cammina. Il resto del prologo e del capitolo 1 è in progettazione.
 
 ## Documenti
 
@@ -15,6 +15,9 @@ Stato: **progettazione** del prologo e del capitolo 1. Stile grafico confermato:
 - [docs/PROMPT-SFONDI.md](docs/PROMPT-SFONDI.md), [docs/PROMPT-PERSONAGGI.md](docs/PROMPT-PERSONAGGI.md), [docs/PROMPT-OGGETTI.md](docs/PROMPT-OGGETTI.md): i prompt per preparare le immagini.
 
 ## Cartelle
+
+- `index.html`, `style.css`, `js/`: il gioco. `js/stanze.js` contiene le stanze (sfondo, luci, oggetti, testi), `js/gioco.js` il motore.
+- `tests/`: test automatici (Playwright). Avvio: `npm test`.
 
 - `img/`: immagini pronte per il gioco (sfondi in `img/bg/`, personaggi in `img/chars/`).
 - `originali/`: immagini originali di Gemini, per rifare i ritagli.

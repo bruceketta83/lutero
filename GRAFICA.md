@@ -35,10 +35,12 @@ Le immagini sono **in bianco e nero, con i grigi del tratteggio**. Il colore ser
 
 | Cosa | Formato | Note |
 | :--- | :--- | :--- |
-| Sfondi | 16:9, 2576 × 1438 px, poi WebP 1600 × 893 | Pavimento libero e piano nel terzo in basso. Niente di importante nel 10% a destra e a sinistra. |
+| Sfondi | 16:9, alla massima risoluzione di Gemini (di solito 1376 × 768), poi WebP | Pavimento libero e piano nel terzo in basso. Niente di importante nel 10% a destra e a sinistra. |
 | Schermata del titolo | 9:16, 1440 × 2560 px | Alto 20% e basso 25% calmi, per il titolo e i pulsanti. |
-| Personaggi | Verticale 2:3, fondo **magenta pieno** (`#FF00FF`) | Il programma `tools/scontorna.py` toglie il fondo. Bocca chiusa e occhi aperti: bocca e palpebre le disegno io. |
-| Oggetti | Fogli 3 × 3 su fondo magenta | Il programma `tools/foglio.py` taglia gli oggetti. |
+| Personaggi | Verticale 2:3, fondo **magenta pieno** (`#FF00FF`) | Il programma `tools/scontorna_bn.py` toglie il fondo. Bocca chiusa e occhi aperti: bocca e palpebre le disegno io. |
+| Oggetti | Fogli 3 × 3 su fondo magenta | Il programma `tools/foglio.py` (da portare da Espo-Nentia) taglia gli oggetti. |
+
+**Camminata dei personaggi giocabili:** 1 immagine ferma + 8 pose in 4 immagini da 2 pose (prompt in [docs/PROMPT-PERSONAGGI.md](docs/PROMPT-PERSONAGGI.md)). Il ciclo dura 8 pose da 240 millisecondi. Il personaggio sale un poco nelle pose di spinta e di passaggio.
 
 **Attenzione al magenta:** con il bianco e nero il magenta si stacca bene. Chiedi a Gemini di **non** usare il magenta nel personaggio.
 
@@ -55,3 +57,26 @@ File dei prompt:
 - [docs/PROMPT-SFONDI.md](docs/PROMPT-SFONDI.md)
 - [docs/PROMPT-PERSONAGGI.md](docs/PROMPT-PERSONAGGI.md)
 - [docs/PROMPT-OGGETTI.md](docs/PROMPT-OGGETTI.md)
+
+## 6. Strumenti
+
+| Strumento | Cosa fa |
+| :--- | :--- |
+| `tools/scontorna_bn.py` | Toglie il fondo magenta dai personaggi in bianco e nero. Calcola il magenta pixel per pixel, quindi non resta alone viola. Lascia intatti i colori voluti (nastro azzurro, sigilli rossi). |
+| `tools/camminata.py` | Prepara posa ferma e camminata: separa le 2 pose di ogni immagine, porta tutte le figure alla stessa altezza (700 px), allinea testa e piedi. Con `--sfondo` crea un'anteprima animata. |
+
+Esempio (Lena):
+```
+python3 tools/camminata.py lena originali/personaggi/lena.jpg originali/personaggi/lena-camminata-1.jpg originali/personaggi/lena-camminata-2.jpg originali/personaggi/lena-camminata-3.jpg originali/personaggi/lena-camminata-4.jpg --sfondo originali/sfondi/tipografia.jpg
+```
+
+Le immagini originali di Gemini restano in `originali/`: servono per rifare i ritagli. Le anteprime animate non vanno nel repo.
+
+## 7. Buio e luce nel codice
+
+Gemini fatica a fare neri molto pieni. Il buio si aggiunge nel gioco, sopra lo sfondo:
+1. angoli e soffitto quasi neri;
+2. luce solo dove serve: finestre, lampade, candele, il centro del pavimento dove cammina il personaggio;
+3. le fonti di luce tremolano leggermente.
+
+Così ogni stanza può cambiare luce durante la storia (per esempio di notte resta solo la candela).

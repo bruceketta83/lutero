@@ -4,14 +4,14 @@ Leggi prima [GRAFICA.md](../GRAFICA.md).
 
 Decisioni:
 - **Personaggi non giocanti:** 1 immagine per personaggio. Bocca che parla e palpebre le disegno io nel codice.
-- **Lena e Martin giovane** (si giocano): 3 immagini ciascuno, ferma + 2 passi della camminata.
+- **Lena e Martin giovane** (si giocano): 1 immagine ferma + 8 pose della camminata, in 4 immagini da 2 pose (vedi sotto).
 
 ## Come usare i prompt
 
 1. Apri una chat nuova per ogni personaggio.
 2. Allega come riferimento di stile uno sfondo riuscito (es. `tipografia.png`).
 3. Incolla il **blocco di stile comune**, poi il prompt del personaggio.
-4. Per la camminata resta nella stessa chat e chiedi la modifica dell'ultima immagine.
+4. Per la camminata segui la sezione "Camminata": 4 immagini da 2 pose.
 5. Scarica in PNG alla massima risoluzione.
 
 ## Blocco di stile comune
@@ -51,28 +51,50 @@ student gown under it, a belt with a small pouch, boots splashed with mud.
 Wet from the rain: hair and cloak dripping. Standing, arms down.
 ```
 
-**Camminata (per Lena e per Martin)** — `lena-passoA.png`, `lena-passoB.png`, `martin-passoA.png`, `martin-passoB.png`
+## Camminata (Lena e Martin)
 
-Passo A (nella stessa chat):
+**Cosa abbiamo imparato con Lena**
+1. Gemini **non** riesce a modificare una posa ("sposta la gamba avanti"): ridisegna sempre la stessa.
+2. Gemini **non** riesce a disegnare 8 pose ordinate in un foglio unico: le figure si toccano o cambiano grandezza.
+3. Funziona chiedere **2 pose per immagine**, ben separate, descrivendo la fase del passo come in un manuale di animazione.
+
+**Come fare**
+1. Apri una chat nuova. Allega l'immagine del personaggio fermo.
+2. Incolla il blocco "Camminata — immagine 1". Scarica.
+3. Nella stessa chat incolla i blocchi 2, 3 e 4, uno alla volta. Scarica ogni immagine.
+4. Nomi dei file: `NOME-camminata-1.jpg` … `NOME-camminata-4.jpg` nella cartella `originali/personaggi/`.
+5. Io monto il ciclo con `tools/camminata.py` (vedi [GRAFICA.md](../GRAFICA.md)).
+
+Blocco comune da mettere all'inizio di ogni immagine:
 ```
-Edit the standing image. CHANGE THE POSE CLEARLY: walking to the right with a
-long step. The leg closer to the viewer is stretched FORWARD (to the right),
-the heel touches the ground. The leg farther from the viewer is stretched BACK
-(to the left), only the toes touch the ground. The arms swing: the arm closer
-to the viewer goes back, the other arm goes forward. Keep everything else
-identical: same person, same clothes, same size, same head position, same
-magenta background.
+Walk cycle of the character in the attached image, 2 poses side by side in ONE landscape image.
+Both poses: same character, same clothes, same ink style, same size, full body, the head at the same height, the feet on the same line. Both face and walk to the RIGHT, three-quarter view.
+A wide empty magenta gap between the two poses: they must NEVER touch or overlap.
+Solid flat pure magenta background (#FF00FF), no text, no numbers, no frames.
 ```
 
-Passo B (riparti sempre dall'immagine ferma):
+**Camminata — immagine 1** (pose 1 e 2)
 ```
-Edit the standing image. CHANGE THE POSE CLEARLY: walking to the right with a
-long step. The leg farther from the viewer is stretched FORWARD (to the right),
-the heel touches the ground. The leg closer to the viewer is stretched BACK
-(to the left), only the toes touch the ground. The arms swing: the arm closer
-to the viewer goes forward, the other arm goes back. Keep everything else
-identical: same person, same clothes, same size, same head position, same
-magenta background.
+Pose 1 (left), CONTACT: the front heel touches the ground with the toes up, the back foot pushes on its toes. The near arm is back, the far arm is forward.
+Pose 2 (right), DOWN: the weight goes down on the front leg, the front sole is flat on the ground and the knee bends. The back foot leaves the ground. The arms swing at their widest.
+```
+
+**Camminata — immagine 2** (pose 3 e 4)
+```
+Pose 3 (left), PASSING: the body rises on the straight supporting leg under the hips. The NEAR leg bends and lifts its shoe to ankle height while it passes. The arms come down along the sides.
+Pose 4 (right), UP: the body reaches its highest point, pushing on the toes of the back foot. The near leg moves forward in the air. The near arm starts to swing forward in front of the apron.
+```
+
+**Camminata — immagine 3** (pose 5 e 6)
+```
+Pose 5 (left), OPPOSITE CONTACT: the opposite of pose 1. The NEAR leg is in front, heel on the ground; the FAR leg stays behind on its toes. The near arm is forward, the far arm is back.
+Pose 6 (right), OPPOSITE DOWN: the weight goes on the near front leg, the foot flat on the ground. The far back shoe lifts, the knee bends. The arms swing at their widest, the other way.
+```
+
+**Camminata — immagine 4** (pose 7 e 8)
+```
+Pose 7 (left), OPPOSITE PASSING: the near leg holds the body upright. The FAR foot bends and slides behind the supporting ankle, half hidden. The arms come back near the sides.
+Pose 8 (right), OPPOSITE UP: the near foot pushes on its toes to close the step, the far leg moves forward, ready for the next heel contact.
 ```
 
 ## Personaggi non giocanti
@@ -145,5 +167,5 @@ wrinkled face. Plain black habit, a ring of large iron keys at the belt.
 2. Bianco e nero. Unici colori: il nastro azzurro di Lena, il sigillo rosso del Cercatore.
 3. Il personaggio guarda a destra, intero, con i piedi in basso.
 4. Bocca chiusa e occhi aperti.
-5. Per la camminata: stessa grandezza e stessa posizione della testa nelle 3 immagini.
+5. Per la camminata: in ogni immagine le 2 pose non si toccano. La grandezza può cambiare da un'immagine all'altra: la sistemo io.
 6. Nomi dei file come indicato.

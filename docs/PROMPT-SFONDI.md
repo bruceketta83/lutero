@@ -5,7 +5,7 @@ Sfondi del **prologo** e del **capitolo 1**. Leggi prima [GRAFICA.md](../GRAFICA
 ## Come usare i prompt
 
 1. Apri una chat nuova per ogni sfondo.
-2. Per il primo sfondo non allegare niente. Dal secondo in poi, allega il primo sfondo riuscito come riferimento di stile.
+2. Allega sempre `originali/sfondi/tipografia.jpg` come riferimento di stile.
 3. Incolla il **blocco di stile comune**, poi il prompt della scena.
 4. Scarica in PNG alla massima risoluzione.
 5. Dai al file il nome indicato (es. `strada.png`).
@@ -22,6 +22,9 @@ Background for a 2D point-and-click adventure game, seen from the side, eye leve
 NO colour at all, only black, white and grey, unless a colour is listed below.
 No text, no letters, no numbers, no watermark, no frame, no panel borders,
 no speech bubbles. Empty scene: no people unless listed.
+Dark, gritty mood: deep black shadows in the corners and on the ceiling, rough
+aggressive pen strokes, dust and smoke in the light beams. Plain papers and
+signs, with no lines of text.
 Keep the walkable ground clear and flat in the lower third of the image.
 Keep important objects away from the left and right 10% of the image.
 Landscape 16:9, 2576 x 1438 pixels.

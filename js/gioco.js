@@ -25,18 +25,64 @@ function el(tag, attrs = {}, parent) {
   return e;
 }
 
-/* ---------- Dialogo ---------- */
+/* ---------- Dialogo ----------
+   Il testo compare lettera per lettera, come se fosse stampato.
+   Un tocco sul riquadro mostra subito tutto il testo. */
+const STAMPA_MS = 22;   // millisecondi per lettera
+let stampa = null;
+
+function finisciStampa() {
+  if (!stampa) return;
+  clearTimeout(stampa.timer);
+  for (const n of stampa.lettere) n.style.visibility = '';
+  stampa = null;
+}
+
 function dialogo(chi, testo, scelte = []) {
+  finisciStampa();
   $('chi').textContent = chi || '';
-  $('testo').innerHTML = testo;
-  const box = $('scelte');
-  box.innerHTML = '';
-  for (const s of scelte) {
-    const b = document.createElement('button');
-    b.textContent = s.testo;
-    b.addEventListener('click', s.fai);
-    box.appendChild(b);
+  const box = $('testo');
+  box.innerHTML = testo;
+  // Avvolge ogni lettera in uno <span class="l">, lasciando intatti <em>, <br>, ecc.
+  const lettere = [];
+  const walker = document.createTreeWalker(box, NodeFilter.SHOW_TEXT);
+  const nodi = [];
+  while (walker.nextNode()) nodi.push(walker.currentNode);
+  for (const t of nodi) {
+    const frag = document.createDocumentFragment();
+    for (const ch of t.textContent) {
+      const sp = document.createElement('span');
+      sp.className = 'l';
+      sp.textContent = ch;
+      sp.style.visibility = 'hidden';
+      frag.appendChild(sp);
+      lettere.push(sp);
+    }
+    t.replaceWith(frag);
   }
+  const ridotto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const sc = $('scelte');
+  sc.innerHTML = '';
+  const mostraScelte = () => {
+    for (const s of scelte) {
+      const b = document.createElement('button');
+      b.textContent = s.testo;
+      b.addEventListener('click', s.fai);
+      sc.appendChild(b);
+    }
+  };
+  if (ridotto) { for (const n of lettere) n.style.visibility = ''; mostraScelte(); return; }
+  let i = 0;
+  stampa = { lettere, timer: 0 };
+  const avanti = () => {
+    if (!stampa) return;
+    // Due lettere per volta: i testi lunghi non diventano lenti.
+    for (let k = 0; k < 2 && i < lettere.length; k++) lettere[i++].style.visibility = '';
+    if (i < lettere.length) stampa.timer = setTimeout(avanti, STAMPA_MS * 2);
+    else { stampa = null; mostraScelte(); }
+  };
+  stampa.fine = mostraScelte;
+  avanti();
 }
 
 /* Variante di un testo: alla prima volta la prima frase, poi le altre a turno. */
@@ -108,7 +154,9 @@ function vai(xArrivo, poi) {
   const durata = Math.abs(distanza) / LENA.velocita * 1000;
   const t0 = performance.now();
   const passo = (t) => {
-    const k = Math.min(1, (t - t0) / durata);
+    // Il primo fotogramma può avere un tempo di poco precedente a t0: mai valori negativi.
+    const dt = Math.max(0, t - t0);
+    const k = Math.min(1, dt / durata);
     stato.x = partenza + distanza * k;
     if (k >= 1) {
       stato.cammina = null;
@@ -116,7 +164,7 @@ function vai(xArrivo, poi) {
       if (poi) poi();
       return;
     }
-    const i = Math.floor((t - t0) / LENA.durataPosa) % LENA.pose.length;
+    const i = Math.floor(dt / LENA.durataPosa) % LENA.pose.length;
     disegnaLena(LENA.pose[i], LENA.sali[i]);
     stato.cammina.raf = requestAnimationFrame(passo);
   };
@@ -167,5 +215,6 @@ window.addEventListener('DOMContentLoaded', () => {
   precarica();
   $('scena').addEventListener('click', toccaScena);
   $('mostra-oggetti').addEventListener('click', mostraOggetti);
+  $('dialogo').addEventListener('click', () => { if (stampa) { const f = stampa.fine; finisciStampa(); if (f) f(); } });
   entra('tipografia');
 });

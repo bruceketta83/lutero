@@ -27,9 +27,13 @@ Le immagini sono **in bianco e nero, con i grigi del tratteggio**. Il colore ser
 ## 3. Interfaccia
 
 1. **Dialoghi, Taccuino, glossario:** carta chiara (`#ece6d8`) con inchiostro nero, per leggere bene.
-2. **Font:** un carattere chiaro per i testi lunghi e un carattere "da stampa antica" solo per i titoli. Restano le opzioni di lettura di Espo-Nentia (testo grande, OpenDyslexic, spaziatura, lettura ad alta voce).
-3. **Pulsanti:** contorno a inchiostro, come in una xilografia.
-4. **Oggetti da toccare:** leggero alone oro e lieve oscillazione, come in Espo-Nentia.
+2. **Caratteri da stampa antica**, nella cartella `fonts/` (licenza OFL):
+   - **IM Fell DW Pica** per tutti i testi: tipi fusi a Oxford nel Seicento, leggibili e con l'aspetto della stampa a mano;
+   - **UnifrakturMaguntia** (gotico tedesco, Fraktur) solo per il nome del luogo e del personaggio che parla. Mai per testi lunghi: è difficile da leggere.
+3. **Effetto stampa:** il testo compare lettera per lettera, con un po' d'inchiostro in più che si asciuga. Un tocco sul riquadro mostra subito tutto. Con "riduci movimento" il testo compare tutto insieme.
+4. Restano da portare le opzioni di lettura di Espo-Nentia (testo grande, OpenDyslexic, spaziatura, lettura ad alta voce): chi le sceglie vede i testi in un carattere moderno.
+5. **Pulsanti:** contorno a inchiostro, come in una xilografia.
+6. **Oggetti da toccare:** leggero alone oro e lieve oscillazione, come in Espo-Nentia.
 
 ## 4. Formati tecnici (uguali a Espo-Nentia)
 

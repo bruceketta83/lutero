@@ -46,6 +46,8 @@ Le immagini sono **in bianco e nero, con i grigi del tratteggio**. Il colore ser
 
 **Camminata dei personaggi giocabili:** 1 immagine ferma + 8 pose in 4 immagini da 2 pose (prompt in [docs/PROMPT-PERSONAGGI.md](docs/PROMPT-PERSONAGGI.md)). Il ciclo dura 8 pose da 240 millisecondi. Il personaggio sale un poco nelle pose di spinta e di passaggio.
 
+**Altezza dei personaggi nella scena:** tutte le immagini hanno la figura alta 700 px. Nel gioco ogni personaggio ha un fattore di altezza rispetto a Lena (1,00): Agnes e il frate portinaio 1,08; Grunenberg, Tetzel e Spalatino 1,15; Lutero, Hans e Martin giovane 1,17; il Cercatore 1,20 (alto e magro).
+
 **Attenzione al magenta:** con il bianco e nero il magenta si stacca bene. Chiedi a Gemini di **non** usare il magenta nel personaggio.
 
 ## 5. Come lavorare con Gemini

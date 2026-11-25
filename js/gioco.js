@@ -13,8 +13,8 @@ const LENA = {
   durataPosa: 240,         // millisecondi per posa
   sali: [0, 0, 0, 0, 0, 0, 0, 0], // il su e giù è già nelle pose (prese dal video)
 };
-// Velocità legata al passo: Lena avanza di 20 unità per posa, così i piedi non scivolano.
-LENA.velocita = 20 / (LENA.durataPosa / 1000);   // unità della scena al secondo
+// Velocità legata al passo: Lena avanza di 14 unità per posa, così i piedi non scivolano.
+LENA.velocita = 14 / (LENA.durataPosa / 1000);   // unità della scena al secondo
 
 const stato = { stanza: null, idStanza: null, x: 0, verso: 1, cammina: null, visti: {}, flag: {}, borsa: [], fonti: [] };
 

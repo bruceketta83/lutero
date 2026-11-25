@@ -44,7 +44,7 @@ Le immagini sono **in bianco e nero, con i grigi del tratteggio**. Il colore ser
 | Personaggi | Verticale 2:3, fondo **magenta pieno** (`#FF00FF`) | Il programma `tools/scontorna_bn.py` toglie il fondo. Bocca chiusa e occhi aperti: bocca e palpebre le disegno io. |
 | Oggetti | Fogli 3 × 3 su fondo magenta | Il programma `tools/foglio.py` (da portare da Espo-Nentia) taglia gli oggetti. |
 
-**Camminata dei personaggi giocabili:** 1 immagine ferma + 8 pose in 4 immagini da 2 pose (prompt in [docs/PROMPT-PERSONAGGI.md](docs/PROMPT-PERSONAGGI.md)). Il ciclo dura 8 pose da 240 millisecondi. Il personaggio sale un poco nelle pose di spinta e di passaggio.
+**Camminata dei personaggi giocabili:** 1 immagine ferma + 8 pose, prese da un video (metodo migliore, vedi "Camminata da un video") oppure da 4 immagini da 2 pose (prompt in [docs/PROMPT-PERSONAGGI.md](docs/PROMPT-PERSONAGGI.md)). Il ciclo dura 8 pose da 240 millisecondi. Il personaggio sale un poco nelle pose di spinta e di passaggio.
 
 **Altezza dei personaggi nella scena:** tutte le immagini hanno la figura alta 700 px. Nel gioco ogni personaggio ha un fattore di altezza rispetto a Lena (1,00): Agnes e il frate portinaio 1,08; Grunenberg, Tetzel e Spalatino 1,15; Lutero, Hans e Martin giovane 1,17; il Cercatore 1,20 (alto e magro).
 
@@ -77,6 +77,17 @@ python3 tools/camminata.py lena originali/personaggi/lena.jpg originali/personag
 ```
 
 Le immagini originali di Gemini restano in `originali/`: servono per rifare i ritagli. Le anteprime animate non vanno nel repo.
+
+### Camminata da un video
+
+Un generatore di video (es. Seedance) fa una camminata sul posto più regolare delle pose di Gemini. Come si usa:
+1. Video del personaggio fermo che cammina sul posto, su fondo magenta, inquadratura fissa.
+2. Cerco il ciclo completo (due passi): il tratto in cui l'ultimo fotogramma è più simile al primo.
+3. Prendo 8 fotogrammi a distanza uguale nel ciclo e li ritaglio come le altre pose.
+
+Martin giovane: video `originali/personaggi/martin-giovane-camminata.mp4`, ciclo di 50 fotogrammi (24 al secondo) dal fotogramma 33, pose dai fotogrammi 33, 39, 45, 52, 58, 64, 71, 77.
+
+Lena: video `originali/personaggi/lena-camminata.mp4`, ciclo di 27 fotogrammi dal fotogramma 61, pose dai fotogrammi 61, 64, 68, 71, 75, 78, 81, 85. Tutte le pose hanno la **stessa scala**: il su e giù del corpo resta quello del video, e nel codice non si aggiunge. Lena avanza di 20 unità della scena per posa (240 ms).
 
 ## 7. Buio e luce nel codice
 

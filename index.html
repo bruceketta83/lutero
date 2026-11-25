@@ -35,6 +35,7 @@
       <image id="sfondo" x="0" y="0" width="400" height="224" preserveAspectRatio="xMidYMid slice"/>
       <rect id="buio" width="400" height="224" fill="#000" mask="url(#buio-mask)"/>
       <g id="oggetti"></g>
+      <g id="personaggi"></g>
       <g id="lena" class="personaggio">
         <image id="lena-img" width="112" height="144"/>
       </g>
@@ -43,6 +44,17 @@
     <button id="mostra-oggetti" class="aiuto" aria-label="Mostra gli oggetti">👁 Oggetti</button>
   </main>
 
+  <div id="foglio-box" hidden>
+    <div id="foglio-carta" role="dialog" aria-modal="true" aria-labelledby="foglio-titolo">
+      <div id="foglio-titolo"></div>
+      <div id="foglio-testo"></div>
+      <button id="foglio-chiudi">Chiudi</button>
+    </div>
+  </div>
+  <div id="glossario" hidden role="dialog" aria-modal="true">
+    <div id="glossario-carta"><div id="glossario-parola"></div><div id="glossario-testo"></div><button id="glossario-chiudi">Ho capito</button></div>
+  </div>
+  <div id="avviso-borsa" aria-live="polite" hidden></div>
   <section id="dialogo" aria-live="polite">
     <div id="chi"></div>
     <div id="testo"></div>

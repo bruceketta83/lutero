@@ -49,8 +49,48 @@ body {
 .uscita text { font: italic 13px "Fell", Georgia, serif; fill: var(--carta); paint-order: stroke; stroke: #000; stroke-width: 2px; }
 .uscita .area { fill: transparent; }
 
-/* Personaggio */
+/* Personaggi */
 #lena { pointer-events: none; }
+.png image { pointer-events: none; }
+.png .area { fill: transparent; }
+.png .alone { fill: none; stroke: var(--oro); stroke-width: 1.4; opacity: 0; filter: url(#alone-oro); pointer-events: none; transition: opacity .3s; }
+#scena.mostra .png .alone, .png.attivo .alone { opacity: .9; }
+
+/* Parole del glossario: sottolineate a puntini (azzurro = aiuto) */
+a.gl { color: inherit; text-decoration: underline dotted var(--azzurro); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+
+/* Foglio da leggere (avvisi, lettere, tesi) e glossario: carta su fondo scuro */
+#foglio-box, #glossario {
+  position: fixed; inset: 0; z-index: 20; background: rgba(0,0,0,.72);
+  display: flex; align-items: center; justify-content: center; padding: 16px;
+}
+#foglio-box[hidden], #glossario[hidden] { display: none; }
+#foglio-carta, #glossario-carta {
+  background: var(--carta); color: var(--inchiostro); max-width: 560px; width: 100%; max-height: 90vh; overflow: auto;
+  padding: 18px 20px; border-radius: 3px; box-shadow: 0 10px 40px rgba(0,0,0,.6);
+}
+#foglio-titolo, #glossario-parola { font: 24px/1.2 "Fraktur", "Fell", Georgia, serif; margin-bottom: 10px; }
+#foglio-testo { font-size: 19px; }
+.foglio p { margin: 0 0 10px; }
+.titolo-foglio { font: 26px/1.2 "Fraktur", "Fell", Georgia, serif; text-align: center; }
+.nota-foglio { font-size: 15px; font-style: italic; color: var(--grigio); border-top: 1px solid #c9bfa9; padding-top: 8px; }
+#glossario-carta { border-left: 6px solid var(--azzurro); }
+#glossario-testo { font-size: 19px; }
+#foglio-chiudi, #glossario-chiudi {
+  margin-top: 14px; font: 18px "Fell", Georgia, serif; color: var(--inchiostro);
+  background: transparent; border: 2px solid var(--inchiostro); border-radius: 4px; padding: 8px 14px; cursor: pointer;
+}
+
+/* Avviso: un oggetto va nella borsa */
+#avviso-borsa {
+  position: fixed; left: 50%; top: 18%; transform: translateX(-50%); z-index: 15;
+  background: var(--carta); color: var(--inchiostro); border: 2px solid var(--oro); border-radius: 4px;
+  padding: 8px 14px; font-size: 17px; box-shadow: 0 4px 18px rgba(0,0,0,.5);
+}
+
+/* Passaggio tra le stanze: dissolvenza al nero */
+#scena-box::after { content: ""; position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; transition: opacity .35s; }
+#scena-box.buio::after { opacity: 1; }
 
 /* Pulsante di aiuto (azzurro = aiuto, vedi GRAFICA.md) */
 .aiuto {
@@ -81,4 +121,5 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .luce-tremola { animation: none; }
   #testo .l { animation: none; }
+  #scena-box::after { transition: none; }
 }

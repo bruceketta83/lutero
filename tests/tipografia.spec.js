@@ -46,7 +46,7 @@ test('toccando il pavimento Lena cammina con le pose e poi si ferma', async ({ p
 
 test('ogni oggetto si può toccare: Lena ci va e lo descrive', async ({ page }) => {
   await page.goto('./');
-  const ids = await page.evaluate(() => STANZE.tipografia.oggetti.map(o => o.id));
+  const ids = await page.evaluate(() => STANZE.tipografia.oggetti.filter(o => o.testo).map(o => o.id));
   for (const id of ids) {
     const area = page.locator(`[data-id="${id}"] .area`);
     const b = await area.boundingBox();

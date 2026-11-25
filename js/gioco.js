@@ -11,10 +11,10 @@ const LENA = {
   w: 112, h: 144,          // grandezza nella scena
   piedi: 0.8,              // spazio tra i piedi e il bordo in basso della tela
   durataPosa: 240,         // millisecondi per posa
-  sali: [0, -1.2, -1.6, -0.8, 0, -1.2, -1.6, -0.8], // su e giù del corpo nelle 8 pose
+  sali: [0, 0, 0, 0, 0, 0, 0, 0], // il su e giù è già nelle pose (prese dal video)
 };
-// Velocità legata al passo: un quarto di passo per posa, così i piedi non scivolano.
-LENA.velocita = 16 / (LENA.durataPosa / 1000);   // unità della scena al secondo
+// Velocità legata al passo: Lena avanza di 20 unità per posa, così i piedi non scivolano.
+LENA.velocita = 20 / (LENA.durataPosa / 1000);   // unità della scena al secondo
 
 const stato = { stanza: null, x: 0, verso: 1, cammina: null, visti: {} };
 

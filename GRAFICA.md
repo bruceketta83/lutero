@@ -80,6 +80,10 @@ Le immagini originali di Gemini restano in `originali/`: servono per rifare i ri
 
 ### Camminata da un video
 
+**Formato del video:** usa le stesse proporzioni dell'immagine di partenza. Le immagini dei personaggi sono 2:3; il formato più vicino tra quelli del generatore è **834 × 1112** (3:4). Prima di caricare l'immagine, allargala a 3:4 aggiungendo magenta ai lati (`tools/formato_video.py`), così il video non deforma la figura.
+
+I primi due video (Lena e Martin) sono stati fatti a 960 × 960: la figura era allargata di 1,5 volte. Le pose sono state corrette stringendo ogni fotogramma a 2/3 della larghezza prima del ritaglio.
+
 Un generatore di video (es. Seedance) fa una camminata sul posto più regolare delle pose di Gemini. Come si usa:
 1. Video del personaggio fermo che cammina sul posto, su fondo magenta, inquadratura fissa.
 2. Cerco il ciclo completo (due passi): il tratto in cui l'ultimo fotogramma è più simile al primo.
@@ -87,7 +91,7 @@ Un generatore di video (es. Seedance) fa una camminata sul posto più regolare d
 
 Martin giovane: video `originali/personaggi/martin-giovane-camminata.mp4`, ciclo di 50 fotogrammi (24 al secondo) dal fotogramma 33, pose dai fotogrammi 33, 39, 45, 52, 58, 64, 71, 77.
 
-Lena: video `originali/personaggi/lena-camminata.mp4`, ciclo di 27 fotogrammi dal fotogramma 61, pose dai fotogrammi 61, 64, 68, 71, 75, 78, 81, 85. Tutte le pose hanno la **stessa scala**: il su e giù del corpo resta quello del video, e nel codice non si aggiunge. Lena avanza di 20 unità della scena per posa (240 ms).
+Lena: video `originali/personaggi/lena-camminata.mp4`, ciclo di 27 fotogrammi dal fotogramma 61, pose dai fotogrammi 61, 64, 68, 71, 75, 78, 81, 85. Tutte le pose hanno la **stessa scala**: il su e giù del corpo resta quello del video, e nel codice non si aggiunge. Lena avanza di 14 unità della scena per posa (240 ms).
 
 ## 7. Buio e luce nel codice
 

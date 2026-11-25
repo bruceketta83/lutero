@@ -5,7 +5,7 @@ Avventura punta-e-clicca in stile fumetto in bianco e nero.
 
 Indirizzo (quando sarà pubblicato): https://bruceketta83.github.io/lutero/
 
-Stato: **prima stanza giocabile**, la tipografia con Lena che cammina. Il resto del prologo e del capitolo 1 è in progettazione.
+Stato: **inizio del capitolo 1 giocabile**: la tipografia con Mastro Grunenberg, il mercato con Frau Agnes e l'avviso dell'indulgenza. Il resto del prologo e del capitolo 1 è in preparazione.
 
 ## Documenti
 

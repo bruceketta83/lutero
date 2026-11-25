@@ -13,10 +13,27 @@ const LENA = {
   durataPosa: 240,         // millisecondi per posa
   sali: [0, 0, 0, 0, 0, 0, 0, 0], // il su e giù è già nelle pose (prese dal video)
 };
-// Velocità legata al passo: Lena avanza di 20 unità per posa, così i piedi non scivolano.
-LENA.velocita = 20 / (LENA.durataPosa / 1000);   // unità della scena al secondo
+// Velocità legata al passo: Lena avanza di 14 unità per posa, così i piedi non scivolano.
+LENA.velocita = 14 / (LENA.durataPosa / 1000);   // unità della scena al secondo
 
-const stato = { stanza: null, x: 0, verso: 1, cammina: null, visti: {} };
+const stato = { stanza: null, idStanza: null, x: 0, verso: 1, cammina: null, visti: {}, flag: {}, borsa: [], fonti: [] };
+
+/* ---------- Stato della storia ---------- */
+const flag = (k) => !!stato.flag[k];
+const setFlag = (k) => { stato.flag[k] = true; };
+
+/* Mette un oggetto nella borsa e lo dice per un momento. */
+function prendi(id, nome) {
+  if (!stato.borsa.includes(id)) stato.borsa.push(id);
+  const a = $('avviso-borsa');
+  a.textContent = `Nella borsa: ${nome}`;
+  a.hidden = false;
+  clearTimeout(prendi.t);
+  prendi.t = setTimeout(() => { a.hidden = true; }, 2200);
+}
+
+/* Segna una fonte trovata (andrà nel Taccuino dello storico). */
+function fonte(id) { if (!stato.fonti.includes(id)) stato.fonti.push(id); }
 
 function el(tag, attrs = {}, parent) {
   const e = document.createElementNS(SVGNS, tag);
@@ -92,13 +109,48 @@ function variante(id, lista) {
   return lista[n % lista.length];
 }
 
+/* Conversazione a più battute: [chi, testo] una dopo l'altra, con "Continua". */
+function conversa(battute, poi) {
+  let i = 0;
+  const mostra = () => {
+    const [chi, testo] = battute[i];
+    const ultima = i === battute.length - 1;
+    dialogo(chi, testo, [{ testo: ultima ? 'Continua' : 'Continua ⟶', fai: (e) => { e.stopPropagation(); if (ultima) { if (poi) poi(); } else { i++; mostra(); } } }]);
+  };
+  mostra();
+}
+
+/* Foglio da leggere a tutto schermo (avvisi, lettere, tesi). */
+function leggi(titolo, html, poi) {
+  $('foglio-titolo').textContent = titolo;
+  $('foglio-testo').innerHTML = html;
+  $('foglio-box').hidden = false;
+  leggi.poi = poi;
+  $('foglio-chiudi').focus();
+}
+function chiudiFoglio() {
+  $('foglio-box').hidden = true;
+  const poi = leggi.poi; leggi.poi = null;
+  if (poi) poi();
+}
+
+/* Glossario: si apre toccando una parola sottolineata. */
+function apriGlossario(parola) {
+  $('glossario-parola').textContent = parola[0].toUpperCase() + parola.slice(1);
+  $('glossario-testo').textContent = GLOSSARIO[parola] || '';
+  $('glossario').hidden = false;
+  $('glossario-chiudi').focus();
+}
+
 /* ---------- Stanza ---------- */
 function entra(idStanza, x) {
   const s = STANZE[idStanza];
   stato.stanza = s;
+  stato.idStanza = idStanza;
   $('luogo').textContent = s.luogo;
   $('data').textContent = s.data;
   $('sfondo').setAttribute('href', s.sfondo);
+  $('buio').style.opacity = s.buio ?? 0.82;
 
   const luci = $('luci');
   luci.innerHTML = '';
@@ -117,19 +169,35 @@ function entra(idStanza, x) {
     g.addEventListener('click', (e) => { e.stopPropagation(); tocca(o, g); });
   }
 
+  const pers = $('personaggi');
+  pers.innerHTML = '';
+  for (const p of s.personaggi || []) {
+    const k = p.alto || 1;
+    const w = LENA.w * k, h = LENA.h * k;
+    const g = el('g', { class: 'png', 'data-id': p.id, role: 'button', 'aria-label': p.nome }, pers);
+    el('image', { href: p.img, x: p.x - w / 2, y: s.pavimento - h + LENA.piedi * k, width: w, height: h,
+      transform: p.verso < 0 ? `translate(${2 * p.x} 0) scale(-1 1)` : '' }, g);
+    // Zona da toccare: il corpo, non tutta la tela.
+    const zw = 40 * k, top = s.pavimento - h * 0.97;
+    el('rect', { class: 'alone', x: p.x - zw / 2, y: top, width: zw, height: s.pavimento - top, rx: 4 }, g);
+    el('rect', { class: 'area', x: p.x - zw / 2, y: top, width: zw, height: s.pavimento - top }, g);
+    g.addEventListener('click', (e) => { e.stopPropagation(); parlaCon(p, g); });
+  }
+
   const usc = $('uscite');
   usc.innerHTML = '';
   for (const u of s.uscite) {
     const g = el('g', { class: 'uscita', 'data-id': u.id, role: 'button', 'aria-label': u.etichetta }, usc);
     const t = el('text', { x: u.x, y: u.y }, g);
     t.textContent = u.etichetta;
-    el('rect', { class: 'area', x: u.x - 6, y: u.y - 16, width: 86, height: 22 }, g);
+    el('rect', { class: 'area', x: u.x - 6, y: u.y - 16, width: 96, height: 22 }, g);
     g.addEventListener('click', (e) => { e.stopPropagation(); esci(u); });
   }
 
   stato.x = x ?? s.inizio;
+  stato.verso = stato.x > 200 ? -1 : 1;
   disegnaLena(LENA.ferma, 0);
-  dialogo('Lena', 'La bottega è silenziosa. Mastro Grunenberg è uscito a cercare carta. <br>Tocca il pavimento per camminare, tocca le cose per guardarle.');
+  dialogo('Lena', s.ingresso ? s.ingresso() : '');
 }
 
 /* ---------- Lena ---------- */
@@ -177,18 +245,33 @@ function tocca(o, g) {
   vai(o.vaiA, () => {
     stato.verso = (o.zona[0] + o.zona[2] / 2) >= stato.x ? 1 : -1;
     disegnaLena(LENA.ferma, 0);
-    dialogo('Lena', variante(o.id, o.testo));
+    if (o.azione) o.azione(); else dialogo('Lena', variante(o.id, o.testo));
+    setTimeout(() => g.classList.remove('attivo'), 900);
+  });
+}
+
+/* Lena si avvicina al personaggio, si gira verso di lui e parla. */
+function parlaCon(p, g) {
+  g.classList.add('attivo');
+  const lato = stato.x < p.x ? -1 : 1;
+  const k = p.alto || 1;
+  vai(p.x + lato * 34 * k, () => {
+    stato.verso = p.x >= stato.x ? 1 : -1;
+    disegnaLena(LENA.ferma, 0);
+    p.parla();
     setTimeout(() => g.classList.remove('attivo'), 900);
   });
 }
 
 function esci(u) {
   vai(u.vaiA, () => {
-    if (u.verso) { entra(u.verso); return; }
-    dialogo('Lena', variante('uscita-' + u.id, [
-      'Il mercato può aspettare. Prima devo finire di sistemare la bottega.',
-      'Mastro Grunenberg ha detto di non uscire finché non torna.',
-    ]));
+    const aperta = u.verso && (!u.aperta || u.aperta());
+    if (!aperta) { dialogo('Lena', variante('uscita-' + u.id, u.chiusa || ['Non posso andare di là, per ora.'])); return; }
+    const box = $('scena-box');
+    const ridotto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (ridotto) { entra(u.verso, u.arrivo); return; }
+    box.classList.add('buio');
+    setTimeout(() => { entra(u.verso, u.arrivo); box.classList.remove('buio'); }, 380);
   });
 }
 
@@ -208,7 +291,8 @@ function mostraOggetti() {
 
 /* Carica in anticipo le pose, così la prima camminata non lampeggia. */
 function precarica() {
-  for (const src of [LENA.ferma, ...LENA.pose]) { const i = new Image(); i.src = src; }
+  const altri = Object.values(STANZE).flatMap(s => [s.sfondo, ...(s.personaggi || []).map(p => p.img)]);
+  for (const src of [LENA.ferma, ...LENA.pose, ...altri]) { const i = new Image(); i.src = src; }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -216,5 +300,14 @@ window.addEventListener('DOMContentLoaded', () => {
   $('scena').addEventListener('click', toccaScena);
   $('mostra-oggetti').addEventListener('click', mostraOggetti);
   $('dialogo').addEventListener('click', () => { if (stampa) { const f = stampa.fine; finisciStampa(); if (f) f(); } });
+  // Parole del glossario, nel dialogo e nei fogli da leggere.
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a.gl');
+    if (!a) return;
+    e.preventDefault(); e.stopPropagation();
+    apriGlossario(a.dataset.gl);
+  }, true);
+  $('foglio-chiudi').addEventListener('click', chiudiFoglio);
+  $('glossario-chiudi').addEventListener('click', () => { $('glossario').hidden = true; });
   entra('tipografia');
 });

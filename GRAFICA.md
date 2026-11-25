@@ -78,6 +78,15 @@ python3 tools/camminata.py lena originali/personaggi/lena.jpg originali/personag
 
 Le immagini originali di Gemini restano in `originali/`: servono per rifare i ritagli. Le anteprime animate non vanno nel repo.
 
+### Camminata da un video
+
+Un generatore di video (es. Seedance) fa una camminata sul posto più regolare delle pose di Gemini. Come si usa:
+1. Video del personaggio fermo che cammina sul posto, su fondo magenta, inquadratura fissa.
+2. Cerco il ciclo completo (due passi): il tratto in cui l'ultimo fotogramma è più simile al primo.
+3. Prendo 8 fotogrammi a distanza uguale nel ciclo e li ritaglio come le altre pose.
+
+Martin giovane: video `originali/personaggi/martin-giovane-camminata.mp4`, ciclo di 50 fotogrammi (24 al secondo) dal fotogramma 33, pose dai fotogrammi 33, 39, 45, 52, 58, 64, 71, 77.
+
 ## 7. Buio e luce nel codice
 
 Gemini fatica a fare neri molto pieni. Il buio si aggiunge nel gioco, sopra lo sfondo:

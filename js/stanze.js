@@ -18,6 +18,9 @@ const GLOSSARIO = {
   risma: 'Un pacco di fogli di carta, di solito 500. La carta era fatta di stracci di lino ed era molto cara.',
   confessione: 'Il sacramento in cui il fedele dice i suoi peccati al sacerdote, si pente e riceve il perdono. Il sacerdote gli dà anche una penitenza: preghiere o opere buone da fare.',
   agostiniani: 'Frati che seguono la regola di sant\'Agostino. A Wittenberg vivevano nel Convento Nero, chiamato così per il colore del loro abito.',
+  reliquia: 'Il resto del corpo di un santo (un osso, un capello) o un oggetto che gli è appartenuto. I fedeli le veneravano: credevano che aiutassero a ottenere grazie da Dio.',
+  Sassonia: 'Una regione della Germania. Nel 1517 la governa il principe elettore Federico il Saggio. Wittenberg è una delle sue città, con il castello e l\'università.',
+  'principe elettore': 'Uno dei sette principi tedeschi che scelgono l\'imperatore. Federico di Sassonia è uno di loro: per questo è molto potente.',
   torchio: 'La pressa della tipografia. Una grande vite spinge un piano di legno che preme il foglio sui caratteri inchiostrati.',
 };
 const gl = (parola, testo) => `<a class="gl" data-gl="${parola}" href="#">${testo || parola}</a>`;
@@ -31,6 +34,16 @@ const AVVISO = `<div class="foglio">
   riceve l'${gl('indulgenza')} piena per i suoi peccati.</p>
   <p>La stessa grazia si può ottenere per le anime dei propri cari defunti, che soffrono nel ${gl('purgatorio')}.</p>
   <p class="nota-foglio">Avviso ricostruito per il gioco, sulla base dell'Istruzione dell'arcivescovo Alberto di Magonza ai predicatori (1515).</p>
+</div>`;
+
+/* ---------- Pagina del libro delle reliquie (fonte ricostruita per il gioco) ---------- */
+const LIBRO_RELIQUIE = `<div class="foglio">
+  <p class="titolo-foglio">Le sante reliquie di Wittenberg</p>
+  <p>Questo libro mostra le sante ${gl('reliquia', 'reliquie')} che l'illustrissimo principe Federico, duca e ${gl('principe elettore')} di ${gl('Sassonia')},
+  ha raccolto nella chiesa di Ognissanti, nel castello di Wittenberg.</p>
+  <p>Le reliquie si mostrano ai fedeli ogni anno, in primavera dopo la Pasqua e nel giorno di Ognissanti.</p>
+  <p>Chi le visita con devozione, si confessa e dà un'offerta per questa chiesa riceve, per ogni reliquia, giorni e anni di ${gl('indulgenza')}.</p>
+  <p class="nota-foglio">Pagina ricostruita per il gioco. Il vero libro (il "Libro delle reliquie di Wittenberg") fu stampato a Wittenberg nel 1509, con le xilografie di Lucas Cranach.</p>
 </div>`;
 
 const STANZE = {
@@ -248,6 +261,14 @@ const STANZE = {
     uscite: [
       { id: 'tipografia', etichetta: 'Tipografia ⟶', x: 300, y: 214, vaiA: 370, verso: 'tipografia', arrivo: 60 },
       {
+        id: 'chiesa', etichetta: '↑ Chiesa del Castello', x: 262, y: 170, vaiA: 290, verso: 'chiesa', arrivo: 50,
+        aperta: () => flag('missione'),
+        chiusa: [
+          'La strada per la Chiesa del Castello. Prima devo portare la carta al dottor Martin.',
+          'Il Mastro ha detto di non perdere tempo. Prima il Convento Nero.',
+        ],
+      },
+      {
         id: 'convento', etichetta: '⟵ Convento Nero', x: 8, y: 214, vaiA: 30, verso: 'cortile', arrivo: 340,
         aperta: () => flag('agnes-2'),
         chiusa: [
@@ -374,13 +395,20 @@ const STANZE = {
               ['Il dottor Martin', 'E se puoi, copia una lettera d\'indulgenza. Parola per parola.'],
               ['Lena', 'E Mastro Grunenberg?'],
               ['Il dottor Martin', 'Con Grunenberg parlo io. Il tempo che perdi te lo pago.'],
+              ['Il dottor Martin', 'Prima di partire, passa dalla Chiesa del Castello. Porta questo biglietto a Spalatino, il segretario del principe.'],
+              ['Il dottor Martin', 'Lui conosce le strade e la corte. Ti dirà come arrivare a Jüterbog.'],
             ], () => {
               setFlag('lutero-1');
               setFlag('missione');
               lascia('risma');
-              dialogo('Lena', 'Le parole esatte del predicatore e una lettera d\'indulgenza. Jüterbog è a una giornata di cammino.<br><br><em>Qui finisce la parte del capitolo 1 che si può giocare. Il viaggio a Jüterbog arriva presto.</em>');
+              prendi('biglietto', 'un biglietto per Spalatino');
+              dialogo('Lena', 'Le parole esatte del predicatore e una lettera d\'indulgenza. Ma prima il biglietto per Spalatino, alla Chiesa del Castello.');
             });
           } else {
+            if (!flag('spalatino-1')) {
+              dialogo('Il dottor Martin', 'Prima il biglietto a Spalatino. La Chiesa del Castello è in fondo alla strada grande, dopo il mercato.');
+              return;
+            }
             dialogo('Il dottor Martin', variante('lutero-dopo', [
               'Le parole esatte, Lena. Non quello che la gente racconta.',
               'Vai con Dio. E tieni gli occhi aperti.',
@@ -433,4 +461,205 @@ const STANZE = {
       { id: 'cortile-da-cella', etichetta: '⟵ Cortile', x: 8, y: 214, vaiA: 30, verso: 'cortile', arrivo: 330 },
     ],
   },
+  /* ======================= CHIESA DEL CASTELLO: IL PORTONE ======================= */
+  chiesa: {
+    luogo: 'Chiesa del Castello',
+    data: 'Wittenberg, primavera 1517',
+    sfondo: 'img/bg/chiesa-castello.webp',
+    pavimento: 214,
+    min: 30, max: 330,
+    inizio: 50,
+    buio: 0.5,
+    luci: [
+      [60, 50, 120, false],   // cielo
+      [200, 190, 160, false], // la piazza
+      [230, 130, 50, false],  // il portone
+    ],
+    ingresso() {
+      if (!flag('vista-chiesa')) {
+        setFlag('vista-chiesa');
+        return 'La Chiesa del Castello, la chiesa del principe. Accanto c\'è la torre del castello. Le pietre sono scure di pioggia.';
+      }
+      return 'La Chiesa del Castello.';
+    },
+    personaggi: [],
+    oggetti: [
+      {
+        id: 'portone', nome: 'Il portone della chiesa', zona: [212, 104, 40, 52], vaiA: 232,
+        azione() {
+          dialogo('Lena', variante('portone', [
+            'Il portone è socchiuso. Sul legno ci sono tanti buchi di chiodi: l\'università ci appende i suoi avvisi. Entro.',
+            'Entro in chiesa, piano.',
+          ]));
+          setTimeout(() => cambiaStanza('reliquie', 70), 1500);
+        },
+      },
+      {
+        id: 'vetrate', nome: 'Le vetrate', zona: [306, 10, 40, 80], vaiA: 310,
+        testo: [
+          'Vetrate alte e strette. Dicono che dentro il principe tiene migliaia di ' + gl('reliquia', 'reliquie') + '.',
+        ],
+      },
+      {
+        id: 'torre', nome: 'La torre', zona: [356, 20, 40, 150], vaiA: 330,
+        testo: [
+          'La torre rotonda del castello. Qui abita il principe Federico, quando è a Wittenberg.',
+        ],
+      },
+      {
+        id: 'mura', nome: 'Le mura', zona: [20, 100, 70, 40], vaiA: 60,
+        testo: [
+          'Le mura e una porta. Oltre c\'è la campagna. Di là passa la strada che va verso sud.',
+        ],
+      },
+      {
+        id: 'foglie', nome: 'Le foglie secche', zona: [120, 176, 60, 22], vaiA: 150,
+        testo: [
+          'Foglie secche dell\'anno passato. Nessuno le ha ancora spazzate via.',
+        ],
+      },
+    ],
+    uscite: [
+      { id: 'mercato-da-chiesa', etichetta: '⟵ Mercato', x: 8, y: 214, vaiA: 30, verso: 'mercato', arrivo: 290 },
+    ],
+  },
+
+  /* ======================= CHIESA DEL CASTELLO: LA SALA DELLE RELIQUIE ======================= */
+  reliquie: {
+    luogo: 'La sala delle reliquie',
+    data: 'Wittenberg, primavera 1517',
+    sfondo: 'img/bg/reliquie.webp',
+    pavimento: 212,
+    min: 60, max: 340,
+    inizio: 70,
+    buio: 0.62,
+    luci: [
+      [280, 75, 70, false],   // finestre
+      [30, 130, 45, true],    // candele a sinistra
+      [150, 150, 50, true],   // candele sul tavolo
+      [370, 165, 45, true],   // candele a destra
+      [210, 195, 110, false], // pavimento
+    ],
+    ingresso() {
+      if (!flag('vista-reliquie')) {
+        setFlag('vista-reliquie');
+        return 'Una sala piena di candele accese. Su tavoli e scaffali ci sono cassette d\'argento, croci e teche di vetro. L\'aria sa di cera e di polvere.';
+      }
+      return 'La sala delle reliquie.';
+    },
+    personaggi: [
+      {
+        id: 'spalatino', nome: 'Spalatino', img: 'img/chars/spalatino.webp',
+        x: 275, verso: -1, alto: 1.15,
+        parla() {
+          if (!flag('spalatino-1')) {
+            conversa([
+              ['Lena', 'Signor Spalatino? Il dottor Martin vi manda questo biglietto.'],
+              ['Spalatino', 'Grazie, ragazza. Parla piano: qui dentro si parla piano.'],
+              ['Spalatino', 'Martin vuole sapere cosa penso di Jüterbog. Come sempre, vuole tutto e subito.'],
+              ['Spalatino', 'Guardati intorno. Queste sono le ' + gl('reliquia', 'reliquie') + ' del principe Federico. Ossa di santi, pezzi di stoffa, schegge di legno. Migliaia di pezzi.'],
+              ['Lena', 'Migliaia? Da dove vengono?'],
+              ['Spalatino', 'Da tutta la cristianità. Da giovane il principe è andato in pellegrinaggio fino a Gerusalemme. Altre le ha comprate, altre le ha ricevute in dono.'],
+              ['Spalatino', 'Due volte all\'anno le mostriamo ai fedeli. Chi le guarda con devozione e lascia un\'offerta riceve un\'' + gl('indulgenza') + '.'],
+              ['Lena', 'Un\'indulgenza? Come quella di frate Tetzel?'],
+              ['Spalatino', 'Il principe crede che le reliquie aiutino le anime. E le offerte mantengono questa chiesa e l\'università dove insegna Martin.'],
+              ['Lena', 'Allora perché la gente di Wittenberg va fino a Jüterbog?'],
+              ['Spalatino', 'Perché in ' + gl('Sassonia') + ' frate Tetzel non può predicare. Il principe glielo ha vietato.'],
+              ['Spalatino', 'Così predica a Jüterbog. È appena oltre il confine, nelle terre dell\'arcivescovo Alberto. Una giornata di cammino.'],
+            ], () => {
+              setFlag('spalatino-1');
+              lascia('biglietto');
+              domandaDivieto();
+            });
+          } else if (!flag('divieto')) {
+            domandaDivieto();
+          } else {
+            dialogo('Spalatino', variante('spalatino-dopo', [
+              'A Jüterbog ascolta e non parlare. E non dire a nessuno che ti manda un frate di Wittenberg.',
+              'Saluta Martin da parte mia. E digli di dormire, ogni tanto.',
+            ]));
+          }
+        },
+      },
+    ],
+    oggetti: [
+      {
+        id: 'libro-reliquie', nome: 'Il libro delle reliquie', zona: [198, 136, 40, 20], vaiA: 205,
+        azione() {
+          fonte('libro-reliquie');
+          leggi('Il libro delle reliquie', LIBRO_RELIQUIE, () => {
+            dialogo('Lena', 'Un libro stampato, con le figure di ogni reliquia. Anche il principe usa la stampa per far sapere le cose.');
+          });
+        },
+      },
+      {
+        id: 'cassette', nome: 'Le cassette sullo scaffale', zona: [25, 88, 85, 40], vaiA: 75,
+        testo: [
+          'Cassette d\'argento e di legno dipinto. Su alcune sono disegnate due ossa incrociate.',
+          'Ogni cassetta ha un cartellino scritto a mano. Il nome di un santo, e un numero.',
+        ],
+      },
+      {
+        id: 'teca', nome: 'La teca di vetro', zona: [55, 130, 30, 45], vaiA: 80,
+        testo: [
+          'Una teca di vetro. Dentro c\'è un piccolo osso avvolto nella seta. Il cartellino dice: un santo martire.',
+        ],
+      },
+      {
+        id: 'scrigno', nome: 'Lo scrigno', zona: [100, 148, 60, 26], vaiA: 130,
+        testo: [
+          'Uno scrigno con figure di santi scolpite. Il coperchio è chiuso con un lucchetto.',
+        ],
+      },
+      {
+        id: 'croce-scaffale', nome: 'La croce d\'argento', zona: [160, 76, 26, 32], vaiA: 170,
+        testo: [
+          'Una croce d\'argento. Dentro, dicono, c\'è una scheggia della croce di Cristo.',
+        ],
+      },
+      {
+        id: 'candele', nome: 'Le candele', zona: [0, 110, 28, 55], vaiA: 60,
+        testo: [
+          'Candele di cera d\'api, non di sego come quelle di Frau Agnes. Una sola costa più di una giornata di lavoro.',
+        ],
+      },
+      {
+        id: 'libro-grande', nome: 'Il grande libro', zona: [316, 174, 44, 26], vaiA: 320,
+        testo: [
+          'Un grande libro chiuso, con gli angoli di metallo. Sopra c\'è una croce di legno.',
+        ],
+      },
+      {
+        id: 'croce-destra', nome: 'La croce sul tavolo', zona: [358, 112, 34, 50], vaiA: 340,
+        testo: [
+          'Una croce alta, accanto a un vaso di metallo. Sulla cera colata ci sono le impronte delle dita di chi l\'ha accesa.',
+        ],
+      },
+    ],
+    uscite: [
+      { id: 'chiesa-da-reliquie', etichetta: '⟵ Portone', x: 8, y: 214, vaiA: 60, verso: 'chiesa', arrivo: 232 },
+    ],
+  },
 };
+
+/* Domanda del Taccuino dopo il dialogo con Spalatino.
+   Le risposte sbagliate spiegano l'errore e la domanda torna. */
+function domandaDivieto() {
+  const ripeti = { testo: 'Rispondi di nuovo', fai: (e) => { e.stopPropagation(); domandaDivieto(); } };
+  const sbagliata = (spiegazione) => (e) => { e.stopPropagation(); dialogo('Taccuino dello storico', spiegazione, [ripeti]); };
+  dialogo('Taccuino dello storico', 'Domanda: perché il principe Federico vieta a frate Tetzel di predicare in Sassonia?', [
+    { testo: 'Perché Federico è protestante.', fai: sbagliata('No. Nel 1517 i protestanti non esistono ancora: la parola nasce nel 1529. Federico è cattolico e raccoglie reliquie. Crede nelle indulgenze.') },
+    { testo: 'Perché i soldi delle offerte andrebbero fuori dalla Sassonia.', fai: (e) => {
+      e.stopPropagation();
+      setFlag('divieto');
+      conversa([
+        ['Taccuino dello storico', 'Giusto. I soldi delle indulgenze di Tetzel vanno all\'arcivescovo Alberto e a Roma, per la basilica di San Pietro. Federico non vuole che il denaro dei suoi sudditi esca dalla Sassonia.'],
+        ['Taccuino dello storico', 'E Federico ha già le sue indulgenze: quelle delle reliquie di questa chiesa. Le offerte restano a Wittenberg.'],
+        ['Spalatino', 'A Jüterbog ascolta e non parlare. E non dire a nessuno che ti manda un frate di Wittenberg.'],
+      ], () => {
+        dialogo('Lena', 'Le parole esatte del predicatore e una lettera d\'indulgenza. Domani all\'alba parto con la gente del mercato.<br><br><em>Qui finisce la parte del capitolo 1 che si può giocare. Il viaggio a Jüterbog arriva presto.</em>');
+      });
+    } },
+    { testo: 'Perché frate Tetzel è un ladro.', fai: sbagliata('Attenzione alle parole. Tetzel predica con il permesso dell\'arcivescovo Alberto e del papa. Per le leggi del tempo non ruba niente. Il problema è un altro: dove vanno i soldi.') },
+  ]);
+}

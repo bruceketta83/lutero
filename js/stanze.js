@@ -252,6 +252,11 @@ const STANZE = {
               setFlag('agnes-2');
               dialogo('Lena', 'Frau Agnes stringe la moneta fino a farsi male. Un fiorino è il lavoro di settimane.');
             });
+          } else if (flag('ritorno')) {
+            dialogo('Frau Agnes', variante('agnes-ritorno', [
+              'Sono tornata da Jüterbog con i piedi rotti. Ma il frate ha detto che Jakob ora è in pace.',
+              'Ho ricominciato a fare candele. Un fiorino è tanto, Lena. Tanto.',
+            ]));
           } else {
             dialogo('Frau Agnes', variante('agnes-dopo', [
               'Dio ti benedica, cara. Senza di te non avrei saputo niente.',
@@ -417,6 +422,7 @@ const STANZE = {
         id: 'lutero', nome: 'Il dottor Martin', img: 'img/chars/lutero.webp',
         x: 290, verso: -1, alto: 1.17,
         parla() {
+          if (flag('ritorno')) { luteroRitorno(); return; }
           if (!flag('lutero-1')) {
             conversa([
               ['Lena', 'Dottor Martin? Vi porto la carta di Mastro Grunenberg.'],
@@ -1030,8 +1036,109 @@ function minigiocoSalmi() {
         ['Taccuino dello storico', 'Nel 1517 la bottega di Johann Rhau-Grunenberg stampò a Wittenberg «I sette salmi penitenziali» di Lutero, con una spiegazione in tedesco. È il primo libro scritto da Lutero e stampato.'],
         ['Taccuino dello storico', 'Il salmo 51 comincia così: «Pietà di me, o Dio». Lutero scriveva in tedesco per chi non sapeva il latino.'],
       ], () => {
-        dialogo('Lena', 'Domani porto al dottor Martin le prove di Jüterbog.<br><br><em>Qui finisce la parte del capitolo 1 che si può giocare. Le domande di Lutero e le 95 tesi arrivano presto.</em>');
+        dialogo('Lena', 'Ora porto al dottor Martin le prove di Jüterbog. Il Convento Nero è oltre il mercato.');
       });
     },
   });
+}
+
+/* ---------- La prova del capitolo: Lutero fa domande sulle prove di Jüterbog ---------- */
+const DOMANDE_LUTERO = [
+  {
+    testo: 'Prima domanda. Che cos\'è un\'' + gl('indulgenza') + ', secondo la Chiesa?',
+    risposte: [
+      { testo: 'Il perdono di tutti i peccati, comprato con i soldi.',
+        spiega: 'No. Per la Chiesa il perdono dei peccati viene da Dio, con il pentimento e la ' + gl('confessione') + '. L\'indulgenza toglie solo la pena che resta. Ma molta gente la capisce come te. Ed è questo che mi preoccupa.' },
+      { testo: 'La pena tolta per i peccati già perdonati.', giusta: true,
+        spiega: 'Giusto. Questo insegna la Chiesa. Ma a Jüterbog Tetzel parla come se bastasse pagare.' },
+      { testo: 'Un permesso scritto per fare peccati in futuro.',
+        spiega: 'No. Nessuna lettera dà il permesso di peccare. Questa è una leggenda, nata dopo. Attenta a separare i fatti dalle voci.' },
+    ],
+  },
+  {
+    testo: 'Seconda domanda. Dove vanno i soldi della cassa di Tetzel?',
+    risposte: [
+      { testo: 'Al principe Federico, per le reliquie della Chiesa del Castello.',
+        spiega: 'No. Federico ha vietato Tetzel in ' + gl('Sassonia') + ' proprio perché quei soldi non vanno a lui. Ricordi quello che ti ha detto Spalatino?' },
+      { testo: 'Tutti al papa, che li dà ai poveri e ai malati di Roma.',
+        spiega: 'No. I soldi servono per la nuova basilica di San Pietro, non per i poveri. E non vanno tutti a Roma.' },
+      { testo: 'Metà a San Pietro, metà all\'arcivescovo Alberto per un debito.', giusta: true,
+        spiega: 'Giusto. Alberto voleva essere arcivescovo di Magdeburgo e di Magonza insieme. Per avere due cariche ha pagato al papa una grossa somma, prestata dai banchieri Fugger di Augusta. Con la sua metà delle indulgenze restituisce il prestito.' },
+    ],
+  },
+  {
+    testo: 'Terza domanda. Secondo Tetzel, che cosa serve per liberare un\'anima dal ' + gl('purgatorio') + '?',
+    risposte: [
+      { testo: 'Un lungo pellegrinaggio a piedi fino a Roma.',
+        spiega: 'No. Quella è una strada più antica, e più lunga. Tetzel offre una strada veloce: la cassa.' },
+      { testo: 'Pregare e pentirsi davvero per tutta la vita.',
+        spiega: 'Questo è quello che penso io, Lena. Ma non è quello che hai scritto. Rileggi il tuo taccuino.' },
+      { testo: 'Solo l\'offerta, anche senza confessione.', giusta: true,
+        spiega: 'Sì. Le istruzioni dell\'arcivescovo lo dicono: per le anime dei morti basta l\'offerta. Io non credo che la grazia di Dio si possa comprare.' },
+    ],
+  },
+  {
+    testo: 'Ultima domanda. Perché la lettera di Hans era stampata, e non scritta a mano?',
+    risposte: [
+      { testo: 'Per venderne migliaia, tutte uguali.', giusta: true,
+        spiega: 'Giusto. Migliaia di copie, e solo il nome da scrivere a mano. La stampa lavora anche per loro.' },
+      { testo: 'Perché Hans non sa leggere la scrittura a mano.',
+        spiega: 'No. Hans non sa leggere né la penna né la stampa. La stampa serve a fare tante copie in poco tempo.' },
+      { testo: 'Perché il papa la stampa a Roma e la manda.',
+        spiega: 'No. Il papa non scrive le lettere una per una. Si stampano qui in Germania, in molte copie.' },
+    ],
+  },
+];
+
+/* Domande una dopo l'altra. Risposta sbagliata: spiegazione e si riprova. */
+function prova(chi, domande, poi) {
+  let n = 0;
+  const chiedi = () => {
+    const d = domande[n];
+    dialogo(chi, d.testo, d.risposte.map(r => ({ testo: r.testo, fai: (e) => {
+      e.stopPropagation();
+      if (!r.giusta) {
+        dialogo(chi, r.spiega, [{ testo: 'Riprova', fai: (e2) => { e2.stopPropagation(); chiedi(); } }]);
+        return;
+      }
+      n++;
+      dialogo(chi, r.spiega, [{ testo: n < domande.length ? 'Continua ⟶' : 'Continua', fai: (e2) => {
+        e2.stopPropagation();
+        if (n < domande.length) chiedi(); else { $('scelte').innerHTML = ''; if (poi) poi(); }
+      } }]);
+    } })));
+  };
+  chiedi();
+}
+
+function luteroRitorno() {
+  if (!flag('riga')) {
+    dialogo('Il dottor Martin', 'Lena! Sei tornata. Grunenberg ti cerca per il mio libretto dei salmi. Prima aiuta lui, poi vieni da me con le tue carte.');
+    return;
+  }
+  if (!flag('prova')) {
+    conversa([
+      ['Lena', 'Dottor Martin, sono tornata da Jüterbog. Ho scritto tutto, parola per parola.'],
+      ['Il dottor Martin', 'Fammi vedere.'],
+      ['Il dottor Martin', '«Appena la moneta tintinna nella cassa, l\'anima salta fuori dal purgatorio.» Ha detto proprio così?'],
+      ['Lena', 'Così l\'ho sentito. E ha detto che per i morti non serve nemmeno la confessione.'],
+      ['Il dottor Martin', 'E questa è la lettera. Stampata. Solo il nome scritto a mano.'],
+      ['Il dottor Martin', 'Ora voglio sapere se hai capito quello che hai visto. Ti faccio quattro domande. Se sbagli, ti spiego.'],
+    ], () => prova('Il dottor Martin', DOMANDE_LUTERO, () => {
+      setFlag('prova');
+      conversa([
+        ['Il dottor Martin', 'Hai occhi buoni, Lena. E una mano svelta.'],
+        ['Il dottor Martin', 'Se la stampa serve a vendere lettere d\'indulgenza, può servire anche a far pensare la gente.'],
+        ['Il dottor Martin', 'Ora tocca a me. Non scriverò una predica. Scriverò delle tesi: domande per una disputa all\'università, in latino.'],
+        ['Taccuino dello storico', 'Il 31 ottobre 1517 Lutero mandò all\'arcivescovo Alberto di Magonza una lettera e le sue 95 tesi sulle indulgenze.'],
+      ], () => {
+        dialogo('Lena', 'Il dottor Martin prende una penna nuova e non alza più la testa.<br><br><em>Qui finisce la parte del capitolo 1 che si può giocare. Il 31 ottobre 1517 e le 95 tesi arrivano presto.</em>');
+      });
+    }));
+    return;
+  }
+  dialogo('Il dottor Martin', variante('lutero-tesi', [
+    'Una tesi alla volta, Lena. Ogni parola deve reggere.',
+    'Torna da Grunenberg. Presto avrà bisogno di te.',
+  ]));
 }

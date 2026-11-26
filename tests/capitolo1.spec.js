@@ -175,15 +175,15 @@ test('il convento si apre solo dopo aver aiutato Frau Agnes', async ({ page }) =
   await expect(page.locator('#testo')).toContainText('Frau Agnes');
 });
 
-for (const stanza of ['mercato', 'cortile', 'cella', 'chiesa', 'reliquie']) {
+for (const stanza of ['mercato', 'cortile', 'cella', 'chiesa', 'reliquie', 'confine', 'jueterbog']) {
   test(`${stanza}: ogni cosa da toccare è libera e ha un testo`, async ({ page }) => {
     const { tuttoIlTesto, fermo } = aiuti(page);
     await page.goto('./');
-    await page.evaluate((st) => { setFlag('risma'); setFlag('agnes-2'); entra(st); }, stanza);
+    await page.evaluate((st) => { setFlag('risma'); setFlag('agnes-2'); setFlag('lettera'); entra(st); }, stanza);
     await tuttoIlTesto();
     const zone = await page.evaluate((st) => [
       ...STANZE[st].oggetti.map(o => o.id),
-      ...(STANZE[st].personaggi || []).map(p => p.id),
+      ...(STANZE[st].personaggi || []).filter(p => !p.se || p.se()).map(p => p.id),
       ...STANZE[st].uscite.map(u => u.id),
     ], stanza);
     for (const id of zone) {
@@ -208,4 +208,86 @@ test('in tipografia Grunenberg non copre le cose da toccare', async ({ page }) =
     const sopra = await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest('[data-id]')?.dataset.id, [b.x + b.width / 2, b.y + b.height / 2]);
     expect(sopra, id).toBe(id);
   }
+});
+
+test('il viaggio: Hans al confine, poi Tetzel e la lettera a Jüterbog', async ({ page }) => {
+  test.setTimeout(150_000);
+  const errors = watch(page);
+  const { tocca, continua, tuttoIlTesto } = aiuti(page);
+  await page.goto('./');
+  await page.evaluate(() => { ['risma', 'agnes-2', 'missione', 'spalatino-1', 'divieto'].forEach(setFlag); entra('chiesa'); });
+  await tuttoIlTesto();
+
+  // Dalla chiesa alla strada per Jüterbog.
+  await tocca('strada');
+  await page.waitForFunction(() => stato.idStanza === 'confine');
+  await expect(page.locator('#luogo')).toHaveText('Il confine della Sassonia');
+
+  // Senza passaggio non si va avanti.
+  await tocca('jueterbog');
+  expect(await page.evaluate(() => stato.idStanza)).toBe('confine');
+
+  // Hans chiede di leggere il foglio.
+  await tocca('hans');
+  await expect(page.locator('#chi')).toHaveText('Hans il carrettiere');
+  for (let i = 0; i < 10 && await page.locator('#foglio-box').isHidden(); i++) {
+    await tuttoIlTesto();
+    await page.click('#scelte button');
+    await page.waitForTimeout(80);
+  }
+  await expect(page.locator('#foglio-testo')).toContainText('6');
+  await page.click('#foglio-chiudi');
+  await tuttoIlTesto();
+  // Risposta sbagliata, poi si rilegge.
+  await page.click('#scelte button:has-text("4 grossi")');
+  await tuttoIlTesto();
+  await expect(page.locator('#testo')).toContainText('mercante');
+  await page.click('#scelte button:has-text("Rileggi")');
+  await page.click('#foglio-chiudi');
+  await tuttoIlTesto();
+  await page.click('#scelte button:has-text("6 grossi")');
+  expect(await page.evaluate(() => flag('passaggio'))).toBe(true);
+  await continua();
+
+  // A Jüterbog.
+  await tocca('jueterbog');
+  await page.waitForFunction(() => stato.idStanza === 'jueterbog');
+  await expect(page.locator('[data-id="cercatore"]')).toHaveCount(0);
+
+  // La predica di Tetzel.
+  await tocca('tetzel');
+  await expect(page.locator('#chi')).toHaveText('Frate Tetzel');
+  await continua();
+  expect(await page.evaluate(() => flag('parole'))).toBe(true);
+  expect(await page.evaluate(() => stato.fonti)).toEqual(expect.arrayContaining(['predica', 'moneta']));
+
+  // Hans fa leggere la sua lettera d'indulgenza.
+  await tocca('hans-j');
+  for (let i = 0; i < 10 && await page.locator('#foglio-box').isHidden(); i++) {
+    await tuttoIlTesto();
+    await page.click('#scelte button');
+    await page.waitForTimeout(80);
+  }
+  await expect(page.locator('#foglio-testo')).toContainText('San Pietro');
+  await page.click('#foglio-chiudi');
+  expect(await page.evaluate(() => flag('lettera'))).toBe(true);
+  await continua();
+
+  // L'uomo con il mantello scuro compare, poi sparisce.
+  await expect(page.locator('[data-id="cercatore"]')).toHaveCount(1);
+  await tocca('cercatore');
+  await page.click('#scelte button');
+  await expect(page.locator('[data-id="cercatore"]')).toHaveCount(0);
+  await tuttoIlTesto();
+  await expect(page.locator('#testo')).toContainText('dottor Martin');
+
+  // Agnes ha dato il suo fiorino.
+  await tocca('agnes-j');
+  await continua();
+  expect(await page.evaluate(() => flag('agnes-j'))).toBe(true);
+
+  // Si torna alla strada.
+  await tocca('strada-da-jueterbog');
+  await page.waitForFunction(() => stato.idStanza === 'confine');
+  expect(errors).toEqual([]);
 });

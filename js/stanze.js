@@ -21,6 +21,8 @@ const GLOSSARIO = {
   reliquia: 'Il resto del corpo di un santo (un osso, un capello) o un oggetto che gli è appartenuto. I fedeli le veneravano: credevano che aiutassero a ottenere grazie da Dio.',
   Sassonia: 'Una regione della Germania. Nel 1517 la governa il principe elettore Federico il Saggio. Wittenberg è una delle sue città, con il castello e l\'università.',
   'principe elettore': 'Uno dei sette principi tedeschi che scelgono l\'imperatore. Federico di Sassonia è uno di loro: per questo è molto potente.',
+  domenicani: 'Frati dell\'Ordine dei Predicatori, fondato da san Domenico. Erano famosi per le loro prediche. Frate Tetzel era domenicano.',
+  grosso: 'Una moneta d\'argento usata in Sassonia. Un fiorino d\'oro valeva circa venti grossi.',
   torchio: 'La pressa della tipografia. Una grande vite spinge un piano di legno che preme il foglio sui caratteri inchiostrati.',
 };
 const gl = (parola, testo) => `<a class="gl" data-gl="${parola}" href="#">${testo || parola}</a>`;
@@ -44,6 +46,26 @@ const LIBRO_RELIQUIE = `<div class="foglio">
   <p>Le reliquie si mostrano ai fedeli ogni anno, in primavera dopo la Pasqua e nel giorno di Ognissanti.</p>
   <p>Chi le visita con devozione, si confessa e dà un'offerta per questa chiesa riceve, per ogni reliquia, giorni e anni di ${gl('indulgenza')}.</p>
   <p class="nota-foglio">Pagina ricostruita per il gioco. Il vero libro (il "Libro delle reliquie di Wittenberg") fu stampato a Wittenberg nel 1509, con le xilografie di Lucas Cranach.</p>
+</div>`;
+
+/* ---------- Foglio di consegna di Hans (inventato per il gioco) ---------- */
+const FOGLIO_CONSEGNA = `<div class="foglio">
+  <p class="titolo-foglio">Foglio di consegna</p>
+  <p>Hans, carrettiere di Wittenberg, va a Jüterbog, alla locanda del Cervo.</p>
+  <p>Là carica 4 botti di birra e 2 balle di lana, e le porta a Wittenberg, alla bottega di Mastro Lukas.</p>
+  <p>L'oste del Cervo paga al carrettiere 6 ${gl('grosso', 'grossi')} quando il carro è carico.</p>
+  <p>Scritto a Wittenberg, il giorno di san Marco, nell'anno del Signore 1517.</p>
+  <p class="nota-foglio">Foglio inventato per il gioco.</p>
+</div>`;
+
+/* ---------- Lettera d'indulgenza copiata a Jüterbog (fonte ricostruita per il gioco) ---------- */
+const LETTERA = `<div class="foglio">
+  <p class="titolo-foglio">Lettera d'indulgenza</p>
+  <p>Frate Johann Tetzel, dell'Ordine dei Predicatori, commissario per l'${gl('indulgenza')} della basilica di San Pietro, a tutti quelli che leggeranno questa lettera: salute nel Signore.</p>
+  <p><em>Hans, carrettiere di Wittenberg</em> ha dato il suo contributo per la costruzione della nuova basilica di San Pietro in Roma.</p>
+  <p>Per questo può scegliere un sacerdote per la ${gl('confessione')}. Il sacerdote può perdonargli tutti i peccati, anche quelli che di solito perdona solo il papa, e dargli l'indulgenza piena: una volta nella vita e in punto di morte.</p>
+  <p>Dato a <em>Jüterbog</em>, nell'anno del Signore <em>1517</em>.</p>
+  <p class="nota-foglio">Lettera ricostruita per il gioco. Le vere lettere d'indulgenza erano stampate in molte copie, con spazi vuoti: il nome, il luogo e la data si scrivevano a mano. Molte sono conservate negli archivi.</p>
 </div>`;
 
 const STANZE = {
@@ -520,6 +542,14 @@ const STANZE = {
       },
     ],
     uscite: [
+      {
+        id: 'strada', etichetta: '↑ Strada per Jüterbog', x: 30, y: 160, vaiA: 60, verso: 'confine', arrivo: 40,
+        aperta: () => flag('divieto'),
+        chiusa: [
+          'La porta della città. Prima devo portare il biglietto a Spalatino.',
+          'Spalatino mi aspetta in chiesa. Poi partirò.',
+        ],
+      },
       { id: 'mercato-da-chiesa', etichetta: '⟵ Mercato', x: 8, y: 214, vaiA: 30, verso: 'mercato', arrivo: 290 },
     ],
   },
@@ -640,6 +670,255 @@ const STANZE = {
       { id: 'chiesa-da-reliquie', etichetta: '⟵ Portone', x: 8, y: 214, vaiA: 60, verso: 'chiesa', arrivo: 232 },
     ],
   },
+  /* ======================= LA STRADA PER JÜTERBOG: IL CONFINE ======================= */
+  confine: {
+    luogo: 'Il confine della Sassonia',
+    data: 'Strada per Jüterbog, primavera 1517',
+    sfondo: 'img/bg/confine.webp',
+    pavimento: 214,
+    min: 30, max: 365,
+    inizio: 40,
+    buio: 0.4,
+    luci: [
+      [200, 60, 180, false],  // cielo
+      [200, 190, 170, false], // la strada
+    ],
+    ingresso() {
+      if (!flag('visto-confine')) {
+        setFlag('visto-confine');
+        return 'Il giorno dopo. Sono partita all\'alba con la gente del mercato, ma camminano più veloci di me. Ora sono sola sulla strada. Più avanti c\'è la sbarra del confine.';
+      }
+      return 'La strada per Jüterbog, al confine della ' + gl('Sassonia') + '.';
+    },
+    personaggi: [
+      {
+        id: 'hans', nome: 'Hans il carrettiere', img: 'img/chars/hans.webp',
+        x: 180, verso: -1, alto: 1.17,
+        parla() {
+          if (!flag('hans-1')) {
+            conversa([
+              ['Hans il carrettiere', 'Ehi, ragazzina. Dove vai da sola, con quelle scarpe?'],
+              ['Lena', 'A Jüterbog. La gente del mercato è andata avanti. Io sono rimasta indietro.'],
+              ['Hans il carrettiere', 'Io sono Hans. Porto merci con questo carro da vent\'anni. Vado a Jüterbog anch\'io, a caricare birra.'],
+              ['Hans il carrettiere', 'Il cavallo beve al fosso, poi ripartiamo. Ti porto, se mi fai un favore.'],
+              ['Hans il carrettiere', 'Questo foglio me l\'ha dato il mercante. Ho lasciato gli occhiali a casa. Leggimelo.'],
+              ['Lena', '<em>Hans tiene il foglio al contrario. Non sa leggere, ma non lo vuole dire.</em>'],
+            ], () => { setFlag('hans-1'); leggiFoglioHans(); });
+          } else if (!flag('passaggio')) {
+            leggiFoglioHans();
+          } else {
+            dialogo('Hans il carrettiere', variante('hans-dopo', [
+              'Sali sul carro. Jüterbog è oltre la sbarra.',
+              'Il cavallo ha bevuto. Andiamo, prima che faccia buio.',
+            ]));
+          }
+        },
+      },
+    ],
+    oggetti: [
+      {
+        id: 'carro', nome: 'Il carro', zona: [60, 118, 90, 46], vaiA: 110,
+        testo: [
+          'Un carro a due ruote, vuoto. Le ruote sono piene di fango fino ai raggi.',
+          'Sul fondo del carro c\'è un po\' di paglia, e una coperta arrotolata.',
+        ],
+      },
+      {
+        id: 'sbarra', nome: 'La sbarra', zona: [214, 128, 92, 26], vaiA: 260,
+        testo: [
+          'La sbarra del confine. Di qua c\'è la Sassonia del principe Federico. Di là, le terre dell\'arcivescovo Alberto.',
+          'Qui i mercanti pagano il dazio sulle merci. I pellegrini passano senza pagare.',
+        ],
+      },
+      {
+        id: 'casotto', nome: 'Il casotto della guardia', zona: [314, 76, 64, 78], vaiA: 340,
+        testo: [
+          'Il casotto della guardia. La porta è aperta. Dentro, una guardia dorme seduta sullo sgabello.',
+        ],
+      },
+      {
+        id: 'corvi', nome: 'I corvi', zona: [140, 24, 150, 44], vaiA: 210,
+        testo: [
+          'Uno stormo di corvi gira sopra i campi. Mia madre diceva che portano notizie.',
+        ],
+      },
+      {
+        id: 'neve', nome: 'La neve', zona: [20, 158, 40, 20], vaiA: 45,
+        testo: [
+          'Ultime macchie di neve sporca. La primavera, quest\'anno, arriva tardi.',
+        ],
+      },
+    ],
+    uscite: [
+      { id: 'wittenberg', etichetta: '⟵ Wittenberg', x: 8, y: 214, vaiA: 30, verso: 'chiesa', arrivo: 60 },
+      {
+        id: 'jueterbog', etichetta: 'Jüterbog ⟶', x: 300, y: 214, vaiA: 365, verso: 'jueterbog', arrivo: 40,
+        aperta: () => flag('passaggio'),
+        chiusa: [
+          'Jüterbog è ancora lontana. A piedi arrivo a notte.',
+          'Quel carrettiere va a Jüterbog. Forse mi porta.',
+        ],
+      },
+    ],
+  },
+
+  /* ======================= JÜTERBOG: LA PIAZZA ======================= */
+  jueterbog: {
+    luogo: 'La piazza di Jüterbog',
+    data: 'Jüterbog, primavera 1517',
+    sfondo: 'img/bg/jueterbog.webp',
+    pavimento: 214,
+    min: 30, max: 365,
+    inizio: 40,
+    buio: 0.5,
+    luci: [
+      [200, 40, 160, false],  // cielo
+      [150, 120, 90, false],  // il palco
+      [220, 195, 160, false], // la piazza
+    ],
+    ingresso() {
+      if (!flag('vista-jueterbog')) {
+        setFlag('vista-jueterbog');
+        return 'Jüterbog, dopo ore di carro. La piazza è piena di gente. Su un palco, accanto a una grande croce con lo stemma del papa, parla un frate ' + gl('domenicani', 'domenicano') + '.';
+      }
+      return 'La piazza di Jüterbog.';
+    },
+    personaggi: [
+      {
+        id: 'tetzel', nome: 'Frate Tetzel', img: 'img/chars/tetzel.webp',
+        x: 160, verso: 1, alto: 0.95, piedi: 140,
+        parla() {
+          if (!flag('parole')) {
+            conversa([
+              ['Frate Tetzel', 'Sono Johann Tetzel, frate predicatore. Ascoltate! Non sentite le voci dei vostri genitori morti?'],
+              ['Frate Tetzel', 'Gridano: «Abbiate pietà di noi! Siamo nelle pene del ' + gl('purgatorio') + '. Con una piccola offerta potete liberarci, e non volete farlo!»'],
+              ['Frate Tetzel', 'Il Santo Padre apre per voi il tesoro della Chiesa. Chi è pentito e si confessa, con la sua offerta riceve il perdono della pena.'],
+              ['Frate Tetzel', 'E per le anime dei vostri cari non serve nemmeno la confessione. Basta l\'offerta!'],
+              ['Frate Tetzel', 'Appena la moneta tintinna nella cassa, l\'anima salta fuori dal purgatorio!'],
+              ['Lena', '<em>Scrivo tutto nel taccuino, parola per parola. La mano mi trema.</em>'],
+              ['Taccuino dello storico', 'Le parole del predicatore sono riassunte da un sermone attribuito a Tetzel (1517). Anche le istruzioni dell\'arcivescovo Alberto dicevano che, per le anime dei morti, non serviva la confessione.'],
+              ['Taccuino dello storico', 'La frase della moneta circolava all\'epoca ed è attribuita a Tetzel. Non abbiamo un suo scritto che la contenga. Lutero la cita nella tesi 27, per criticarla.'],
+            ], () => {
+              setFlag('parole');
+              fonte('predica');
+              fonte('moneta');
+              dialogo('Lena', 'Ho le parole esatte del predicatore. Ora mi serve una lettera d\'indulgenza.');
+            });
+          } else {
+            dialogo('Frate Tetzel', variante('tetzel-dopo', [
+              'Anche tu, ragazza! Pensa a chi hai perduto. Un\'offerta, e lo liberi.',
+              'Dio vede chi dà con il cuore. E vede anche chi non dà.',
+            ]));
+          }
+        },
+      },
+      {
+        id: 'agnes-j', nome: 'Frau Agnes', img: 'img/chars/agnes.webp',
+        x: 270, verso: -1, alto: 1.08,
+        parla() {
+          if (!flag('parole')) {
+            dialogo('Frau Agnes', 'Lena! Sei venuta anche tu? Zitta, ascolta il frate. Poi faccio la mia offerta.');
+          } else if (!flag('agnes-j')) {
+            setFlag('agnes-j');
+            conversa([
+              ['Frau Agnes', 'Ho dato il mio fiorino, Lena. Per Jakob. L\'ho sentito cadere nella cassa.'],
+              ['Frau Agnes', 'Il frate dice che ora Jakob è libero. Che è già in paradiso.'],
+              ['Lena', 'Siete contenta, Frau Agnes?'],
+              ['Frau Agnes', 'Dovrei. Mi sento più leggera. Ma ora non ho più niente, e la strada di casa è lunga.'],
+            ]);
+          } else {
+            dialogo('Frau Agnes', variante('agnes-j-dopo', [
+              'Torno a Wittenberg con gli altri. Prega per Jakob, se puoi.',
+              'Il frate parla bene. Io non so le cose che sa lui.',
+            ]));
+          }
+        },
+      },
+      {
+        id: 'hans-j', nome: 'Hans il carrettiere', img: 'img/chars/hans.webp',
+        x: 345, verso: -1, alto: 1.17,
+        parla() {
+          if (!flag('parole')) {
+            dialogo('Hans il carrettiere', 'Vado a caricare la birra. Prima, però, voglio sentire questo frate.');
+          } else if (!flag('lettera')) {
+            conversa([
+              ['Hans il carrettiere', 'Ho comprato anch\'io il foglio del frate. Per i miei peccati, che sono tanti. Ma è scritto in piccolo.'],
+              ['Hans il carrettiere', 'Leggimelo tu, che leggi. E non ridere.'],
+            ], () => {
+              fonte('lettera');
+              leggi('Lettera d\'indulgenza', LETTERA, () => {
+                setFlag('lettera');
+                disegnaPersonaggi();
+                conversa([
+                  ['Lena', 'È stampata! Solo il nome e il luogo sono scritti a mano. Chissà quante copie hanno stampato.'],
+                  ['Lena', '<em>La copio nel taccuino, parola per parola. Hans aspetta in silenzio.</em>'],
+                  ['Hans il carrettiere', 'Allora sono a posto. Con Dio e con il frate.'],
+                  ['Lena', '<em>Alzo gli occhi. Tra la folla, un uomo alto con un mantello scuro mi guarda scrivere.</em>'],
+                ]);
+              });
+            });
+          } else {
+            dialogo('Hans il carrettiere', variante('hans-j-dopo', [
+              'Quando hai finito, ti riporto a Wittenberg. La birra non aspetta.',
+              'Quel foglio l\'ho messo nella camicia. Vicino al cuore.',
+            ]));
+          }
+        },
+      },
+      {
+        id: 'cercatore', nome: 'L\'uomo con il mantello scuro', img: 'img/chars/cercatore.webp',
+        x: 228, verso: -1, alto: 0.6, piedi: 165,
+        se: () => flag('lettera') && !flag('cercatore-visto'),
+        parla() {
+          setFlag('cercatore-visto');
+          dialogo('Lena', 'Faccio un passo verso di lui. La folla si muove. Quando guardo di nuovo, l\'uomo non c\'è più.', [
+            { testo: 'Continua', fai: (e) => {
+              e.stopPropagation();
+              disegnaPersonaggi();
+              dialogo('Lena', 'Ho le parole del predicatore e la copia della lettera. Devo tornare dal dottor Martin.<br><br><em>Qui finisce la parte del capitolo 1 che si può giocare. Il ritorno a Wittenberg e le domande di Lutero arrivano presto.</em>');
+            } },
+          ]);
+        },
+      },
+    ],
+    oggetti: [
+      {
+        id: 'stemma', nome: 'Lo stemma del papa', zona: [101, 52, 24, 34], vaiA: 110,
+        testo: [
+          'Lo stemma del papa, rosso: due chiavi incrociate e la tiara. Sono le chiavi di san Pietro.',
+          'Lo stemma dice a tutti: questa grazia la manda il papa da Roma.',
+        ],
+      },
+      {
+        id: 'croce', nome: 'La croce', zona: [100, 12, 34, 36], vaiA: 115,
+        testo: [
+          'Una grande croce di legno, piantata accanto al palco. Più alta delle case.',
+        ],
+      },
+      {
+        id: 'cassa', nome: 'La cassa delle offerte', zona: [170, 132, 50, 28], vaiA: 195,
+        testo: [
+          'La cassa delle offerte, chiusa con bande di ferro. Ogni volta che una moneta cade dentro, si sente il suono.',
+          'Accanto alla cassa c\'è un uomo che conta le monete e scrive su un registro. Non alza mai la testa.',
+        ],
+      },
+      {
+        id: 'folla', nome: 'La folla', zona: [186, 104, 30, 24], vaiA: 210,
+        testo: [
+          'Contadini, artigiani, vedove. Molti sono venuti da Wittenberg a piedi, come Frau Agnes.',
+        ],
+      },
+      {
+        id: 'chiesa-j', nome: 'La chiesa', zona: [262, 14, 70, 40], vaiA: 300,
+        testo: [
+          'La chiesa di Jüterbog. Le campane suonano ogni volta che il frate finisce di predicare.',
+        ],
+      },
+    ],
+    uscite: [
+      { id: 'strada-da-jueterbog', etichetta: '⟵ Strada', x: 8, y: 214, vaiA: 30, verso: 'confine', arrivo: 340 },
+    ],
+  },
 };
 
 /* Domanda del Taccuino dopo il dialogo con Spalatino.
@@ -657,9 +936,32 @@ function domandaDivieto() {
         ['Taccuino dello storico', 'E Federico ha già le sue indulgenze: quelle delle reliquie di questa chiesa. Le offerte restano a Wittenberg.'],
         ['Spalatino', 'A Jüterbog ascolta e non parlare. E non dire a nessuno che ti manda un frate di Wittenberg.'],
       ], () => {
-        dialogo('Lena', 'Le parole esatte del predicatore e una lettera d\'indulgenza. Domani all\'alba parto con la gente del mercato.<br><br><em>Qui finisce la parte del capitolo 1 che si può giocare. Il viaggio a Jüterbog arriva presto.</em>');
+        dialogo('Lena', 'Le parole esatte del predicatore e una lettera d\'indulgenza. La strada per Jüterbog parte dalla porta vicino a questa chiesa.');
       });
     } },
     { testo: 'Perché frate Tetzel è un ladro.', fai: sbagliata('Attenzione alle parole. Tetzel predica con il permesso dell\'arcivescovo Alberto e del papa. Per le leggi del tempo non ruba niente. Il problema è un altro: dove vanno i soldi.') },
   ]);
+}
+
+/* Hans chiede a Lena di leggere il foglio, poi le fa una domanda.
+   Le risposte sbagliate spiegano l'errore e Lena rilegge. */
+function leggiFoglioHans() {
+  leggi('Il foglio di Hans', FOGLIO_CONSEGNA, () => {
+    const rileggi = { testo: 'Rileggi il foglio', fai: (e) => { e.stopPropagation(); leggiFoglioHans(); } };
+    const sbagliata = (testo) => (e) => { e.stopPropagation(); dialogo('Hans il carrettiere', testo, [rileggi]); };
+    dialogo('Hans il carrettiere', 'Allora? Quanti ' + gl('grosso', 'grossi') + ' mi deve dare l\'oste del Cervo?', [
+      { testo: '4 grossi.', fai: sbagliata('Quattro? È quello che mi ha detto il mercante, a voce. Ma tu devi leggere il foglio, non ripetere le mie parole.') },
+      { testo: '2 grossi.', fai: sbagliata('Due? Due sono le balle di lana. Io ti chiedo i soldi.') },
+      { testo: '6 grossi.', fai: (e) => {
+        e.stopPropagation();
+        setFlag('passaggio');
+        conversa([
+          ['Hans il carrettiere', 'Sei! Quel furfante del mercante mi aveva detto quattro.'],
+          ['Hans il carrettiere', 'Sali sul carro, ragazzina. E di quello che hai visto non dici niente a nessuno.'],
+          ['Lena', 'Non dico niente. Tanta gente non sa leggere. Anche mio padre non sapeva.'],
+          ['Hans il carrettiere', 'Hm. Sali, prima che cambi idea.'],
+        ], () => dialogo('Lena', 'Hans mi porta a Jüterbog. La strada passa oltre la sbarra, a destra.'));
+      } },
+    ]);
+  });
 }

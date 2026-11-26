@@ -113,7 +113,22 @@ Il debito di Alberto con i banchieri Fugger non è nella narrazione, per stare n
 3. La **stampa** porta le idee di Lutero in tutta la Germania in poche settimane.
 4. Metà dei soldi delle indulgenze serviva all'arcivescovo Alberto per pagare un debito con i banchieri **Fugger**.
 
-### Le inquadrature (6 × 5 secondi)
+### Tempi della voce del capitolo 1 (file `originali/video/narrazione-cap1.wav`, 31,0 secondi)
+
+Misurati sulla voce generata. Ogni inquadratura dura quanto la sua frase.
+
+| Inquadratura | Da | A | Durata | Video da generare |
+| :--- | :--- | :--- | :--- | :--- |
+| 1 — Tetzel e la moneta | 0,0 s | 7,5 s | 7,5 s | **10 s** |
+| 2 — Dove vanno i soldi | 7,5 s | 11,7 s | 4,2 s | 5 s |
+| 3 — Lutero scrive le tesi | 11,7 s | 17,7 s | 6,0 s | **10 s** |
+| 4 — La porta della chiesa | 17,7 s | 23,0 s | 5,3 s | 5 s (allungo io l'ultimo fotogramma di 0,3 s) |
+| 5 — La stampa | 23,0 s | 26,4 s | 3,4 s | 5 s |
+| 6 — La lettera da Roma | 26,4 s | 31,0 s | 4,6 s | 5 s |
+
+I sottotitoli sono in `video/cap1.vtt`.
+
+### Le inquadrature
 
 **1 — `cap1-1` — Tetzel e la moneta**
 

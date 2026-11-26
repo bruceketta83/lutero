@@ -16,6 +16,8 @@ const GLOSSARIO = {
   indulgenza: 'Per la Chiesa del tempo: la cancellazione, davanti a Dio, della pena per i peccati già perdonati con la confessione. Si otteneva con preghiere, pellegrinaggi, opere buone o offerte in denaro.',
   purgatorio: 'Per la dottrina cattolica: lo stato in cui le anime dei morti si purificano dai peccati, prima di entrare in paradiso.',
   risma: 'Un pacco di fogli di carta, di solito 500. La carta era fatta di stracci di lino ed era molto cara.',
+  confessione: 'Il sacramento in cui il fedele dice i suoi peccati al sacerdote, si pente e riceve il perdono. Il sacerdote gli dà anche una penitenza: preghiere o opere buone da fare.',
+  agostiniani: 'Frati che seguono la regola di sant\'Agostino. A Wittenberg vivevano nel Convento Nero, chiamato così per il colore del loro abito.',
   torchio: 'La pressa della tipografia. Una grande vite spinge un piano di legno che preme il foglio sui caratteri inchiostrati.',
 };
 const gl = (parola, testo) => `<a class="gl" data-gl="${parola}" href="#">${testo || parola}</a>`;
@@ -246,11 +248,189 @@ const STANZE = {
     uscite: [
       { id: 'tipografia', etichetta: 'Tipografia ⟶', x: 300, y: 214, vaiA: 370, verso: 'tipografia', arrivo: 60 },
       {
-        id: 'convento', etichetta: '⟵ Convento Nero', x: 8, y: 214, vaiA: 30, verso: null,
+        id: 'convento', etichetta: '⟵ Convento Nero', x: 8, y: 214, vaiA: 30, verso: 'cortile', arrivo: 340,
+        aperta: () => flag('agnes-2'),
         chiusa: [
-          'La strada per il Convento Nero passa di qua. (Il convento arriva nella prossima parte del gioco.)',
+          'Frau Agnes mi fa segno di avvicinarmi. Prima sento cosa vuole.',
+          'Frau Agnes mi aspetta ancora. Il convento è vicino, ci vado dopo.',
         ],
       },
+    ],
+  },
+
+  /* ======================= CONVENTO NERO: CORTILE ======================= */
+  cortile: {
+    luogo: 'Convento Nero',
+    data: 'Wittenberg, primavera 1517',
+    sfondo: 'img/bg/convento-cortile.webp',
+    pavimento: 212,
+    min: 30, max: 350,
+    inizio: 340,
+    buio: 0.55,
+    luci: [
+      [200, 30, 150, false],  // cielo
+      [230, 190, 150, false], // il cortile
+    ],
+    ingresso() {
+      if (!flag('visto-cortile')) {
+        setFlag('visto-cortile');
+        return 'Il cortile del Convento Nero, la casa dei frati ' + gl('agostiniani') + '. È silenzioso. Si sente solo una campana lontana.';
+      }
+      return 'Il cortile del Convento Nero.';
+    },
+    personaggi: [
+      {
+        id: 'portinaio', nome: 'Il frate portinaio', img: 'img/chars/portinaio.webp',
+        x: 225, verso: 1, alto: 1.08,
+        parla() {
+          if (!flag('portinaio-1')) {
+            setFlag('portinaio-1');
+            conversa([
+              ['Il frate portinaio', 'Pace a te, figliola. Cosa porti in quella borsa?'],
+              ['Lena', 'Carta per il dottor Martin, dalla tipografia di Mastro Grunenberg.'],
+              ['Il frate portinaio', 'Il dottor Martin è nella sua cella. La porta ad arco, là a destra.'],
+              ['Il frate portinaio', 'Bussa forte. Quando scrive non sente nemmeno le campane.'],
+            ]);
+          } else {
+            dialogo('Il frate portinaio', variante('portinaio', [
+              'La porta ad arco, figliola. E bussa forte.',
+              'Il dottor Martin insegna all\'università, predica in città e scrive di notte. Non so quando dorma.',
+            ]));
+          }
+        },
+      },
+    ],
+    oggetti: [
+      {
+        id: 'porta-cella', nome: 'La porta della cella', zona: [318, 80, 50, 98], vaiA: 330,
+        azione() {
+          if (flag('missione')) { cambiaStanza('cella', 50); return; }
+          dialogo('Lena', 'Busso forte, tre volte. Da dentro, una voce: «Avanti!»');
+          setTimeout(() => cambiaStanza('cella', 50), 1400);
+        },
+      },
+      {
+        id: 'albero', nome: 'L\'albero', zona: [125, 40, 75, 100], vaiA: 165,
+        testo: [
+          'Un albero spoglio. I frati dicono che a primavera fa ancora qualche foglia. Quest\'anno, per ora, niente.',
+        ],
+      },
+      {
+        id: 'pozzo', nome: 'Il pozzo', zona: [238, 125, 36, 30], vaiA: 260,
+        testo: [
+          'Il pozzo del convento. Accanto ci sono due secchi di legno, ben puliti.',
+        ],
+      },
+      {
+        id: 'legna', nome: 'La legna', zona: [0, 150, 40, 30], vaiA: 40,
+        testo: [
+          'Legna tagliata per l\'inverno. I frati la spaccano da soli.',
+        ],
+      },
+    ],
+    uscite: [
+      { id: 'mercato-da-cortile', etichetta: '⟵ Mercato', x: 8, y: 214, vaiA: 30, verso: 'mercato', arrivo: 60 },
+    ],
+  },
+
+  /* ======================= CONVENTO NERO: CELLA DI LUTERO ======================= */
+  cella: {
+    luogo: 'La cella del dottor Martin',
+    data: 'Wittenberg, primavera 1517',
+    sfondo: 'img/bg/cella.webp',
+    pavimento: 214,
+    min: 30, max: 360,
+    inizio: 50,
+    buio: 0.86,
+    luci: [
+      [226, 112, 70, true],   // candela
+      [258, 75, 55, false],   // finestra
+      [200, 200, 120, false], // pavimento
+    ],
+    ingresso() {
+      if (!flag('vista-cella')) {
+        setFlag('vista-cella');
+        return 'Una stanza piccola e fredda. Libri dappertutto. Il dottor Martin scrive alla luce di una candela e non alza la testa.';
+      }
+      return 'La cella del dottor Martin.';
+    },
+    personaggi: [
+      {
+        id: 'lutero', nome: 'Il dottor Martin', img: 'img/chars/lutero.webp',
+        x: 290, verso: -1, alto: 1.17,
+        parla() {
+          if (!flag('lutero-1')) {
+            conversa([
+              ['Lena', 'Dottor Martin? Vi porto la carta di Mastro Grunenberg.'],
+              ['Il dottor Martin', 'Ah, la carta. Posala sul tavolo. Grazie, ragazza.'],
+              ['Il dottor Martin', 'Sei passata dal mercato? Tutta la città parla di Jüterbog.'],
+              ['Lena', 'Frau Agnes vuole comprare un\'' + gl('indulgenza') + ' per il marito morto. Ha messo da parte un fiorino.'],
+              ['Il dottor Martin', 'Un fiorino. Per una vedova sono settimane di pane.'],
+              ['Il dottor Martin', 'Ogni settimana, in ' + gl('confessione') + ', la gente mi mostra quei fogli con il sigillo. Dicono: «Ho già pagato, sono a posto».'],
+              ['Il dottor Martin', 'E non sono pentiti di niente. Non vogliono cambiare vita. Vogliono solo un foglio.'],
+              ['Lena', 'Ma l\'avviso dice che la grazia la manda il papa.'],
+              ['Il dottor Martin', 'Lo so. Per questo devo essere sicuro di quello che dico. Mi servono prove, non voci.'],
+              ['Il dottor Martin', 'Tu sai leggere e scrivi svelta. Vai a Jüterbog con la gente del mercato. Ascolta il predicatore e scrivi le sue parole esatte.'],
+              ['Il dottor Martin', 'E se puoi, copia una lettera d\'indulgenza. Parola per parola.'],
+              ['Lena', 'E Mastro Grunenberg?'],
+              ['Il dottor Martin', 'Con Grunenberg parlo io. Il tempo che perdi te lo pago.'],
+            ], () => {
+              setFlag('lutero-1');
+              setFlag('missione');
+              lascia('risma');
+              dialogo('Lena', 'Le parole esatte del predicatore e una lettera d\'indulgenza. Jüterbog è a una giornata di cammino.<br><br><em>Qui finisce la parte del capitolo 1 che si può giocare. Il viaggio a Jüterbog arriva presto.</em>');
+            });
+          } else {
+            dialogo('Il dottor Martin', variante('lutero-dopo', [
+              'Le parole esatte, Lena. Non quello che la gente racconta.',
+              'Vai con Dio. E tieni gli occhi aperti.',
+            ]));
+          }
+        },
+      },
+    ],
+    oggetti: [
+      {
+        id: 'bibbia', nome: 'La Bibbia sul leggio', zona: [296, 84, 70, 40], vaiA: 330,
+        testo: [
+          'Una Bibbia in latino, aperta. Il dottor Martin la spiega agli studenti dell\'università.',
+          'In chiesa le letture sono in latino. Quasi nessuno a Wittenberg le capisce davvero.',
+        ],
+      },
+      {
+        id: 'candela', nome: 'La candela', zona: [217, 100, 18, 24], vaiA: 220,
+        testo: [
+          'Una candela di sego, quasi finita. Puzza come quelle che vende Frau Agnes.',
+        ],
+      },
+      {
+        id: 'scrittoio', nome: 'Lo scrittoio', zona: [190, 128, 74, 62], vaiA: 200,
+        testo: [
+          'Fogli pieni di scrittura fitta, in latino. Molte righe sono cancellate e riscritte.',
+          'Una penna d\'oca e il calamaio. Le dita del dottor Martin sono nere d\'inchiostro, come le mie.',
+        ],
+      },
+      {
+        id: 'libri', nome: 'Gli scaffali dei libri', zona: [120, 52, 60, 100], vaiA: 150,
+        testo: [
+          'Libri grossi, rilegati in cuoio. Alcuni sono stampati, altri scritti a mano.',
+        ],
+      },
+      {
+        id: 'crocifisso', nome: 'Il crocifisso', zona: [55, 30, 30, 85], vaiA: 70,
+        testo: [
+          'Un crocifisso di legno, semplice. È l\'unica cosa appesa al muro.',
+        ],
+      },
+      {
+        id: 'finestra-cella', nome: 'La finestra', zona: [240, 40, 36, 54], vaiA: 250,
+        testo: [
+          'Dalla finestra si vede il cortile e l\'albero spoglio. Il vetro è a piccoli rombi, piombati.',
+        ],
+      },
+    ],
+    uscite: [
+      { id: 'cortile-da-cella', etichetta: '⟵ Cortile', x: 8, y: 214, vaiA: 30, verso: 'cortile', arrivo: 330 },
     ],
   },
 };

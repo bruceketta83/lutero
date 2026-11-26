@@ -32,6 +32,9 @@ function prendi(id, nome) {
   prendi.t = setTimeout(() => { a.hidden = true; }, 2200);
 }
 
+/* Toglie un oggetto dalla borsa. */
+function lascia(id) { stato.borsa = stato.borsa.filter(x => x !== id); }
+
 /* Segna una fonte trovata (andrà nel Taccuino dello storico). */
 function fonte(id) { if (!stato.fonti.includes(id)) stato.fonti.push(id); }
 
@@ -115,7 +118,7 @@ function conversa(battute, poi) {
   const mostra = () => {
     const [chi, testo] = battute[i];
     const ultima = i === battute.length - 1;
-    dialogo(chi, testo, [{ testo: ultima ? 'Continua' : 'Continua ⟶', fai: (e) => { e.stopPropagation(); if (ultima) { if (poi) poi(); } else { i++; mostra(); } } }]);
+    dialogo(chi, testo, [{ testo: ultima ? 'Continua' : 'Continua ⟶', fai: (e) => { e.stopPropagation(); if (ultima) { $('scelte').innerHTML = ''; if (poi) poi(); } else { i++; mostra(); } } }]);
   };
   mostra();
 }
@@ -267,12 +270,17 @@ function esci(u) {
   vai(u.vaiA, () => {
     const aperta = u.verso && (!u.aperta || u.aperta());
     if (!aperta) { dialogo('Lena', variante('uscita-' + u.id, u.chiusa || ['Non posso andare di là, per ora.'])); return; }
-    const box = $('scena-box');
-    const ridotto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (ridotto) { entra(u.verso, u.arrivo); return; }
-    box.classList.add('buio');
-    setTimeout(() => { entra(u.verso, u.arrivo); box.classList.remove('buio'); }, 380);
+    cambiaStanza(u.verso, u.arrivo);
   });
+}
+
+/* Passa a un'altra stanza con una breve dissolvenza al nero. */
+function cambiaStanza(id, arrivo) {
+  const box = $('scena-box');
+  const ridotto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (ridotto) { entra(id, arrivo); return; }
+  box.classList.add('buio');
+  setTimeout(() => { entra(id, arrivo); box.classList.remove('buio'); }, 380);
 }
 
 function toccaScena(e) {

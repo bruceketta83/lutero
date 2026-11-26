@@ -26,7 +26,8 @@ function aiuti(page) {
   return { fermo, tuttoIlTesto, tocca, continua };
 }
 
-test('il percorso dalla tipografia ad Agnes funziona senza errori', async ({ page }) => {
+test('il percorso dalla tipografia a Lutero funziona senza errori', async ({ page }) => {
+  test.setTimeout(150_000); // Lena attraversa quattro stanze a passo d'uomo.
   const errors = watch(page);
   const { tocca, continua, tuttoIlTesto } = aiuti(page);
   await page.goto('./');
@@ -81,33 +82,72 @@ test('il percorso dalla tipografia ad Agnes funziona senza errori', async ({ pag
   expect(await page.evaluate(() => flag('agnes-2'))).toBe(true);
   await expect(page.locator('#testo')).toContainText('fiorino');
 
-  // Si torna in tipografia.
+  // Al Convento Nero: il portinaio indica la cella.
+  await tocca('convento');
+  await page.waitForFunction(() => stato.idStanza === 'cortile');
+  await expect(page.locator('#luogo')).toHaveText('Convento Nero');
+  await tocca('portinaio');
+  await expect(page.locator('#chi')).toHaveText('Il frate portinaio');
+  await continua();
+  await expect(page.locator('#scelte button')).toHaveCount(0);
+
+  // La porta della cella: si bussa ed entra.
+  await page.click('[data-id="porta-cella"] .area', { force: true });
+  await page.waitForFunction(() => stato.idStanza === 'cella', null, { timeout: 8000 });
+  await expect(page.locator('[data-id="lutero"]')).toHaveCount(1);
+
+  // Lutero prende la carta e dà la missione.
+  await tocca('lutero');
+  await expect(page.locator('#testo')).toContainText('Dottor Martin?');
+  await continua();
+  expect(await page.evaluate(() => flag('missione'))).toBe(true);
+  expect(await page.evaluate(() => stato.borsa)).toEqual([]);
+  await expect(page.locator('#testo')).toContainText('Jüterbog');
+
+  // Si torna indietro fino alla tipografia.
+  await tocca('cortile-da-cella');
+  await page.waitForFunction(() => stato.idStanza === 'cortile');
+  await tocca('mercato-da-cortile');
+  await page.waitForFunction(() => stato.idStanza === 'mercato');
   await tocca('tipografia');
   await page.waitForFunction(() => stato.idStanza === 'tipografia');
   expect(errors).toEqual([]);
 });
 
-test('nel mercato ogni cosa da toccare è libera e ha un testo', async ({ page }) => {
-  const { tuttoIlTesto, fermo } = aiuti(page);
+test('il convento si apre solo dopo aver aiutato Frau Agnes', async ({ page }) => {
+  const { tocca, tuttoIlTesto } = aiuti(page);
   await page.goto('./');
   await page.evaluate(() => { setFlag('risma'); entra('mercato'); });
   await tuttoIlTesto();
-  const zone = await page.evaluate(() => [
-    ...STANZE.mercato.oggetti.map(o => o.id),
-    ...STANZE.mercato.personaggi.map(p => p.id),
-  ]);
-  for (const id of zone) {
-    const b = await page.locator(`[data-id="${id}"] .area`).boundingBox();
-    const sopra = await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest('[data-id]')?.dataset.id, [b.x + b.width / 2, b.y + b.height / 2]);
-    expect(sopra, id).toBe(id);
-  }
-  for (const id of await page.evaluate(() => STANZE.mercato.oggetti.filter(o => o.testo).map(o => o.id))) {
-    await page.click(`[data-id="${id}"] .area`, { force: true });
-    await fermo();
-    await tuttoIlTesto();
-    expect((await page.textContent('#testo')).length, id).toBeGreaterThan(20);
-  }
+  await tocca('convento');
+  expect(await page.evaluate(() => stato.idStanza)).toBe('mercato');
+  await expect(page.locator('#testo')).toContainText('Frau Agnes');
 });
+
+for (const stanza of ['mercato', 'cortile', 'cella']) {
+  test(`${stanza}: ogni cosa da toccare è libera e ha un testo`, async ({ page }) => {
+    const { tuttoIlTesto, fermo } = aiuti(page);
+    await page.goto('./');
+    await page.evaluate((st) => { setFlag('risma'); setFlag('agnes-2'); entra(st); }, stanza);
+    await tuttoIlTesto();
+    const zone = await page.evaluate((st) => [
+      ...STANZE[st].oggetti.map(o => o.id),
+      ...(STANZE[st].personaggi || []).map(p => p.id),
+      ...STANZE[st].uscite.map(u => u.id),
+    ], stanza);
+    for (const id of zone) {
+      const b = await page.locator(`[data-id="${id}"] .area`).boundingBox();
+      const sopra = await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest('[data-id]')?.dataset.id, [b.x + b.width / 2, b.y + b.height / 2]);
+      expect(sopra, `${stanza}/${id}`).toBe(id);
+    }
+    for (const id of await page.evaluate((st) => STANZE[st].oggetti.filter(o => o.testo).map(o => o.id), stanza)) {
+      await page.click(`[data-id="${id}"] .area`, { force: true });
+      await fermo();
+      await tuttoIlTesto();
+      expect((await page.textContent('#testo')).length, id).toBeGreaterThan(20);
+    }
+  });
+}
 
 test('in tipografia Grunenberg non copre le cose da toccare', async ({ page }) => {
   await page.goto('./');

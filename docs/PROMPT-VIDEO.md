@@ -197,10 +197,22 @@ Night, a dark room of a rich banker's house in 1517. On a heavy wooden table:
 piles of silver coins, an open account book with unreadable handwritten lines,
 a goose quill, one candle. A man's hand in a dark velvet sleeve pushes a pile of
 coins; his face is not visible. Behind the table, through a tall window, the
-huge unfinished dome of a Renaissance basilica with wooden scaffolding, in
-black silhouette against a white sky. On the table, a folded letter closed
+building site of a huge Renaissance basilica in 1517: four gigantic stone
+pillars joined by high arches, wrapped in wooden scaffolding and cranes, with
+NO dome yet (the dome does not exist yet), in black silhouette against a white
+sky. On the table, a folded letter closed
 with a red wax seal.
 Red detail: the wax seal only.
+```
+
+**Se nell'immagine 2 c'è una cupola finita,** in Gemini allega l'immagine e chiedi questa modifica:
+```
+Edit the attached image. Keep everything exactly the same: the table, the
+coins, the hand, the candle, the red seal, the light and the black and white
+style. Change one thing only: outside the window there is no dome. Replace it
+with the building site of the basilica in 1517: four gigantic stone pillars
+joined by high arches, wrapped in wooden scaffolding, with wooden cranes,
+open to the white sky.
 ```
 
 **3 — `cap1-3` — Lutero scrive le tesi**
@@ -332,7 +344,7 @@ Sound: rain, then silence.
 1. Le tesi criticano gli abusi nella predicazione delle indulgenze, non le indulgenze in sé: per questo la narrazione dice «contro questi abusi».
 2. La lettera che chiamava Lutero a Roma arrivò a Wittenberg nell'agosto 1518. Il colore del sigillo è una scelta del gioco: il rosso indica il potere.
 3. L'inquadratura 4 mostra la tradizione: la narrazione dice «forse», perché l'affissione la racconta solo Melantone, nel 1546. L'uomo con il martello resta nell'ombra.
-4. L'inquadratura 2 mostra un'idea, non un luogo preciso: i soldi verso la basilica di San Pietro, in costruzione dal 1506.
+4. L'inquadratura 2 mostra un'idea, non un luogo preciso: i soldi verso la basilica di San Pietro, in costruzione dal 1506. Nel 1517 c'erano solo i 4 grandi pilastri e gli archi: la cupola fu finita nel 1590. Per questo il prompt chiede il cantiere senza cupola.
 
 ## Lista di controllo
 

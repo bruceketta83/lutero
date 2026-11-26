@@ -22,7 +22,7 @@ Leggi prima [GRAFICA.md](../GRAFICA.md).
 6. **Video con Seedance,** da immagine a video: carica l'immagine come primo fotogramma.
 7. Incolla il **blocco di stile per il movimento**, poi il prompt del movimento.
 8. Formato 16:9, 5 secondi, alla risoluzione più alta.
-9. Salva i file in `originali/video/`: `cap1-1.mp4` … `cap1-6.mp4` e `narrazione-cap1.wav`.
+9. Salva i file in `originali/video/`: le immagini `cap1-1.png` … `cap1-6.png`, i video `cap1-1.mp4` … `cap1-6.mp4` e la voce `narrazione-cap1.wav`.
 10. Io unisco i pezzi sulla voce, aggiungo i sottotitoli e il riquadro «Da sapere», e comprimo per il telefono.
 
 **Non scrivere nomi di fumetti o di film** (Sin City, Berserk): i generatori a volte rifiutano, e il risultato copia invece di ispirarsi. I blocchi di stile descrivono lo stile a parole.
@@ -53,6 +53,21 @@ Pronuncia i nomi tedeschi in modo chiaro.
 La lettura deve durare al massimo 30 secondi.
 ```
 
+## Formato delle immagini (Gemini)
+
+| Cosa | Valore |
+| :--- | :--- |
+| Proporzioni | **16:9 orizzontale**, le stesse del video e degli sfondi del gioco |
+| Risoluzione | la più alta che Gemini dà in 16:9: almeno **1920 × 1080**; meglio 2560 × 1440 se disponibile |
+| File | **PNG** (niente JPG: la compressione sporca i neri pieni e i bordi netti) |
+| Colore | bianco e nero; solo il rosso `#8b1e1e` dove il prompt lo chiede |
+| Nome | `cap1-1.png` … `cap1-6.png`, uguale al nome del video |
+
+1. Se Gemini (o AI Studio) ha la scelta delle proporzioni, scegli **16:9** prima di generare. Il prompt lo chiede già, ma la scelta nelle impostazioni è più sicura.
+2. Controlla le dimensioni del file scaricato. Se non è 16:9 (per esempio quadrato o verticale), rigenera: non tagliarla e non allargarla.
+3. Carica in Seedance la stessa immagine PNG, senza modifiche. Scegli il formato video **16:9** e la risoluzione più alta (1080p): così il video non deforma la figura.
+4. Tieni le cose importanti (volti, sigillo, moneta) lontano dai bordi: nel gioco il video può essere tagliato un poco sui lati, su telefoni con schermi diversi.
+
 ## Blocco di stile per le immagini (Gemini)
 
 ```
@@ -66,7 +81,8 @@ NO colour at all, only black and white, EXCEPT the one red detail listed below,
 which is a deep dark red (#8b1e1e).
 No text, no letters, no numbers, no watermark, no frame, no panel borders,
 no speech bubbles. Papers and books show only unreadable lines, never words.
-Landscape 16:9, 2576 x 1438 pixels.
+Landscape 16:9 (wide), at least 1920 x 1080 pixels. Keep faces and key objects
+away from the left and right edges.
 ```
 
 ## Blocco di stile per il movimento (Seedance)

@@ -63,7 +63,7 @@ File dei prompt:
 - [docs/PROMPT-SFONDI.md](docs/PROMPT-SFONDI.md)
 - [docs/PROMPT-PERSONAGGI.md](docs/PROMPT-PERSONAGGI.md)
 - [docs/PROMPT-OGGETTI.md](docs/PROMPT-OGGETTI.md)
-- [docs/PROMPT-VIDEO.md](docs/PROMPT-VIDEO.md): video di fine capitolo (immagine con Gemini, poi animazione con Seedance)
+- [docs/PROMPT-VIDEO.md](docs/PROMPT-VIDEO.md): video di riassunto a fine capitolo, con voce narrante (immagini con Gemini, animazione con Seedance)
 
 ## 6. Strumenti
 

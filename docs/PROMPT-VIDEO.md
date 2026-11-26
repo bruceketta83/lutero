@@ -10,7 +10,7 @@ Leggi prima [GRAFICA.md](../GRAFICA.md).
 3. **Fatti e leggende separati,** come nel gioco: quando un fatto è incerto, la narrazione lo dice.
 4. **Nessuno parla nelle immagini:** parla solo la voce narrante. Il labiale dei generatori viene male.
 5. **Sottotitoli:** il testo della narrazione compare anche scritto.
-6. **Dopo il video, il riquadro «Da sapere»:** 3 fatti da ricordare, scritti. Lo faccio io nel gioco.
+6. **Dopo il video, il riquadro «Da sapere»:** 4 fatti da ricordare, scritti. Lo faccio io nel gioco.
 
 ## Come si lavora
 
@@ -34,22 +34,23 @@ Leggi prima [GRAFICA.md](../GRAFICA.md).
 3. Se c'è il campo delle istruzioni di stile (*Style instructions*), incolla lì le **istruzioni**. Nel campo del testo incolla solo il **testo** del capitolo.
 4. Se c'è un solo campo, incolla le istruzioni, poi una riga vuota, poi il testo.
 5. Ascolta e controlla la durata: deve essere tra 28 e 32 secondi.
-   - Troppo lunga: aggiungi alle istruzioni «Ritmo un po' più veloce».
-   - Troppo corta: aggiungi «Ritmo più lento, pause più lunghe».
-   - Piccole differenze (fino a 2 secondi) le correggo io, senza cambiare il tono della voce.
+   - Troppo lunga: aggiungi alle istruzioni «Ritmo più veloce, quasi senza pause».
+   - Troppo corta: aggiungi «Ritmo un po' più lento».
+   - Fino a 35 secondi la correggo io: accorcio le pause e accelero al massimo del 10%, senza cambiare il tono della voce.
+   - Oltre 35 secondi rigenera: accelerare di più rende la voce innaturale.
 6. Controlla i nomi tedeschi. Se un nome è detto male, nel testo scrivilo come si legge (le forme sono indicate sotto il testo) e rigenera.
 7. Scarica il file in **WAV**.
 
 ### Istruzioni di stile (uguali per tutti i capitoli)
 
 ```
-Leggi in italiano, come il narratore di un documentario storico per ragazzi
-della scuola media. Voce maschile, calma, profonda e seria, con un filo di
-tensione, come all'inizio di un racconto noir. Parla in modo chiaro e lento,
-senza enfasi teatrale e senza musica. Fai una pausa breve dopo ogni frase e una
-pausa più lunga prima dell'ultima frase. L'ultima frase va detta più piano,
-come un avvertimento. Pronuncia i nomi tedeschi in modo chiaro.
-Durata totale: circa 30 secondi.
+Leggi in italiano, come la voce di un trailer di un documentario storico per
+ragazzi della scuola media. Voce maschile, profonda e seria, con tensione, come
+in un racconto noir. Ritmo sostenuto e scorrevole, chiaro ma non lento, senza
+enfasi teatrale e senza musica. Pause brevi tra le frasi, al massimo mezzo
+secondo. L'ultima frase va detta più piano, come un avvertimento.
+Pronuncia i nomi tedeschi in modo chiaro.
+La lettura deve durare al massimo 30 secondi.
 ```
 
 ## Blocco di stile per le immagini (Gemini)
@@ -84,31 +85,33 @@ no speech, no narration.
 
 ### Il testo della narrazione
 
-Circa 74 parole, circa 30 secondi. Ogni numero è un'inquadratura da 5 secondi.
+Circa 63 parole, circa 30 secondi con il ritmo sostenuto delle istruzioni. Ogni numero è un'inquadratura da 5 secondi.
 
 ```
-1517. Il frate Tetzel predica le indulgenze: un'offerta, dice, libera le anime dal purgatorio.
+1517. Il frate Tetzel vende indulgenze: promette di salvare le anime dal purgatorio.
 
-I soldi vanno a Roma, per San Pietro, e all'arcivescovo Alberto, indebitato con i banchieri Fugger.
+I soldi vanno alla basilica di San Pietro e all'arcivescovo Alberto.
 
 A Wittenberg, il frate Martin Lutero scrive novantacinque tesi contro questi abusi.
 
-Il 31 ottobre le manda all'arcivescovo. Forse le affigge anche alla porta della chiesa.
+Il 31 ottobre le manda all'arcivescovo. Forse le affigge alla porta della chiesa.
 
-Grazie alla stampa, in poche settimane le legge tutta la Germania.
+La stampa le diffonde in tutta la Germania.
 
 Nel 1518, il papa lo chiama a Roma.
 ```
 
 **Se un nome è detto male,** sostituiscilo nel testo con la forma che si legge:
 - Tetzel → «Tèzzel»
-- Fugger → «Fùgger»
 - Wittenberg → «Vìttenberg»
+
+Il debito di Alberto con i banchieri Fugger non è nella narrazione, per stare nei 30 secondi: resta nel gioco (domanda di Lutero) e nel riquadro «Da sapere».
 
 **Riquadro «Da sapere»** (scritto, dopo il video, lo faccio io):
 1. L'**indulgenza** toglieva la pena dei peccati già perdonati. Tetzel la offriva in cambio di un'offerta in denaro.
 2. Il **31 ottobre 1517** Lutero manda le **95 tesi** all'arcivescovo Alberto di Magonza.
 3. La **stampa** porta le idee di Lutero in tutta la Germania in poche settimane.
+4. Metà dei soldi delle indulgenze serviva all'arcivescovo Alberto per pagare un debito con i banchieri **Fugger**.
 
 ### Le inquadrature (6 × 5 secondi)
 
@@ -249,7 +252,7 @@ Sound: rain, then silence.
 **Voce (Gemini TTS)**
 1. Durata tra 28 e 32 secondi.
 2. Tono calmo e serio, senza enfasi teatrale.
-3. Nomi tedeschi chiari: Tetzel, Fugger, Wittenberg.
+3. Nomi tedeschi chiari: Tetzel, Wittenberg.
 4. Numeri letti bene: «millecinquecentodiciassette», «trentuno ottobre».
 
 **Immagine (Gemini)**

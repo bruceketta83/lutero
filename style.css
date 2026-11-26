@@ -60,13 +60,15 @@ body {
 a.gl { color: inherit; text-decoration: underline dotted var(--azzurro); text-decoration-thickness: 2px; text-underline-offset: 3px; }
 
 /* Foglio da leggere (avvisi, lettere, tesi) e glossario: carta su fondo scuro */
+/* Sfondi scuri dei pannelli: dvh = parte di schermo visibile, senza le barre del browser (iPhone). */
+#foglio-box, #glossario, #mini, #lettura, #taccuino { height: 100vh; height: 100dvh; top: 0; bottom: auto; padding-top: max(12px, env(safe-area-inset-top)); padding-bottom: max(12px, env(safe-area-inset-bottom)); }
 #foglio-box, #glossario {
   position: fixed; inset: 0; z-index: 20; background: rgba(0,0,0,.72);
   display: flex; align-items: center; justify-content: center; padding: 16px;
 }
 #foglio-box[hidden], #glossario[hidden] { display: none; }
 #foglio-carta, #glossario-carta {
-  background: var(--carta); color: var(--inchiostro); max-width: 560px; width: 100%; max-height: calc(90vh / var(--zoom-lettura, 1)); overflow: auto;
+  background: var(--carta); color: var(--inchiostro); max-width: 560px; width: 100%; max-height: calc(90vh / var(--zoom-lettura, 1)); max-height: calc(90dvh / var(--zoom-lettura, 1)); overflow: auto;
   padding: 18px 20px; border-radius: 3px; box-shadow: 0 10px 40px rgba(0,0,0,.6);
 }
 #foglio-titolo, #glossario-parola { font: 24px/1.2 "Fraktur", "Fell", Georgia, serif; margin-bottom: 10px; }
@@ -122,7 +124,7 @@ a.gl { color: inherit; text-decoration: underline dotted var(--azzurro); text-de
 /* Minigioco della tipografia: carta chiara come i fogli */
 #mini { position: fixed; inset: 0; z-index: 25; background: rgba(0,0,0,.78); display: flex; align-items: center; justify-content: center; padding: 12px; }
 #mini[hidden] { display: none; }
-#mini-carta { background: var(--carta); color: var(--inchiostro); max-width: 600px; width: 100%; max-height: calc(94vh / var(--zoom-lettura, 1)); overflow: auto; padding: 16px 18px; border-radius: 3px; box-shadow: 0 10px 40px rgba(0,0,0,.6); }
+#mini-carta { background: var(--carta); color: var(--inchiostro); max-width: 600px; width: 100%; max-height: calc(94vh / var(--zoom-lettura, 1)); max-height: calc(94dvh / var(--zoom-lettura, 1)); overflow: auto; padding: 16px 18px; border-radius: 3px; box-shadow: 0 10px 40px rgba(0,0,0,.6); }
 #mini-titolo { font: 24px/1.2 "Fraktur", "Fell", Georgia, serif; margin-bottom: 6px; }
 .mini-aiuto { margin: 0 0 10px; font-size: 17px; }
 .mini-etichetta { font-size: 14px; font-style: italic; color: var(--grigio); margin-top: 8px; }
@@ -182,7 +184,7 @@ html.lettura-voce .ascolta { display: inline-block; }
 
 #lettura { position: fixed; inset: 0; z-index: 30; background: rgba(0,0,0,.78); display: flex; align-items: center; justify-content: center; padding: 12px; }
 #lettura[hidden] { display: none; }
-#lettura-carta { background: var(--carta); color: var(--inchiostro); max-width: 560px; width: 100%; max-height: calc(92vh / var(--zoom-lettura, 1)); overflow: auto; padding: 16px 18px; border-radius: 3px; border-left: 6px solid var(--azzurro); box-shadow: 0 10px 40px rgba(0,0,0,.6); }
+#lettura-carta { background: var(--carta); color: var(--inchiostro); max-width: 560px; width: 100%; max-height: calc(92vh / var(--zoom-lettura, 1)); max-height: calc(92dvh / var(--zoom-lettura, 1)); overflow: auto; padding: 16px 18px; border-radius: 3px; border-left: 6px solid var(--azzurro); box-shadow: 0 10px 40px rgba(0,0,0,.6); }
 #lettura-titolo { font: 24px/1.2 "Fell", Georgia, serif; margin-bottom: 10px; }
 #lettura-corpo { display: flex; flex-direction: column; gap: 12px; }
 .let-prova { border: 1px dashed var(--azzurro); border-radius: 4px; padding: 8px 10px; font-size: 18px; }
@@ -210,7 +212,7 @@ html.lettura-spazio .let-prova { letter-spacing: .05em; word-spacing: .15em; lin
 #taccuino { position: fixed; inset: 0; z-index: 19; background: rgba(0,0,0,.78); display: flex; align-items: center; justify-content: center; padding: 12px; }
 #taccuino[hidden] { display: none; }
 /* Titolo e schede fissi in alto, «Chiudi» fisso in basso: scorre solo la parte centrale. */
-#taccuino-carta { display: flex; flex-direction: column; background: var(--carta); color: var(--inchiostro); max-width: 600px; width: 100%; max-height: calc(92vh / var(--zoom-lettura, 1)); overflow: hidden; padding: 16px 18px; border-radius: 3px; border-left: 6px solid var(--azzurro); box-shadow: 0 10px 40px rgba(0,0,0,.6); }
+#taccuino-carta { display: flex; flex-direction: column; background: var(--carta); color: var(--inchiostro); max-width: 600px; width: 100%; max-height: calc(92vh / var(--zoom-lettura, 1)); max-height: calc(92dvh / var(--zoom-lettura, 1)); overflow: hidden; padding: 16px 18px; border-radius: 3px; border-left: 6px solid var(--azzurro); box-shadow: 0 10px 40px rgba(0,0,0,.6); }
 #taccuino-titolo { font: 24px/1.2 "Fraktur", "Fell", Georgia, serif; margin-bottom: 10px; }
 .tac-schede { display: flex; gap: 6px; margin-bottom: 10px; flex: none; }
 #taccuino-titolo { flex: none; }

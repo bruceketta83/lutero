@@ -40,7 +40,7 @@ Programma di Storia, 2ª media: Riforma e Controriforma.
 ## 4. Meccaniche
 
 1. **Esplorazione:** ogni capitolo è un luogo con più stanze e personaggi. Lena cammina e tocca gli oggetti, come Aria in Espo-Nentia.
-2. **Taccuino dello storico:** raccoglie le **fonti** trovate (lettere, fogli stampati, frasi ascoltate) e la **linea del tempo**.
+2. **Taccuino dello storico** (pulsante «📜 Taccuino» sotto il nome del luogo): raccoglie le **fonti** trovate (lettere, fogli stampati, frasi ascoltate) e la **linea del tempo**. Ogni fonte risponde a 4 domande (chi l'ha scritta, quando, per chi, perché) e si può rileggere. Le fonti non trovate restano coperte («? ? ?»). Elenco in `js/taccuino.js`.
 3. **Domande sulle fonti:** chi l'ha scritta? Quando? Per convincere chi? Fonte primaria o secondaria?
 4. **Glossario:** le parole difficili (indulgenza, purgatorio, reliquia, tesi, torchio) sono sottolineate. Si toccano e si legge la spiegazione.
 5. **Prove:** al posto dei duelli di Espo-Nentia ci sono prove con domande. Le risposte sbagliate spiegano l'errore.

@@ -7,8 +7,8 @@
 <meta name="description" content="Gioco di storia su Martin Lutero e la Riforma, per la scuola media.">
 <meta name="theme-color" content="#0b0b0b">
 <!-- ?v=N: cambia N a ogni versione, così il telefono scarica subito i file nuovi. -->
-<link rel="stylesheet" href="fonts/fonts.css?v=16">
-<link rel="stylesheet" href="style.css?v=16">
+<link rel="stylesheet" href="fonts/fonts.css?v=17">
+<link rel="stylesheet" href="style.css?v=17">
 </head>
 <body>
 <div id="app">
@@ -16,6 +16,10 @@
     <span id="luogo">Tipografia di Mastro Grunenberg</span>
     <span id="data">Wittenberg, primavera 1517</span>
   </header>
+  <nav id="strumenti" aria-label="Strumenti">
+    <button id="apri-taccuino" class="strumento" aria-label="Taccuino dello storico">📜 Taccuino</button>
+    <button id="apri-lettura" class="strumento" aria-label="Opzioni di lettura">Aa Lettura</button>
+  </nav>
 
   <main id="scena-box">
     <svg id="scena" viewBox="0 0 400 224" preserveAspectRatio="xMidYMid slice" aria-label="Scena di gioco">
@@ -43,7 +47,6 @@
       <g id="uscite"></g>
     </svg>
     <button id="mostra-oggetti" class="aiuto" aria-label="Mostra gli oggetti">👁 Oggetti</button>
-    <button id="apri-lettura" class="aiuto a-sinistra" aria-label="Opzioni di lettura">Aa Lettura</button>
   </main>
 
   <div id="foglio-box" hidden>
@@ -59,6 +62,17 @@
   <div id="mini" hidden role="dialog" aria-modal="true" aria-labelledby="mini-titolo">
     <div id="mini-carta"><div id="mini-titolo"></div><div id="mini-corpo"></div></div>
   </div>
+  <div id="taccuino" hidden role="dialog" aria-modal="true" aria-labelledby="taccuino-titolo">
+    <div id="taccuino-carta">
+      <div id="taccuino-titolo">Taccuino dello storico</div>
+      <div class="tac-schede" role="tablist">
+        <button type="button" class="tac-scheda on" role="tab" data-scheda="fonti" aria-selected="true">Fonti</button>
+        <button type="button" class="tac-scheda" role="tab" data-scheda="linea" aria-selected="false">Linea del tempo</button>
+      </div>
+      <div id="taccuino-corpo"></div>
+      <button id="taccuino-chiudi">Chiudi</button>
+    </div>
+  </div>
   <div id="lettura" hidden role="dialog" aria-modal="true" aria-labelledby="lettura-titolo">
     <div id="lettura-carta"><div id="lettura-titolo">Opzioni di lettura</div><div id="lettura-corpo"></div><button id="lettura-chiudi">Chiudi</button></div>
   </div>
@@ -69,9 +83,10 @@
     <div id="scelte"></div>
   </section>
 </div>
-<script src="js/lettura.js?v=16"></script>
-<script src="js/stanze.js?v=16"></script>
-<script src="js/gioco.js?v=16"></script>
-<script src="js/minigiochi.js?v=16"></script>
+<script src="js/lettura.js?v=17"></script>
+<script src="js/stanze.js?v=17"></script>
+<script src="js/gioco.js?v=17"></script>
+<script src="js/minigiochi.js?v=17"></script>
+<script src="js/taccuino.js?v=17"></script>
 </body>
 </html>

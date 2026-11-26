@@ -11,7 +11,8 @@ function watch(page) {
 
 function aiuti(page) {
   const fermo = () => page.waitForFunction(() => !stato.cammina, null, { timeout: 15000 });
-  const tuttoIlTesto = async () => { await page.click('#dialogo'); await page.waitForTimeout(60); };
+  // Tocca l'angolo del riquadro: al centro potrebbe esserci un pulsante.
+  const tuttoIlTesto = async () => { await page.click('#dialogo', { position: { x: 4, y: 4 } }); await page.waitForTimeout(60); };
   const tocca = async (id) => { await page.click(`[data-id="${id}"] .area`, { force: true }); await fermo(); await tuttoIlTesto(); };
   // Va avanti con "Continua" finché la conversazione finisce.
   const continua = async () => {

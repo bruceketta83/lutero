@@ -172,20 +172,7 @@ function entra(idStanza, x) {
     g.addEventListener('click', (e) => { e.stopPropagation(); tocca(o, g); });
   }
 
-  const pers = $('personaggi');
-  pers.innerHTML = '';
-  for (const p of s.personaggi || []) {
-    const k = p.alto || 1;
-    const w = LENA.w * k, h = LENA.h * k;
-    const g = el('g', { class: 'png', 'data-id': p.id, role: 'button', 'aria-label': p.nome }, pers);
-    el('image', { href: p.img, x: p.x - w / 2, y: s.pavimento - h + LENA.piedi * k, width: w, height: h,
-      transform: p.verso < 0 ? `translate(${2 * p.x} 0) scale(-1 1)` : '' }, g);
-    // Zona da toccare: il corpo, non tutta la tela.
-    const zw = 40 * k, top = s.pavimento - h * 0.97;
-    el('rect', { class: 'alone', x: p.x - zw / 2, y: top, width: zw, height: s.pavimento - top, rx: 4 }, g);
-    el('rect', { class: 'area', x: p.x - zw / 2, y: top, width: zw, height: s.pavimento - top }, g);
-    g.addEventListener('click', (e) => { e.stopPropagation(); parlaCon(p, g); });
-  }
+  disegnaPersonaggi();
 
   const usc = $('uscite');
   usc.innerHTML = '';
@@ -201,6 +188,28 @@ function entra(idStanza, x) {
   stato.verso = stato.x > 200 ? -1 : 1;
   disegnaLena(LENA.ferma, 0);
   dialogo('Lena', s.ingresso ? s.ingresso() : '');
+}
+
+/* Personaggi della stanza. Opzioni: se() = compare solo se vera;
+   piedi = riga dei piedi diversa dal pavimento (per chi sta su un palco o lontano). */
+function disegnaPersonaggi() {
+  const s = stato.stanza;
+  const pers = $('personaggi');
+  pers.innerHTML = '';
+  for (const p of s.personaggi || []) {
+    if (p.se && !p.se()) continue;
+    const k = p.alto || 1;
+    const w = LENA.w * k, h = LENA.h * k;
+    const base = p.piedi ?? s.pavimento;
+    const g = el('g', { class: 'png', 'data-id': p.id, role: 'button', 'aria-label': p.nome }, pers);
+    el('image', { href: p.img, x: p.x - w / 2, y: base - h + LENA.piedi * k, width: w, height: h,
+      transform: p.verso < 0 ? `translate(${2 * p.x} 0) scale(-1 1)` : '' }, g);
+    // Zona da toccare: il corpo, non tutta la tela.
+    const zw = 40 * k, top = base - h * 0.97;
+    el('rect', { class: 'alone', x: p.x - zw / 2, y: top, width: zw, height: base - top, rx: 4 }, g);
+    el('rect', { class: 'area', x: p.x - zw / 2, y: top, width: zw, height: base - top }, g);
+    g.addEventListener('click', (e) => { e.stopPropagation(); parlaCon(p, g); });
+  }
 }
 
 /* ---------- Lena ---------- */
@@ -258,7 +267,7 @@ function parlaCon(p, g) {
   g.classList.add('attivo');
   const lato = stato.x < p.x ? -1 : 1;
   const k = p.alto || 1;
-  vai(p.x + lato * 34 * k, () => {
+  vai(p.piedi ? p.x + lato * 30 : p.x + lato * 34 * k, () => {
     stato.verso = p.x >= stato.x ? 1 : -1;
     disegnaLena(LENA.ferma, 0);
     p.parla();

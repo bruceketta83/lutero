@@ -158,7 +158,7 @@ function leggi(titolo, html, poi) {
   $('foglio-titolo').textContent = titolo;
   $('foglio-testo').innerHTML = html;
   $('foglio-box').hidden = false;
-  $('foglio-carta').scrollTop = 0;
+  $('foglio-testo').scrollTop = 0;
   leggi.poi = poi;
   if (typeof letturaSuFoglio === 'function') letturaSuFoglio(titolo, html);
   $('foglio-chiudi').focus({ preventScroll: true });

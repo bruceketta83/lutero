@@ -116,7 +116,7 @@ function apriTaccuino(e) {
   if (e) e.stopPropagation();
   disegnaTaccuino();
   document.getElementById('taccuino').hidden = false;
-  document.getElementById('taccuino-carta').scrollTop = 0;
+  document.getElementById('taccuino-corpo').scrollTop = 0;
   document.getElementById('taccuino-chiudi').focus({ preventScroll: true });
 }
 
@@ -134,7 +134,7 @@ function avvisoFonte(id) {
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('apri-taccuino').addEventListener('click', apriTaccuino);
   document.getElementById('taccuino-chiudi').addEventListener('click', () => { document.getElementById('taccuino').hidden = true; });
-  document.querySelectorAll('.tac-scheda').forEach(b => b.addEventListener('click', () => { schedaTaccuino = b.dataset.scheda; disegnaTaccuino(); document.getElementById('taccuino-carta').scrollTop = 0; }));
+  document.querySelectorAll('.tac-scheda').forEach(b => b.addEventListener('click', () => { schedaTaccuino = b.dataset.scheda; disegnaTaccuino(); document.getElementById('taccuino-corpo').scrollTop = 0; }));
   document.getElementById('taccuino-corpo').addEventListener('click', (e) => {
     const b = e.target.closest('.tac-rileggi');
     if (!b) return;

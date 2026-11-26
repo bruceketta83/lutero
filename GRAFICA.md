@@ -43,6 +43,8 @@ Le immagini sono **in bianco e nero, con i grigi del tratteggio**. Il colore ser
 | Schermata del titolo | 9:16, 1440 × 2560 px | Alto 20% e basso 25% calmi, per il titolo e i pulsanti. |
 | Personaggi | Verticale 2:3, fondo **magenta pieno** (`#FF00FF`) | Il programma `tools/scontorna_bn.py` toglie il fondo. Bocca chiusa e occhi aperti: bocca e palpebre le disegno io. |
 | Oggetti | Fogli 3 × 3 su fondo magenta | Il programma `tools/foglio.py` (da portare da Espo-Nentia) taglia gli oggetti. |
+| Immagini dei video di fine capitolo | Foto realistica in bianco e nero ad alto contrasto, solo il rosso; 16:9, circa 2000 × 1116, JPG o PNG di Gemini | Prompt in [docs/PROMPT-VIDEO.md](docs/PROMPT-VIDEO.md). |
+| Video di fine capitolo | Seedance, 16:9, 1280 × 720, MP4; voce WAV 24 000 Hz mono | Video finale nel gioco: 1280 × 720, circa 30 s, meno di 10 MB, con sottotitoli WebVTT. |
 
 **Camminata dei personaggi giocabili:** 1 immagine ferma + 8 pose, prese da un video (metodo migliore, vedi "Camminata da un video") oppure da 4 immagini da 2 pose (prompt in [docs/PROMPT-PERSONAGGI.md](docs/PROMPT-PERSONAGGI.md)). Il ciclo dura 8 pose da 240 millisecondi. Il personaggio sale un poco nelle pose di spinta e di passaggio.
 
@@ -63,6 +65,7 @@ File dei prompt:
 - [docs/PROMPT-SFONDI.md](docs/PROMPT-SFONDI.md)
 - [docs/PROMPT-PERSONAGGI.md](docs/PROMPT-PERSONAGGI.md)
 - [docs/PROMPT-OGGETTI.md](docs/PROMPT-OGGETTI.md)
+- [docs/PROMPT-VIDEO.md](docs/PROMPT-VIDEO.md): video di 30 secondi a fine capitolo, solo fatti storici (immagini con Gemini, animazione con Seedance, voce con Gemini 2.5 Flash TTS)
 
 ## 6. Strumenti
 

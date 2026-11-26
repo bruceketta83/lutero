@@ -41,3 +41,10 @@ test('un salvataggio rovinato non blocca il gioco', async ({ page }) => {
   await page.reload();
   expect(await page.evaluate(() => stato.idStanza)).toBe('tipografia');
 });
+
+test('l\'avviso della borsa non blocca i tocchi sulla scena', async ({ page }) => {
+  await page.goto('./');
+  await page.evaluate(() => prendi('risma', 'una risma di carta'));
+  await expect(page.locator('#avviso-borsa')).toBeVisible();
+  await expect(page.locator('#avviso-borsa')).toHaveCSS('pointer-events', 'none');
+});

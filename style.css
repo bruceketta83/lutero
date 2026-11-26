@@ -86,6 +86,7 @@ a.gl { color: inherit; text-decoration: underline dotted var(--azzurro); text-de
   position: fixed; left: 50%; top: 18%; transform: translateX(-50%); z-index: 15;
   background: var(--carta); color: var(--inchiostro); border: 2px solid var(--oro); border-radius: 4px;
   padding: 8px 14px; font-size: 17px; box-shadow: 0 4px 18px rgba(0,0,0,.5);
+  pointer-events: none; /* l'avviso non deve bloccare i tocchi sulla scena */
 }
 
 /* Passaggio tra le stanze: dissolvenza al nero */
@@ -151,7 +152,17 @@ a.gl { color: inherit; text-decoration: underline dotted var(--azzurro); text-de
 .foglio-stampato { margin: 10px 0; padding: 22px 16px; background: #f6f1e4; border: 1px solid #c9bfa9; box-shadow: 0 3px 10px rgba(0,0,0,.25); text-align: center; font: 32px "Fell", Georgia, serif; animation: stampa 1.2s ease-out both; }
 @keyframes stampa { from { color: transparent; } to { color: #1d1a16; } }
 
+/* Mappa delle tesi (azzurro = mappa e aiuto, vedi GRAFICA.md) */
+.mappa { width: 100%; height: auto; display: block; margin: 4px 0 10px; }
+.mappa-fondo { fill: #f6f1e4; stroke: #c9bfa9; }
+.via-tesi { stroke: var(--azzurro); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 400; stroke-dashoffset: 400; animation: viaggio 2.2s ease-out forwards; }
+.via-lettera { stroke: var(--inchiostro); stroke-width: 1.6; stroke-dasharray: 5 4; }
+.citta circle { fill: var(--inchiostro); }
+.citta text, .rosa { font: 13px "Fell", Georgia, serif; fill: var(--inchiostro); }
+@keyframes viaggio { to { stroke-dashoffset: 0; } }
+
 @media (prefers-reduced-motion: reduce) {
+  .via-tesi { animation: none; stroke-dashoffset: 0; }
   .foglio-stampato { animation: none; }
   .luce-tremola { animation: none; }
   #testo .l { animation: none; }

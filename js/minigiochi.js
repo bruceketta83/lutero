@@ -141,3 +141,41 @@ function stampaRiga({ titolo, testo, poi }) {
     $('mini-azioni').appendChild(b);
   }
 }
+
+/* ---------- Le tesi viaggiano: mappa semplice della Germania ----------
+   Proiezione semplice: x = (longitudine − 6) × 30, y = (55 − latitudine) × 30. */
+const CITTA_TESI = [
+  { nome: 'Wittenberg', lon: 12.65, lat: 51.87, centro: true },
+  { nome: 'Lipsia', lon: 12.37, lat: 51.34, nota: 'stampate' },
+  { nome: 'Norimberga', lon: 11.08, lat: 49.45, nota: 'stampate e tradotte in tedesco' },
+  { nome: 'Basilea', lon: 7.59, lat: 47.56, nota: 'stampate' },
+  { nome: 'Magonza', lon: 8.27, lat: 50.0, nota: 'la lettera all\'arcivescovo Alberto', lettera: true, sinistra: true },
+];
+
+function mostraMappa(poi) {
+  const xy = (c) => [Math.round((c.lon - 6) * 30), Math.round((55 - c.lat) * 30)];
+  const [wx, wy] = xy(CITTA_TESI[0]);
+  let linee = '', punti = '';
+  for (const c of CITTA_TESI) {
+    const [x, y] = xy(c);
+    if (!c.centro) {
+      linee += `<line class="${c.lettera ? 'via-lettera' : 'via-tesi'}" x1="${wx}" y1="${wy}" x2="${x}" y2="${y}"/>`;
+    }
+    const destra = !c.sinistra;
+    punti += `<g class="citta"><circle cx="${x}" cy="${y}" r="${c.centro ? 5 : 4}"/>
+      <text x="${destra ? x + 8 : x - 8}" y="${y + 4}" text-anchor="${destra ? 'start' : 'end'}">${c.nome}</text></g>`;
+  }
+  const html = `<div class="foglio">
+    <svg class="mappa" viewBox="0 70 300 175" role="img" aria-label="Mappa: le tesi partono da Wittenberg verso Lipsia, Norimberga e Basilea; la lettera verso Magonza.">
+      <rect x="1" y="71" width="298" height="173" rx="4" class="mappa-fondo"/>
+      ${linee}${punti}
+      <text x="290" y="90" text-anchor="end" class="rosa">N ↑</text>
+    </svg>
+    <p><strong>31 ottobre 1517:</strong> Lutero manda le tesi e una lettera all'arcivescovo Alberto, a Magonza (linea tratteggiata).</p>
+    <p><strong>Fine del 1517:</strong> le tesi sono stampate a Lipsia, a Norimberga e a Basilea. A Norimberga esce anche una traduzione in tedesco.</p>
+    <p>In poche settimane le leggono in tutta la Germania. Un foglio stampato arriva dove una persona non arriva.</p>
+    <p class="nota-foglio">Mappa semplificata: sono segnate solo le città citate. Le stampe del 1517 conservate vengono da Lipsia, Norimberga e Basilea.</p>
+  </div>`;
+  fonte('mappa-tesi');
+  leggi('Le tesi viaggiano', html, poi);
+}

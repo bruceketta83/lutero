@@ -5,7 +5,7 @@ Avventura punta-e-clicca in stile fumetto in bianco e nero.
 
 Indirizzo (quando sarà pubblicato): https://bruceketta83.github.io/lutero/
 
-Stato: **inizio del capitolo 1 giocabile**: la tipografia con Mastro Grunenberg, il mercato con Frau Agnes e l'avviso dell'indulgenza. Il resto del prologo e del capitolo 1 è in preparazione.
+Stato: **inizio del capitolo 1 giocabile**: la tipografia con Mastro Grunenberg, il mercato con Frau Agnes e l'avviso dell'indulgenza, il Convento Nero con il portinaio e la cella del dottor Martin. Il resto del prologo e del capitolo 1 è in preparazione.
 
 ## Documenti
 

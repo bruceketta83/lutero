@@ -18,13 +18,37 @@ LENA.velocita = 14 / (LENA.durataPosa / 1000);   // unità della scena al second
 
 const stato = { stanza: null, idStanza: null, x: 0, verso: 1, cammina: null, visti: {}, flag: {}, borsa: [], fonti: [] };
 
+/* ---------- Salvataggio ----------
+   Il gioco si salva da solo nel browser (localStorage) a ogni passo della storia.
+   Se il browser non lo permette (finestra privata, dati bloccati), il gioco funziona lo stesso. */
+const SALVA_KEY = 'lutero-salvataggio-v1';
+function salva() {
+  if (!stato.idStanza) return;
+  try {
+    localStorage.setItem(SALVA_KEY, JSON.stringify({
+      stanza: stato.idStanza, x: Math.round(stato.x),
+      flag: stato.flag, visti: stato.visti, borsa: stato.borsa, fonti: stato.fonti,
+    }));
+  } catch (e) { /* niente salvataggio: si gioca lo stesso */ }
+}
+function caricaSalvataggio() {
+  try {
+    const d = JSON.parse(localStorage.getItem(SALVA_KEY) || 'null');
+    return d && STANZE[d.stanza] ? d : null;
+  } catch (e) { return null; }
+}
+function cancellaSalvataggio() {
+  try { localStorage.removeItem(SALVA_KEY); } catch (e) { /* niente */ }
+}
+
 /* ---------- Stato della storia ---------- */
 const flag = (k) => !!stato.flag[k];
-const setFlag = (k) => { stato.flag[k] = true; };
+const setFlag = (k) => { stato.flag[k] = true; salva(); };
 
 /* Mette un oggetto nella borsa e lo dice per un momento. */
 function prendi(id, nome) {
   if (!stato.borsa.includes(id)) stato.borsa.push(id);
+  salva();
   const a = $('avviso-borsa');
   a.textContent = `Nella borsa: ${nome}`;
   a.hidden = false;
@@ -33,10 +57,10 @@ function prendi(id, nome) {
 }
 
 /* Toglie un oggetto dalla borsa. */
-function lascia(id) { stato.borsa = stato.borsa.filter(x => x !== id); }
+function lascia(id) { stato.borsa = stato.borsa.filter(x => x !== id); salva(); }
 
 /* Segna una fonte trovata (andrà nel Taccuino dello storico). */
-function fonte(id) { if (!stato.fonti.includes(id)) stato.fonti.push(id); }
+function fonte(id) { if (!stato.fonti.includes(id)) stato.fonti.push(id); salva(); }
 
 function el(tag, attrs = {}, parent) {
   const e = document.createElementNS(SVGNS, tag);
@@ -188,6 +212,29 @@ function entra(idStanza, x) {
   stato.verso = stato.x > 200 ? -1 : 1;
   disegnaLena(LENA.ferma, 0);
   dialogo('Lena', s.ingresso ? s.ingresso() : '');
+  salva();
+}
+
+/* All'apertura: se c'è un salvataggio, si può continuare o ricominciare da capo. */
+function avvio() {
+  const d = caricaSalvataggio();
+  if (!d) { entra('tipografia'); return; }
+  Object.assign(stato, { flag: d.flag || {}, visti: d.visti || {}, borsa: d.borsa || [], fonti: d.fonti || [] });
+  entra(d.stanza, d.x);
+  const continua = { testo: 'Continua la storia', fai: (e) => { e.stopPropagation(); dialogo('Lena', `${STANZE[d.stanza].luogo}. Riprendo da qui.`); } };
+  const ricomincia = { testo: 'Ricomincia da capo', fai: (e) => {
+    e.stopPropagation();
+    dialogo('', 'Vuoi davvero ricominciare? La storia riparte dalla tipografia e perdi gli avanzamenti.', [
+      { testo: 'Sì, ricomincia da capo', fai: (e2) => {
+        e2.stopPropagation();
+        cancellaSalvataggio();
+        Object.assign(stato, { flag: {}, visti: {}, borsa: [], fonti: [] });
+        entra('tipografia');
+      } },
+      { testo: 'No, continua la storia', fai: continua.fai },
+    ]);
+  } };
+  dialogo('', `Bentornato. La storia riprende da: <em>${STANZE[d.stanza].luogo}</em>.`, [continua, ricomincia]);
 }
 
 /* Personaggi della stanza. Opzioni: se() = compare solo se vera;
@@ -326,5 +373,8 @@ window.addEventListener('DOMContentLoaded', () => {
   }, true);
   $('foglio-chiudi').addEventListener('click', chiudiFoglio);
   $('glossario-chiudi').addEventListener('click', () => { $('glossario').hidden = true; });
-  entra('tipografia');
+  // Salva anche il punto in cui si trova Lena quando si chiude o si nasconde la pagina.
+  window.addEventListener('pagehide', salva);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) salva(); });
+  avvio();
 });

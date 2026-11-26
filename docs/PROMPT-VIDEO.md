@@ -70,6 +70,19 @@ La lettura deve durare al massimo 30 secondi.
 5. Tieni le cose importanti (volti, sigillo, moneta) lontano dai bordi: nel gioco il video può essere tagliato un poco sui lati, su telefoni con schermi diversi.
 6. Salva tutto in `originali/video/`.
 
+## Volti realistici: immagini con Seedream, non con Gemini
+
+Seedance rifiuta le immagini iniziali con un volto realistico fatto da un altro programma («the input image may contain real person»). Per le inquadrature con un **volto ben visibile** (3 e 6, Lutero):
+
+1. Genera l'immagine con **Seedream 5.5** (`bytedance-seed/seedream-5-5`) su OpenRouter. Va bene anche `bytedance-seed/seedream-5-0-lite`.
+2. Usa lo stesso blocco di stile e lo stesso prompt della scena (sotto).
+3. Formato 16:9.
+4. **Non modificare l'immagine:** niente tagli, niente correzioni di colore, niente nuovo salvataggio o compressione. Caricala in Seedance così com'è.
+5. Usala in Seedance **entro 30 giorni**.
+6. Per l'inquadratura 6, allega a Seedream l'immagine 3 fatta con Seedream, per avere lo stesso volto.
+
+Le scene senza volti in primo piano (2, 4, 5) si possono fare con Gemini. L'inquadratura 1 (Tetzel) è passata con Gemini; se Seedance la rifiuta, rifalla con Seedream.
+
 ## Blocco di stile per le immagini (Gemini)
 
 Stile: **foto realistica di un film**, con attori veri e luoghi veri. L'effetto "fumetto" viene solo dalla luce e dal contrasto: neri pieni, bianchi bruciati, un solo colore rosso. Non allegare i disegni del gioco: le immagini si generano da zero.
@@ -217,7 +230,7 @@ open to the white sky.
 
 **3 — `cap1-3` — Lutero scrive le tesi**
 
-Allega: nessuna immagine.
+Allega: nessuna immagine. Genera questa immagine con **Seedream 5.5**, non con Gemini (volto in primo piano).
 
 Immagine (Gemini):
 ```
@@ -264,7 +277,7 @@ Red detail: none.
 
 **6 — `cap1-6` — La lettera da Roma**
 
-Allega: l'immagine `cap1-3.jpg` (per avere lo stesso volto di Lutero).
+Allega: l'immagine 3 fatta con **Seedream** (per avere lo stesso volto di Lutero). Genera questa immagine con Seedream, non con Gemini.
 
 Immagine (Gemini):
 ```

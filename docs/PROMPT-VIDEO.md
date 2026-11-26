@@ -1,7 +1,7 @@
 # Video di fine capitolo: 30 secondi di storia (Gemini + Seedance + Gemini TTS)
 
 Alla fine di ogni capitolo, un video di **30 secondi** riassume i fatti storici del capitolo.
-Una voce narrante generata con **Gemini 2.5 Flash TTS** spiega i fatti. Le immagini, in stile fumetto noir, li accompagnano.
+Una voce narrante generata con **Gemini 2.5 Flash TTS** spiega i fatti. Le immagini, realistiche come un film ma con i contrasti forti di un fumetto noir, li accompagnano.
 Leggi prima [GRAFICA.md](../GRAFICA.md).
 
 **Regole del video**
@@ -16,12 +16,12 @@ Leggi prima [GRAFICA.md](../GRAFICA.md).
 
 1. **Voce con Gemini 2.5 Flash TTS** (vedi «La voce narrante»). Controlla che duri circa 30 secondi.
 2. **Immagini con Gemini:** una per ogni inquadratura. Apri una chat nuova per ogni immagine.
-3. Allega le immagini di riferimento indicate (sfondi e personaggi del gioco, cartella `img/`).
+3. Non allegare i disegni del gioco: le immagini sono realistiche e si generano da zero. Solo per l'inquadratura 6 allega l'immagine 3 (stesso volto di Lutero).
 4. Incolla il **blocco di stile per le immagini**, poi il prompt dell'inquadratura.
 5. Controlla l'immagine con la lista in fondo. Se non va, rifalla: costa meno che rifare il video.
 6. **Video con Seedance,** da immagine a video: carica l'immagine come primo fotogramma.
-7. Incolla il **blocco di stile per il movimento**, poi il prompt del movimento.
-8. Formato 16:9, 5 secondi, alla risoluzione più alta.
+7. Incolla il **blocco di stile per il movimento**, poi il prompt del movimento (sezione «I movimenti»).
+8. Formato 16:9, 1280 × 720, durata come nella tabella dei tempi (10 s per le inquadrature 1 e 3, 5 s per le altre).
 9. Salva i file in `originali/video/`: le immagini `cap1-1.png` … `cap1-6.png`, i video `cap1-1.mp4` … `cap1-6.mp4` e la voce `narrazione-cap1.wav`.
 10. Io unisco i pezzi sulla voce, aggiungo i sottotitoli e il riquadro «Da sapere», e comprimo per il telefono.
 
@@ -70,26 +70,36 @@ La lettura deve durare al massimo 30 secondi.
 
 ## Blocco di stile per le immagini (Gemini)
 
+Stile: **foto realistica di un film**, con attori veri e luoghi veri. L'effetto "fumetto" viene solo dalla luce e dal contrasto: neri pieni, bianchi bruciati, un solo colore rosso. Non allegare i disegni del gioco: le immagini si generano da zero.
+
 ```
-High-contrast black and white graphic novel art, noir comic style: large areas
-of solid pure black, stark white highlights, hard rim light, deep shadows that
-swallow the shapes, bold silhouettes, almost no grey. Fine white lines for rain.
-Strong cinematic framing, like a single panel of a dark comic book.
-Historical setting: Saxony, Germany, 1517-1518. Realistic people and places,
-normal proportions, no fantasy elements.
-NO colour at all, only black and white, EXCEPT the one red detail listed below,
-which is a deep dark red (#8b1e1e).
-No text, no letters, no numbers, no watermark, no frame, no panel borders,
-no speech bubbles. Papers and books show only unreadable lines, never words.
-Landscape 16:9 (wide), at least 1920 x 1080 pixels. Keep faces and key objects
-away from the left and right edges.
+Photorealistic cinematic film still, live action, real actors in real
+historical locations. Extreme high-contrast black and white, like a graphic
+novel turned into a film: crushed pure blacks, blown-out pure whites, almost no
+mid-grey. One hard light source and a strong white rim light that cut the
+silhouettes out of the darkness. Deep black shadows swallow half of every face
+and most of the background. Rain falls as bright white streaks; wet surfaces
+shine white. Realistic skin, wool, wood and stone textures, light film grain.
+35mm anamorphic lens, shallow depth of field, dramatic low or high camera
+angle, strong graphic composition like a single comic book panel.
+Selective colour: the whole image is black and white EXCEPT the one red detail
+named below, a deep saturated red (#8b1e1e). No other colour anywhere: no gold,
+no skin tones, no yellow light.
+Historical setting: Saxony, Germany, 1517-1518. Historically accurate clothes,
+buildings and objects. No modern objects.
+No text, no letters, no numbers, no watermark, no frame, no comic panel
+borders, no speech bubbles, no drawing or illustration look.
+Landscape 16:9, at least 1920 x 1080 pixels. Keep faces and key objects away
+from the left and right edges.
 ```
 
 ## Blocco di stile per il movimento (Seedance)
 
 ```
-Keep the exact look of the first frame: high-contrast black and white noir comic
-art, solid blacks, white highlights, the only colour is the dark red detail.
+Keep the exact look of the first frame: photorealistic live-action film,
+extreme high-contrast black and white, crushed blacks, blown-out whites,
+the only colour is the deep red detail. Do not turn it into colour, a drawing
+or a cartoon.
 Slow, dramatic movement. The camera is almost still: only a slow push-in or a
 slow pan. Do not change faces, clothes or the place. No new people. No text.
 Nobody speaks: mouths stay closed.
@@ -146,26 +156,27 @@ I sottotitoli sono in `video/cap1.vtt`.
 
 ### Le inquadrature
 
+I personaggi storici sono descritti a parole, uguali in ogni prompt. Per avere lo **stesso volto di Lutero** nelle inquadrature 3 e 6, genera prima la 3 e allegala come riferimento quando generi la 6.
+
 **1 — `cap1-1` — Tetzel e la moneta**
 
-Allega: `img/bg/jueterbog.webp`, `img/chars/tetzel.webp`.
+Allega: nessuna immagine.
 
 Immagine (Gemini):
 ```
-A town square at dusk (the attached background). A heavy Dominican friar (the
-attached character: white habit, black cloak) preaches from a wooden platform,
-one hand raised high. Next to him, a tall wooden cross with a coat of arms with
-two crossed keys: the coat of arms is the only colour, deep dark red (#8b1e1e).
-In front, an iron-bound wooden chest. A crowd of black silhouettes looks up at
-him. Low camera, from behind the crowd.
-Red detail: the coat of arms on the cross only.
-```
-Movimento (Seedance):
-```
-The friar moves his raised hand slowly, as when he preaches, mouth closed.
-A hand from the crowd drops a coin into the chest: the coin flashes white.
-The crowd moves a little. Slow push-in towards the chest.
-Sound: murmur of a crowd, one coin falling into a wooden chest.
+Night, heavy rain, the market square of a small German town in 1517:
+half-timbered houses, a Gothic church in the background. On a rough wooden
+platform stands Johann Tetzel, a Dominican friar of about 52: heavy build,
+fleshy jowly face, sharp confident eyes, tonsured head, white Dominican habit
+with a black cloak and black hood, a wooden rosary at the belt. He preaches with
+one hand raised high, mouth closed, lit hard from the side.
+Next to him, a tall wooden cross with a hanging banner of the papal coat of
+arms (two crossed keys and a tiara): the banner is deep red (#8b1e1e), the keys
+and the tiara are white and grey, not gold. In front of the platform, a heavy
+iron-bound wooden chest for the offerings. In the foreground, the black
+silhouettes of the crowd, seen from behind, looking up at him.
+Low camera from inside the crowd.
+Red detail: the banner of the coat of arms only.
 ```
 
 **2 — `cap1-2` — Dove vanno i soldi**
@@ -174,55 +185,106 @@ Allega: nessuna immagine.
 
 Immagine (Gemini):
 ```
-A dark banker's table at night. Piles of silver and gold coins, an open account
-book with unreadable lines, a goose quill, a candle. Behind the table, through
-a big window, the huge unfinished dome and scaffolding of a Renaissance
-basilica under construction, in silhouette against a white sky. A letter on
-the table is closed with a red wax seal.
+Night, a dark room of a rich banker's house in 1517. On a heavy wooden table:
+piles of silver coins, an open account book with unreadable handwritten lines,
+a goose quill, one candle. A man's hand in a dark velvet sleeve pushes a pile of
+coins; his face is not visible. Behind the table, through a tall window, the
+huge unfinished dome of a Renaissance basilica with wooden scaffolding, in
+black silhouette against a white sky. On the table, a folded letter closed
+with a red wax seal.
 Red detail: the wax seal only.
-```
-Movimento (Seedance):
-```
-Coins slide slowly from one pile to another, pushed by a hand in a dark sleeve.
-The candle flame moves. Slow pan from the coins up to the window and the
-unfinished dome.
-Sound: coins, a quill on paper, a candle.
 ```
 
 **3 — `cap1-3` — Lutero scrive le tesi**
 
-Allega: `img/bg/cella.webp`, `img/chars/lutero.webp`.
+Allega: nessuna immagine.
 
 Immagine (Gemini):
 ```
-A small dark monastery cell at night (the attached background). The friar of
-the attached character (monk's tonsure, black Augustinian habit, thin tense
-face) sits at his desk and writes fast with a goose quill on a long sheet with
-numbered unreadable lines. One candle lights half of his face hard and white;
-the other half is in black shadow. Mouth closed. Close medium shot.
+Night, a small bare stone cell in an Augustinian monastery in 1517.
+Martin Luther, an Augustinian friar of 33: thin gaunt face, high cheekbones,
+deep-set dark intense eyes, strong eyebrows, a monk's tonsure (shaved crown
+with a ring of short dark hair), plain black Augustinian habit with a black
+leather belt. He sits at a rough wooden desk and writes fast with a goose quill
+on a long sheet with numbered unreadable lines. One candle lights half of his
+face hard and white; the other half is in pure black shadow. Mouth closed,
+focused, determined. Close medium shot, camera at the height of the desk.
 Red detail: none.
 ```
-Movimento (Seedance):
+
+**4 — `cap1-4` — La porta della Chiesa del Castello**
+
+Allega: nessuna immagine.
+
+Immagine (Gemini):
+```
+Night, autumn wind, the tall Gothic wooden door of a castle church in a German
+town in 1517. Many old paper notices are nailed on the dark wood; in the
+middle, one new large white sheet with unreadable lines. A single lantern
+lights the door from above; dry leaves fly across wet stones. At the edge of
+the frame, a hand holding a hammer; the man is in total black shadow and not
+visible. Low camera, the door looks huge.
+Red detail: none.
+```
+
+**5 — `cap1-5` — La stampa porta le tesi in tutta la Germania**
+
+Allega: nessuna immagine.
+
+Immagine (Gemini):
+```
+Night, a 16th-century print shop. A wooden hand press in the foreground: the
+strong hands and forearms of an unseen printer pull the big wooden bar; no
+faces. Above the press, printed white sheets hang on strings to dry. At the
+right, through an open window, many white sheets fly out into the night sky
+over the dark roofs of a German town. Hard white light on the paper, deep
+black everywhere else.
+Red detail: none.
+```
+
+**6 — `cap1-6` — La lettera da Roma**
+
+Allega: l'immagine `cap1-3.png` (per avere lo stesso volto di Lutero).
+
+Immagine (Gemini):
+```
+The same man as in the attached image: Martin Luther, Augustinian friar, thin
+gaunt face, deep-set dark eyes, tonsure, black habit. Night, rain on the small
+window of his stone cell, summer 1518. He sits at the desk and looks down at a
+folded letter closed with a large wax seal with two crossed keys: the seal is
+the only colour, deep red (#8b1e1e). One candle lights half of his face from
+below; the other half is in pure black shadow. Serious, worried expression,
+mouth closed. Close-up.
+Red detail: the wax seal only.
+```
+
+### I movimenti (Seedance)
+
+Prima il **blocco di stile per il movimento**, poi il prompt dell'inquadratura.
+
+**1 — `cap1-1`** (10 s)
+```
+The friar moves his raised hand slowly, as when he preaches, mouth closed.
+A hand from the crowd drops a coin into the chest: the coin flashes white.
+Rain falls, the crowd moves a little. Slow push-in towards the chest.
+Sound: rain, murmur of a crowd, one coin falling into a wooden chest.
+```
+
+**2 — `cap1-2`** (5 s)
+```
+The hand slowly slides a pile of coins across the table. The candle flame
+moves. Slow pan from the coins up to the window and the unfinished dome.
+Sound: coins, a candle.
+```
+
+**3 — `cap1-3`** (10 s)
 ```
 The friar writes, stops, lifts his eyes and looks into the dark, then writes
 again with force. The candle flame moves. Slow push-in on his face.
 Sound: quill scratching on paper, a candle.
 ```
 
-**4 — `cap1-4` — La porta della Chiesa del Castello**
-
-Allega: `img/bg/chiesa-castello.webp`.
-
-Immagine (Gemini):
-```
-The tall Gothic wooden door of a castle church (the attached background), at
-night, autumn wind with dry leaves. Many old paper notices are nailed on the
-wood; one new large white sheet with unreadable lines is nailed in the middle.
-A single lantern lights the door; the square is black. A hammer hangs from a
-hand at the edge of the frame; the man is in shadow and not visible.
-Red detail: none.
-```
-Movimento (Seedance):
+**4 — `cap1-4`** (5 s)
 ```
 The wind moves the papers on the door and the dry leaves on the ground.
 The hand with the hammer slowly goes out of the frame. The lantern flame moves.
@@ -230,20 +292,7 @@ Slow push-in on the new white sheet.
 Sound: wind, dry leaves, one last knock of a hammer at the start.
 ```
 
-**5 — `cap1-5` — La stampa porta le tesi in tutta la Germania**
-
-Allega: `img/bg/tipografia.webp`.
-
-Immagine (Gemini):
-```
-A wooden printing press in a dark print shop (the attached background). Hands
-of an unseen printer pull the big wooden bar. Above the press, many printed
-white sheets hang on strings to dry; at the right, through an open window,
-some white sheets fly out into the night sky over the roofs of a German town.
-Hard white light on the sheets. No faces.
-Red detail: none.
-```
-Movimento (Seedance):
+**5 — `cap1-5`** (5 s)
 ```
 The bar of the press is pulled down and goes back up. The sheets on the strings
 move in the wind; some fly out of the window into the night sky.
@@ -251,20 +300,7 @@ Slow pan from the press to the window.
 Sound: the wooden press, paper, wind.
 ```
 
-**6 — `cap1-6` — La lettera da Roma**
-
-Allega: `img/bg/cella.webp`, `img/chars/lutero.webp`.
-
-Immagine (Gemini):
-```
-Night, rain on the window of a dark monastery cell (the attached background).
-The friar of the attached character sits at the desk and looks down at a
-folded letter closed with a large wax seal with two crossed keys: the seal is
-the only colour, deep dark red (#8b1e1e). Half of his face is in black shadow,
-the other half is lit by one candle. Serious, worried expression, mouth closed.
-Red detail: the wax seal only.
-```
-Movimento (Seedance):
+**6 — `cap1-6`** (5 s)
 ```
 The friar slowly lifts his eyes from the letter and looks into the dark.
 Rain runs down the window. Slow push-in on the red seal, then on his eyes.
@@ -287,14 +323,16 @@ Sound: rain, then silence.
 4. Numeri letti bene: «millecinquecentodiciassette», «trentuno ottobre».
 
 **Immagine (Gemini)**
-1. Bianco e nero, con neri pieni. Il rosso solo dove il prompt lo chiede.
-2. Niente scritte leggibili, niente cornici.
-3. Proporzioni 16:9.
-4. I personaggi somigliano alle immagini del gioco (Tetzel, Lutero).
-5. Niente cose moderne: lampioni, vetri grandi, orologi.
+1. Sembra una foto di un film, con persone vere: non un disegno.
+2. Bianco e nero con neri pieni e bianchi bruciati. Il rosso solo dove il prompt lo chiede: niente oro, niente pelle colorata.
+3. Niente scritte leggibili, niente cornici.
+4. Proporzioni 16:9.
+5. Lutero ha lo stesso volto nelle inquadrature 3 e 6.
+6. Tetzel: frate domenicano, abito bianco e mantello nero.
+7. Niente cose moderne: lampioni, vetri grandi, orologi.
 
 **Video (Seedance)**
-1. Lo stile resta quello dell'immagine: non diventa a colori e non diventa un cartone animato.
+1. Lo stile resta quello dell'immagine: realistico, in bianco e nero; non diventa a colori, un disegno o un cartone animato.
 2. I volti non cambiano durante il video.
 3. Nessuno parla. Niente scritte comparse nel video.
 4. Movimento lento, senza scatti.

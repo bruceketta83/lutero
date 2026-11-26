@@ -52,6 +52,7 @@ test('Lutero fa quattro domande; le risposte sbagliate spiegano e si riprova', a
   expect(await page.evaluate(() => flag('prova'))).toBe(true);
   for (let i = 0; i < 4; i++) await scegli('Continua');
   await tuttoIlTesto();
-  await expect(page.locator('#testo')).toContainText('95 tesi');
+  await expect(page.locator('#testo')).toContainText('penna nuova');
+  await expect(page.locator('#scelte button')).toHaveText('Passano i mesi…');
   expect(errors).toEqual([]);
 });

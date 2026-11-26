@@ -25,6 +25,8 @@ const GLOSSARIO = {
   grosso: 'Una moneta d\'argento usata in Sassonia. Un fiorino d\'oro valeva circa venti grossi.',
   compositoio: 'Un piccolo vassoio di metallo. Il compositore ci mette le lettere di piombo una dopo l\'altra, per formare una riga.',
   'caratteri mobili': 'Lettere di metallo (piombo, stagno e antimonio) fuse una per una. Si mettono in fila per comporre il testo. Dopo la stampa tornano nella cassa e si usano di nuovo.',
+  tesi: 'Una frase breve che si vuole dimostrare in una disputa. Lutero scrisse 95 tesi sulle indulgenze, in latino.',
+  disputa: 'Una discussione pubblica all\'università. Chi propone le tesi le difende, gli altri provano a dimostrare che sono sbagliate.',
   torchio: 'La pressa della tipografia. Una grande vite spinge un piano di legno che preme il foglio sui caratteri inchiostrati.',
 };
 const gl = (parola, testo) => `<a class="gl" data-gl="${parola}" href="#">${testo || parola}</a>`;
@@ -70,11 +72,18 @@ const LETTERA = `<div class="foglio">
   <p class="nota-foglio">Lettera ricostruita per il gioco. Le vere lettere d'indulgenza erano stampate in molte copie, con spazi vuoti: il nome, il luogo e la data si scrivevano a mano. Molte sono conservate negli archivi.</p>
 </div>`;
 
+/* La data in alto cambia con la storia. */
+function dataWittenberg() {
+  if (flag('mappa')) return 'Wittenberg, dicembre 1517';
+  if (flag('autunno')) return 'Wittenberg, 31 ottobre 1517';
+  return 'Wittenberg, primavera 1517';
+}
+
 const STANZE = {
   /* ======================= TIPOGRAFIA ======================= */
   tipografia: {
     luogo: 'Tipografia di Mastro Grunenberg',
-    data: 'Wittenberg, primavera 1517',
+    data: () => dataWittenberg(),
     sfondo: 'img/bg/tipografia.webp',
     pavimento: 216,
     min: 40, max: 360,
@@ -86,6 +95,10 @@ const STANZE = {
       [210, 205, 150, false], // centro del pavimento
     ],
     ingresso() {
+      if (flag('autunno') && !flag('vista-tipografia-autunno')) {
+        setFlag('vista-tipografia-autunno');
+        return 'La bottega, in autunno. Fuori piove. Il Mastro ha acceso la lampada già a metà pomeriggio.';
+      }
       if (flag('ritorno') && !flag('vista-ritorno')) {
         setFlag('vista-ritorno');
         return 'Due giorni dopo, di nuovo in bottega. Ho ancora la polvere della strada sulle scarpe. Mastro Grunenberg mi guarda e non dice niente.';
@@ -133,6 +146,7 @@ const STANZE = {
         id: 'casse', nome: 'Casse dei caratteri', zona: [14, 88, 106, 52], vaiA: 95,
         azione() {
           if (flag('salmi') && !flag('riga')) { minigiocoSalmi(); return; }
+          if (flag('lavoro-tesi') && !flag('tesi-composta')) { minigiocoTesi(); return; }
           dialogo('Lena', variante('casse', this.testo));
         },
         testo: [
@@ -205,7 +219,7 @@ const STANZE = {
   /* ======================= MERCATO ======================= */
   mercato: {
     luogo: 'Piazza del mercato',
-    data: 'Wittenberg, primavera 1517',
+    data: () => dataWittenberg(),
     sfondo: 'img/bg/mercato.webp',
     pavimento: 214,
     min: 30, max: 370,
@@ -216,6 +230,10 @@ const STANZE = {
       [200, 200, 170, false], // la piazza
     ],
     ingresso() {
+      if (flag('mappa') && !flag('vista-mercato-inverno')) {
+        setFlag('vista-mercato-inverno');
+        return 'Dicembre. Il mercato è coperto di neve sporca. Frau Agnes vende candele vicino al pozzo, con le mani avvolte negli stracci.';
+      }
       if (!flag('vista-mercato')) {
         setFlag('vista-mercato');
         return 'Il mercato è quasi vuoto. Le bancarelle sono chiuse. Un gruppo di persone si incammina verso la porta della città, con fagotti e bastoni.';
@@ -227,6 +245,7 @@ const STANZE = {
         id: 'agnes', nome: 'Frau Agnes', img: 'img/chars/agnes.webp',
         x: 240, verso: 1, alto: 1.08,
         parla() {
+          if (flag('mappa')) { agnesFinale(); return; }
           if (!flag('agnes-1')) {
             conversa([
               ['Frau Agnes', 'Lena! Sei la ragazza della tipografia, vero? Tu sai leggere.'],
@@ -324,7 +343,7 @@ const STANZE = {
   /* ======================= CONVENTO NERO: CORTILE ======================= */
   cortile: {
     luogo: 'Convento Nero',
-    data: 'Wittenberg, primavera 1517',
+    data: () => dataWittenberg(),
     sfondo: 'img/bg/convento-cortile.webp',
     pavimento: 212,
     min: 30, max: 350,
@@ -399,7 +418,7 @@ const STANZE = {
   /* ======================= CONVENTO NERO: CELLA DI LUTERO ======================= */
   cella: {
     luogo: 'La cella del dottor Martin',
-    data: 'Wittenberg, primavera 1517',
+    data: () => dataWittenberg(),
     sfondo: 'img/bg/cella.webp',
     pavimento: 214,
     min: 30, max: 360,
@@ -411,6 +430,10 @@ const STANZE = {
       [200, 200, 120, false], // pavimento
     ],
     ingresso() {
+      if (flag('autunno') && !flag('vista-cella-autunno')) {
+        setFlag('vista-cella-autunno');
+        return '31 ottobre 1517, vigilia di Ognissanti. È passata l\'estate. Il dottor Martin mi ha fatto chiamare. Sul tavolo ci sono fogli pieni di righe numerate.';
+      }
       if (!flag('vista-cella')) {
         setFlag('vista-cella');
         return 'Una stanza piccola e fredda. Libri dappertutto. Il dottor Martin scrive alla luce di una candela e non alza la testa.';
@@ -507,7 +530,7 @@ const STANZE = {
   /* ======================= CHIESA DEL CASTELLO: IL PORTONE ======================= */
   chiesa: {
     luogo: 'Chiesa del Castello',
-    data: 'Wittenberg, primavera 1517',
+    data: () => dataWittenberg(),
     sfondo: 'img/bg/chiesa-castello.webp',
     pavimento: 214,
     min: 30, max: 330,
@@ -519,6 +542,10 @@ const STANZE = {
       [230, 130, 50, false],  // il portone
     ],
     ingresso() {
+      if (flag('tesi') && !flag('vista-chiesa-autunno')) {
+        setFlag('vista-chiesa-autunno');
+        return 'La vigilia di Ognissanti. Domani il principe mostra le sue reliquie: in piazza ci sono già i primi pellegrini.';
+      }
       if (!flag('vista-chiesa')) {
         setFlag('vista-chiesa');
         return 'La Chiesa del Castello, la chiesa del principe. Accanto c\'è la torre del castello. Le pietre sono scure di pioggia.';
@@ -530,6 +557,7 @@ const STANZE = {
       {
         id: 'portone', nome: 'Il portone della chiesa', zona: [212, 104, 40, 52], vaiA: 232,
         azione() {
+          if (flag('tesi') && !flag('porta')) { scenaPorta(); return; }
           dialogo('Lena', variante('portone', [
             'Il portone è socchiuso. Sul legno ci sono tanti buchi di chiodi: l\'università ci appende i suoi avvisi. Entro.',
             'Entro in chiesa, piano.',
@@ -557,19 +585,22 @@ const STANZE = {
       },
       {
         id: 'foglie', nome: 'Le foglie secche', zona: [120, 176, 60, 22], vaiA: 150,
-        testo: [
-          'Foglie secche dell\'anno passato. Nessuno le ha ancora spazzate via.',
-        ],
+        get testo() {
+          return flag('autunno')
+            ? ['Foglie secche, appena cadute. Domani è Ognissanti, e nessuno ha tempo di spazzarle.']
+            : ['Foglie secche dell\'anno passato. Nessuno le ha ancora spazzate via.'];
+        },
       },
     ],
     uscite: [
       {
         id: 'strada', etichetta: '↑ Strada per Jüterbog', x: 30, y: 160, vaiA: 60, verso: 'confine', arrivo: 40,
-        aperta: () => flag('divieto'),
-        chiusa: [
-          'La porta della città. Prima devo portare il biglietto a Spalatino.',
-          'Spalatino mi aspetta in chiesa. Poi partirò.',
-        ],
+        aperta: () => flag('divieto') && !flag('ritorno'),
+        get chiusa() {
+          return flag('ritorno')
+            ? ['Jüterbog è lontana, e il mio lavoro ora è qui a Wittenberg.']
+            : ['La porta della città. Prima devo portare il biglietto a Spalatino.', 'Spalatino mi aspetta in chiesa. Poi partirò.'];
+        },
       },
       { id: 'mercato-da-chiesa', etichetta: '⟵ Mercato', x: 8, y: 214, vaiA: 30, verso: 'mercato', arrivo: 290 },
     ],
@@ -578,7 +609,7 @@ const STANZE = {
   /* ======================= CHIESA DEL CASTELLO: LA SALA DELLE RELIQUIE ======================= */
   reliquie: {
     luogo: 'La sala delle reliquie',
-    data: 'Wittenberg, primavera 1517',
+    data: () => dataWittenberg(),
     sfondo: 'img/bg/reliquie.webp',
     pavimento: 212,
     min: 60, max: 340,
@@ -996,6 +1027,7 @@ function leggiFoglioHans() {
 
 /* Al ritorno da Jüterbog: Grunenberg dà il lavoro della prima riga. */
 function grunenbergRitorno() {
+  if (flag('autunno')) { grunenbergAutunno(); return; }
   if (!flag('salmi')) {
     conversa([
       ['Mastro Grunenberg', 'Eccola. Due giorni a Jüterbog. Il dottor Martin mi ha detto tutto, e mi ha pagato il tuo tempo. Per una volta.'],
@@ -1132,13 +1164,157 @@ function luteroRitorno() {
         ['Il dottor Martin', 'Ora tocca a me. Non scriverò una predica. Scriverò delle tesi: domande per una disputa all\'università, in latino.'],
         ['Taccuino dello storico', 'Il 31 ottobre 1517 Lutero mandò all\'arcivescovo Alberto di Magonza una lettera e le sue 95 tesi sulle indulgenze.'],
       ], () => {
-        dialogo('Lena', 'Il dottor Martin prende una penna nuova e non alza più la testa.<br><br><em>Qui finisce la parte del capitolo 1 che si può giocare. Il 31 ottobre 1517 e le 95 tesi arrivano presto.</em>');
+        dialogo('Lena', 'Il dottor Martin prende una penna nuova e non alza più la testa.', [SALTO_AUTUNNO]);
       });
     }));
     return;
   }
-  dialogo('Il dottor Martin', variante('lutero-tesi', [
-    'Una tesi alla volta, Lena. Ogni parola deve reggere.',
-    'Torna da Grunenberg. Presto avrà bisogno di te.',
+  if (!flag('autunno')) {
+    dialogo('Il dottor Martin', 'Una tesi alla volta, Lena. Ogni parola deve reggere.', [SALTO_AUTUNNO]);
+    return;
+  }
+  luteroAutunno();
+}
+
+/* Salto di tempo: dalla primavera al 31 ottobre 1517. */
+const SALTO_AUTUNNO = { testo: 'Passano i mesi…', fai: (e) => {
+  e.stopPropagation();
+  setFlag('autunno');
+  cambiaStanza('cella', 130);
+} };
+
+/* ======================= 31 OTTOBRE 1517 ======================= */
+
+/* Quattro delle 95 tesi, tradotte dal latino. */
+const TESI = `<div class="foglio">
+  <p class="titolo-foglio">Disputa per chiarire il valore delle indulgenze</p>
+  <p><em>Per amore della verità e per il desiderio di chiarirla, queste ${gl('tesi')} saranno discusse a Wittenberg. Presiede il reverendo padre Martin Lutero.</em></p>
+  <p><strong>1.</strong> Il nostro Signore e Maestro Gesù Cristo, quando dice «Fate penitenza», vuole che tutta la vita dei fedeli sia una penitenza.</p>
+  <p><strong>27.</strong> Predicano cose inventate dagli uomini quelli che dicono: appena la moneta tintinna nella cassa, l'anima vola via dal ${gl('purgatorio')}.</p>
+  <p><strong>43.</strong> Bisogna insegnare ai cristiani che chi dà al povero o presta a chi ha bisogno fa meglio di chi compra ${gl('indulgenza', 'indulgenze')}.</p>
+  <p><strong>86.</strong> E ancora: perché il papa, che oggi è più ricco dei più ricchi, non costruisce la basilica di San Pietro con i suoi soldi, invece che con quelli dei fedeli poveri?</p>
+  <p class="nota-foglio">Quattro delle 95 tesi, tradotte dal latino. Titolo originale: «Disputatio pro declaratione virtutis indulgentiarum», 1517. La tesi 86 è una delle domande che, scrive Lutero, fa la gente semplice.</p>
+</div>`;
+
+function luteroAutunno() {
+  if (!flag('tesi')) {
+    conversa([
+      ['Il dottor Martin', 'Lena. Eccole. Novantacinque ' + gl('tesi') + ', in latino. Domande per una ' + gl('disputa') + ' all\'università.'],
+      ['Lena', 'Novantacinque? Tutte sulle indulgenze?'],
+      ['Il dottor Martin', 'Tutte. Leggi queste quattro. Alcune le hai scritte tu, in un certo senso, a Jüterbog.'],
+    ], () => {
+      fonte('tesi');
+      leggi('Le tesi del dottor Martin', TESI, () => {
+        setFlag('tesi');
+        conversa([
+          ['Lena', 'La ventisettesima… è la frase della moneta. La frase che ho scritto nel taccuino.'],
+          ['Il dottor Martin', 'Oggi mando le tesi all\'arcivescovo Alberto, con una lettera. È lui che ha mandato Tetzel. Deve sapere.'],
+          ['Il dottor Martin', 'E le voglio discutere qui, con chi vuole. Domani è Ognissanti: alla Chiesa del Castello verrà mezza Sassonia per le reliquie.'],
+          ['Il dottor Martin', 'Passa dalla chiesa. Poi porta questa copia a Grunenberg.'],
+        ], () => {
+          prendi('copia-tesi', 'una copia delle tesi');
+          dialogo('Lena', 'Prima la Chiesa del Castello, poi la bottega. Dal mercato, la strada in fondo a destra.');
+        });
+      });
+    });
+    return;
+  }
+  dialogo('Il dottor Martin', variante('lutero-autunno', [
+    'La lettera per l\'arcivescovo è partita stamattina. Ora aspettiamo.',
+    'Una tesi non è una sentenza, Lena. È una domanda da discutere.',
   ]));
+}
+
+/* Alla porta della Chiesa del Castello: il racconto e la fonte. */
+const DOMANDA_PORTA = [{
+  testo: 'Domanda: possiamo essere sicuri che Lutero abbia affisso le tesi a questa porta?',
+  risposte: [
+    { testo: 'Sì: lo racconta Melantone, che era lì.',
+      spiega: 'No. Melantone arrivò a Wittenberg solo nel 1518, un anno dopo. Non vide la scena.' },
+    { testo: 'No: lo racconta solo Melantone, quasi trent\'anni dopo.', giusta: true,
+      spiega: 'Giusto. Melantone lo scrisse nel 1546, dopo la morte di Lutero, e nel 1517 non era a Wittenberg. Per questo gli storici ne discutono. È certo, invece, che il 31 ottobre Lutero mandò le tesi all\'arcivescovo Alberto.' },
+    { testo: 'No: è una storia inventata dai film.',
+      spiega: 'No. Il racconto è antico: lo scrisse Melantone, un amico di Lutero, nel 1546. Il problema è che lo scrisse molto dopo, e non era presente.' },
+  ],
+}];
+
+function scenaPorta() {
+  conversa([
+    ['Lena', '<em>Il portone della chiesa. Sul legno sono inchiodati avvisi dell\'università, vecchi e nuovi.</em>'],
+    ['Taccuino dello storico', 'Secondo la tradizione, il 31 ottobre 1517 Lutero affisse qui le sue tesi. Gli storici ne discutono.'],
+    ['Taccuino dello storico', 'Il portone era la bacheca dell\'università: chi voleva una disputa ci appendeva le sue tesi. Ma per quel giorno abbiamo un solo racconto.'],
+  ], () => prova('Taccuino dello storico', DOMANDA_PORTA, () => {
+    setFlag('porta');
+    dialogo('Lena', 'Che le tesi siano state appese qui o no, domani tutti ne parleranno. Ora porto la copia a Mastro Grunenberg.');
+  }));
+}
+
+function grunenbergAutunno() {
+  if (!flag('tesi')) {
+    dialogo('Mastro Grunenberg', 'Il dottor Martin ti ha fatto chiamare. Vai al convento, svelta.');
+  } else if (!flag('porta')) {
+    dialogo('Mastro Grunenberg', 'Il dottor Martin ha detto di passare prima dalla Chiesa del Castello. Vai, la carta aspetta.');
+  } else if (!flag('lavoro-tesi')) {
+    conversa([
+      ['Lena', 'Mastro, il dottor Martin manda questa copia. Sono le sue tesi.'],
+      ['Mastro Grunenberg', 'Latino, latino, latino. Fammi vedere.'],
+      ['Mastro Grunenberg', 'Per una disputa servono copie per i professori e per gli studenti. Componi la prima tesi, comincia così: «fate penitenza».'],
+    ], () => {
+      setFlag('lavoro-tesi');
+      lascia('copia-tesi');
+      dialogo('Lena', 'Alla cassa dei caratteri. Attenta alla «p» e alla «q».');
+    });
+  } else if (!flag('tesi-composta')) {
+    dialogo('Mastro Grunenberg', '«Fate penitenza». La cassa è a sinistra.');
+  } else {
+    dialogo('Mastro Grunenberg', variante('gr-inverno', [
+      'Hai sentito? A Norimberga le hanno tradotte in tedesco. Ormai le leggono anche i calzolai.',
+      'Mai visto un foglio correre così. E pensare che era solo latino per i professori.',
+    ]));
+  }
+}
+
+function minigiocoTesi() {
+  componiRiga({
+    titolo: 'Comporre una tesi',
+    testo: 'fate penitenza',
+    cassa: ['f', 'a', 't', 'e', 'p', 'q', 'n', 'u', 'i', 'z', 'd', 'b'],
+    poi: () => {
+      setFlag('tesi-composta');
+      conversa([
+        ['Mastro Grunenberg', 'Bene. Il resto lo compongo io stanotte.'],
+        ['Taccuino dello storico', 'Attenzione: non sappiamo se a Wittenberg le tesi furono stampate nel 1517. Nessuna copia stampata qui è arrivata fino a noi.'],
+        ['Taccuino dello storico', 'Sappiamo invece che alla fine del 1517 furono stampate a Lipsia, a Norimberga e a Basilea.'],
+      ], () => mostraMappa(() => {
+        setFlag('mappa');
+        dialogo('Lena', 'Dicembre. Le tesi sono arrivate dappertutto. Devo leggerne una a Frau Agnes: la quarantatreesima. È al mercato.');
+      }));
+    },
+  });
+}
+
+/* Il finale del capitolo: Lena legge la tesi 43 a Frau Agnes. */
+function agnesFinale() {
+  if (flag('finale')) {
+    dialogo('Frau Agnes', variante('agnes-fine', [
+      'La vicina sta meglio, sai? I bambini hanno mangiato tutto l\'inverno.',
+      'Io continuo a pregare per Jakob. Questo nessuno me lo toglie.',
+    ]));
+    return;
+  }
+  conversa([
+    ['Lena', 'Frau Agnes, il dottor Martin ha scritto delle tesi. Ce n\'è una che vorrei leggervi.'],
+    ['Frau Agnes', 'A me? Io non so niente di latino, cara.'],
+    ['Lena', 'Ve la dico in tedesco. Tesi quarantatré: <em>«Bisogna insegnare ai cristiani che chi dà al povero o presta a chi ha bisogno fa meglio di chi compra indulgenze.»</em>'],
+    ['Frau Agnes', '…'],
+    ['Frau Agnes', 'E Jakob? Il frate aveva detto che il mio fiorino lo liberava.'],
+    ['Lena', 'Il dottor Martin dice che la misericordia di Dio non si compra. Altri frati dicono il contrario. Ora se ne discute in tutta la Germania.'],
+    ['Frau Agnes', 'Io non so chi ha ragione. Ma la vicina ha tre bambini e la febbre in casa. E ha freddo adesso.'],
+    ['Frau Agnes', 'Allora i soldi delle candele, quest\'inverno, li do a lei.'],
+    ['Lena', '<em>Un foglio stampato arriva dove una persona non arriva. Il dottor Martin non conosce Frau Agnes. Ma le sue parole sì.</em>'],
+    ['Taccuino dello storico', 'Agosto 1518. Al Convento Nero arriva una lettera con un sigillo rosso. Viene da Roma: il papa chiama Lutero a rispondere delle sue tesi.'],
+  ], () => {
+    setFlag('finale');
+    dialogo('', '<em>Fine del capitolo 1. Il capitolo 2, la disputa di Lipsia, arriva presto.</em>');
+  });
 }

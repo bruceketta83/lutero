@@ -175,7 +175,7 @@ function entra(idStanza, x) {
   stato.stanza = s;
   stato.idStanza = idStanza;
   $('luogo').textContent = s.luogo;
-  $('data').textContent = s.data;
+  $('data').textContent = typeof s.data === 'function' ? s.data() : s.data;
   $('sfondo').setAttribute('href', s.sfondo);
   $('buio').style.opacity = s.buio ?? 0.82;
 

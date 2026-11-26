@@ -48,7 +48,7 @@ test('a fine capitolo il Taccuino è completo, e la linea del tempo è in ordine
   await page.click('#apri-taccuino');
   await expect(page.locator('.tac-conto')).toContainText('8 di 8');
   // Il Taccuino si apre dall'alto, non dal pulsante «Chiudi».
-  expect(await page.evaluate(() => document.getElementById('taccuino-carta').scrollTop)).toBe(0);
+  expect(await page.evaluate(() => document.getElementById('taccuino-corpo').scrollTop)).toBe(0);
   await expect(page.locator('.tac-fonte.chiusa')).toHaveCount(0);
   // Ogni fonte trovata si apre.
   for (const id of await page.evaluate(() => FONTI.map(f => f.id))) {
@@ -71,4 +71,34 @@ test('il salvataggio ricorda le fonti del Taccuino', async ({ page }) => {
   await page.click('#scelte button:has-text("Continua la storia")');
   await page.click('#apri-taccuino');
   await expect(page.locator('.tac-conto')).toContainText('1 di 8');
+});
+
+test('sul telefono scorre solo la parte centrale: schede e «Chiudi» restano fissi', async ({ browser }) => {
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 664 }, isMobile: true, hasTouch: true });
+  const page = await ctx.newPage();
+  await page.goto('./');
+  await page.evaluate(() => {
+    ['lutero-1', 'parole', 'riga', 'tesi', 'mappa', 'finale', 'porta'].forEach(setFlag);
+    ['avviso', 'libro-reliquie', 'predica', 'moneta', 'lettera', 'salmi', 'tesi'].forEach(fonte);
+  });
+  await page.click('#apri-taccuino');
+  for (const scheda of ['fonti', 'linea']) {
+    await page.click(`.tac-scheda[data-scheda="${scheda}"]`);
+    const corpo = page.locator('#taccuino-corpo');
+    // Il contenuto è più lungo dello spazio: si scorre dentro il corpo.
+    expect(await corpo.evaluate(e => e.scrollHeight > e.clientHeight), scheda).toBe(true);
+    await corpo.evaluate(e => { e.scrollTop = e.scrollHeight; });
+    // Schede e «Chiudi» restano dentro lo schermo e si possono toccare.
+    for (const sel of ['.tac-scheda[data-scheda="fonti"]', '#taccuino-chiudi']) {
+      const b = await page.locator(sel).boundingBox();
+      expect(b.y, sel).toBeGreaterThanOrEqual(0);
+      expect(b.y + b.height, sel).toBeLessThanOrEqual(664);
+      const sopra = await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest('button')?.id || document.elementFromPoint(x, y)?.closest('button')?.dataset.scheda, [b.x + b.width / 2, b.y + b.height / 2]);
+      expect(sopra, sel).toBeTruthy();
+    }
+    expect(await page.evaluate(() => document.getElementById('taccuino-carta').scrollTop)).toBe(0);
+  }
+  await page.click('#taccuino-chiudi');
+  await expect(page.locator('#taccuino')).toBeHidden();
+  await ctx.close();
 });

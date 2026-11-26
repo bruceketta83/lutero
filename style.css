@@ -201,9 +201,12 @@ html.lettura-spazio .let-prova { letter-spacing: .05em; word-spacing: .15em; lin
    Sotto i fogli da leggere, così «Rileggi» apre il foglio sopra il Taccuino. */
 #taccuino { position: fixed; inset: 0; z-index: 19; background: rgba(0,0,0,.78); display: flex; align-items: center; justify-content: center; padding: 12px; }
 #taccuino[hidden] { display: none; }
-#taccuino-carta { background: var(--carta); color: var(--inchiostro); max-width: 600px; width: 100%; max-height: 92vh; overflow: auto; padding: 16px 18px; border-radius: 3px; border-left: 6px solid var(--azzurro); box-shadow: 0 10px 40px rgba(0,0,0,.6); }
+/* Titolo e schede fissi in alto, «Chiudi» fisso in basso: scorre solo la parte centrale. */
+#taccuino-carta { display: flex; flex-direction: column; background: var(--carta); color: var(--inchiostro); max-width: 600px; width: 100%; max-height: 92vh; overflow: hidden; padding: 16px 18px; border-radius: 3px; border-left: 6px solid var(--azzurro); box-shadow: 0 10px 40px rgba(0,0,0,.6); }
 #taccuino-titolo { font: 24px/1.2 "Fraktur", "Fell", Georgia, serif; margin-bottom: 10px; }
-.tac-schede { display: flex; gap: 6px; margin-bottom: 10px; }
+.tac-schede { display: flex; gap: 6px; margin-bottom: 10px; flex: none; }
+#taccuino-titolo { flex: none; }
+#taccuino-corpo { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; border-top: 1px solid #c9bfa9; border-bottom: 1px solid #c9bfa9; padding: 10px 2px 4px; }
 .tac-scheda { flex: 1; min-height: 40px; font: 17px "Fell", Georgia, serif; color: var(--inchiostro); background: transparent; border: 2px solid var(--inchiostro); border-radius: 4px; cursor: pointer; }
 .tac-scheda.on { background: var(--azzurro); border-color: var(--azzurro); }
 .tac-conto { margin: 0 0 8px; font-size: 17px; }
@@ -215,13 +218,13 @@ html.lettura-spazio .let-prova { letter-spacing: .05em; word-spacing: .15em; lin
 .tac-domande dt { font-style: italic; color: var(--grigio); }
 .tac-domande dd { margin: 0; }
 .tac-rileggi { margin-top: 8px; font: 16px "Fell", Georgia, serif; color: var(--inchiostro); background: transparent; border: 2px solid var(--inchiostro); border-radius: 4px; padding: 5px 12px; cursor: pointer; }
-.tac-linea { list-style: none; margin: 0; padding: 0 0 0 14px; border-left: 3px solid var(--azzurro); }
+.tac-linea { list-style: none; margin: 0 0 0 10px; padding: 0 0 0 14px; border-left: 3px solid var(--azzurro); }
 .tac-linea li { position: relative; padding: 0 0 12px 10px; display: flex; flex-direction: column; font-size: 17px; }
 .tac-linea li::before { content: ""; position: absolute; left: -22px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--azzurro); border: 2px solid var(--carta); }
 .tac-linea li.chiuso { opacity: .5; }
 .tac-linea li.chiuso::before { background: var(--carta); border-color: var(--grigio); }
 .tac-data { font-weight: bold; }
-#taccuino-chiudi { margin-top: 12px; font: 18px "Fell", Georgia, serif; color: var(--inchiostro); background: transparent; border: 2px solid var(--inchiostro); border-radius: 4px; padding: 8px 14px; cursor: pointer; }
+#taccuino-chiudi { flex: none; align-self: flex-start; margin-top: 12px; font: 18px "Fell", Georgia, serif; color: var(--inchiostro); background: transparent; border: 2px solid var(--inchiostro); border-radius: 4px; padding: 8px 14px; cursor: pointer; }
 @media (max-width: 420px) { .tac-domande { grid-template-columns: 1fr; } .tac-domande dd { margin-bottom: 4px; } }
 
 @media (prefers-reduced-motion: reduce) {

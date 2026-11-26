@@ -424,11 +424,11 @@ const STANZE = {
               setFlag('missione');
               lascia('risma');
               prendi('biglietto', 'un biglietto per Spalatino');
-              dialogo('Lena', 'Le parole esatte del predicatore e una lettera d\'indulgenza. Ma prima il biglietto per Spalatino, alla Chiesa del Castello.');
+              dialogo('Lena', 'Le parole esatte del predicatore e una lettera d\'indulgenza. Ma prima il biglietto per Spalatino, alla Chiesa del Castello.<br>Dal mercato si va in chiesa per la strada in fondo, a destra della bacheca: <em>↑ Chiesa del Castello</em>.');
             });
           } else {
             if (!flag('spalatino-1')) {
-              dialogo('Il dottor Martin', 'Prima il biglietto a Spalatino. La Chiesa del Castello è in fondo alla strada grande, dopo il mercato.');
+              dialogo('Il dottor Martin', 'Prima il biglietto a Spalatino. Dal mercato prendi la strada in fondo, a destra della bacheca: porta alla Chiesa del Castello.');
               return;
             }
             dialogo('Il dottor Martin', variante('lutero-dopo', [

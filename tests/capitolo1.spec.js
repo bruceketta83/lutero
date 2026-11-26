@@ -5,7 +5,10 @@ function watch(page) {
   const errors = [];
   page.on('pageerror', e => errors.push(e.message));
   page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
-  page.on('requestfailed', r => errors.push(`richiesta fallita: ${r.url()}`));
+  // Un caricamento interrotto dal browser (ERR_ABORTED) non è un errore: succede quando
+  // Lena cambia posa prima che l'immagine vecchia sia arrivata. I file mancanti restano errori.
+  page.on('requestfailed', r => { const e = r.failure()?.errorText || ''; if (!e.includes('ERR_ABORTED')) errors.push(`richiesta fallita: ${r.url()} (${e})`); });
+  page.on('response', r => { if (r.status() >= 400) errors.push(`file mancante (${r.status()}): ${r.url()}`); });
   return errors;
 }
 

@@ -22,7 +22,7 @@ Leggi prima [GRAFICA.md](../GRAFICA.md).
 6. **Video con Seedance,** da immagine a video: carica l'immagine come primo fotogramma.
 7. Incolla il **blocco di stile per il movimento**, poi il prompt del movimento (sezione «I movimenti»).
 8. Formato 16:9, 1280 × 720, durata come nella tabella dei tempi (10 s per le inquadrature 1 e 3, 5 s per le altre).
-9. Salva i file in `originali/video/`: le immagini `cap1-1.png` … `cap1-6.png`, i video `cap1-1.mp4` … `cap1-6.mp4` e la voce `narrazione-cap1.wav`.
+9. Salva i file in `originali/video/` con i nomi e i formati della tabella «Formati dei file».
 10. Io unisco i pezzi sulla voce, aggiungo i sottotitoli e il riquadro «Da sapere», e comprimo per il telefono.
 
 **Non scrivere nomi di fumetti o di film** (Sin City, Berserk): i generatori a volte rifiutano, e il risultato copia invece di ispirarsi. I blocchi di stile descrivono lo stile a parole.
@@ -53,20 +53,22 @@ Pronuncia i nomi tedeschi in modo chiaro.
 La lettura deve durare al massimo 30 secondi.
 ```
 
-## Formato delle immagini (Gemini)
+## Formati dei file
 
-| Cosa | Valore |
-| :--- | :--- |
-| Proporzioni | **16:9 orizzontale**, le stesse del video e degli sfondi del gioco |
-| Risoluzione | la più alta che Gemini dà in 16:9: almeno **1920 × 1080**; meglio 2560 × 1440 se disponibile |
-| File | **PNG** (niente JPG: la compressione sporca i neri pieni e i bordi netti) |
-| Colore | bianco e nero; solo il rosso `#8b1e1e` dove il prompt lo chiede |
-| Nome | `cap1-1.png` … `cap1-6.png`, uguale al nome del video |
+| File | Formato | Dimensioni | Nome |
+| :--- | :--- | :--- | :--- |
+| Immagine iniziale (Gemini) | JPG o PNG, come lo scarichi da Gemini | **16:9**, circa **2000 × 1116** (quella che dà Gemini; va bene da 1920 × 1080 in su) | `cap1-1.jpg` … `cap1-6.jpg` |
+| Video (Seedance) | MP4 | **16:9, 1280 × 720** (720p); durata 10 s o 5 s (vedi la tabella dei tempi) | `cap1-1.mp4` … `cap1-6.mp4` |
+| Voce (Gemini TTS) | **WAV** (non PCM grezzo) | 24 000 Hz, mono, 16 bit, 28–32 s | `narrazione-cap1.wav` |
+| Video finale nel gioco (lo faccio io) | MP4 (H.264 + AAC) | 1280 × 720, circa 31 s, meno di 10 MB | `video/cap1.mp4` |
+| Sottotitoli (li faccio io) | WebVTT | tempi sulla voce | `video/cap1.vtt` |
 
 1. Se Gemini (o AI Studio) ha la scelta delle proporzioni, scegli **16:9** prima di generare. Il prompt lo chiede già, ma la scelta nelle impostazioni è più sicura.
-2. Controlla le dimensioni del file scaricato. Se non è 16:9 (per esempio quadrato o verticale), rigenera: non tagliarla e non allargarla.
-3. Carica in Seedance la stessa immagine PNG, senza modifiche. Scegli il formato video **16:9** e la risoluzione più alta (1080p): così il video non deforma la figura.
-4. Tieni le cose importanti (volti, sigillo, moneta) lontano dai bordi: nel gioco il video può essere tagliato un poco sui lati, su telefoni con schermi diversi.
+2. Controlla le dimensioni del file scaricato. Se non è 16:9 (per esempio quadrato o verticale), rigenera: non tagliarla e non allargarla. 2000 × 1116 è 16:9 (la differenza è di pochi pixel, la correggo io).
+3. Se Gemini ti dà il PNG, usa il PNG: i neri sono più puliti. Il JPG che scarichi da Gemini va bene lo stesso.
+4. Carica in Seedance la stessa immagine, senza modifiche. Scegli **16:9** a **720p (1280 × 720)**: così il video non deforma la figura ed è già della misura del gioco.
+5. Tieni le cose importanti (volti, sigillo, moneta) lontano dai bordi: nel gioco il video può essere tagliato un poco sui lati, su telefoni con schermi diversi.
+6. Salva tutto in `originali/video/`.
 
 ## Blocco di stile per le immagini (Gemini)
 
@@ -92,6 +94,8 @@ borders, no speech bubbles, no drawing or illustration look.
 Landscape 16:9, at least 1920 x 1080 pixels. Keep faces and key objects away
 from the left and right edges.
 ```
+
+Esempio riuscito: `originali/video/cap1-1.jpg` (Tetzel, 2000 × 1116). Usalo per confrontare le altre immagini: stessa luce, stessi neri, stesso rosso.
 
 ## Blocco di stile per il movimento (Seedance)
 
@@ -244,7 +248,7 @@ Red detail: none.
 
 **6 — `cap1-6` — La lettera da Roma**
 
-Allega: l'immagine `cap1-3.png` (per avere lo stesso volto di Lutero).
+Allega: l'immagine `cap1-3.jpg` (per avere lo stesso volto di Lutero).
 
 Immagine (Gemini):
 ```
@@ -326,7 +330,7 @@ Sound: rain, then silence.
 1. Sembra una foto di un film, con persone vere: non un disegno.
 2. Bianco e nero con neri pieni e bianchi bruciati. Il rosso solo dove il prompt lo chiede: niente oro, niente pelle colorata.
 3. Niente scritte leggibili, niente cornici.
-4. Proporzioni 16:9.
+4. Proporzioni 16:9 (circa 2000 × 1116).
 5. Lutero ha lo stesso volto nelle inquadrature 3 e 6.
 6. Tetzel: frate domenicano, abito bianco e mantello nero.
 7. Niente cose moderne: lampioni, vetri grandi, orologi.

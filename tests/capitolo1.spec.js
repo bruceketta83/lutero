@@ -26,8 +26,8 @@ function aiuti(page) {
   return { fermo, tuttoIlTesto, tocca, continua };
 }
 
-test('il percorso dalla tipografia a Lutero funziona senza errori', async ({ page }) => {
-  test.setTimeout(150_000); // Lena attraversa quattro stanze a passo d'uomo.
+test('il percorso dalla tipografia a Lutero e Spalatino funziona senza errori', async ({ page }) => {
+  test.setTimeout(240_000); // Lena attraversa sei stanze a passo d'uomo.
   const errors = watch(page);
   const { tocca, continua, tuttoIlTesto } = aiuti(page);
   await page.goto('./');
@@ -101,17 +101,68 @@ test('il percorso dalla tipografia a Lutero funziona senza errori', async ({ pag
   await expect(page.locator('#testo')).toContainText('Dottor Martin?');
   await continua();
   expect(await page.evaluate(() => flag('missione'))).toBe(true);
-  expect(await page.evaluate(() => stato.borsa)).toEqual([]);
-  await expect(page.locator('#testo')).toContainText('Jüterbog');
+  expect(await page.evaluate(() => stato.borsa)).toEqual(['biglietto']);
+  await expect(page.locator('#testo')).toContainText('Spalatino');
 
-  // Si torna indietro fino alla tipografia.
+  // Si torna al mercato e si va alla Chiesa del Castello.
   await tocca('cortile-da-cella');
   await page.waitForFunction(() => stato.idStanza === 'cortile');
   await tocca('mercato-da-cortile');
   await page.waitForFunction(() => stato.idStanza === 'mercato');
+  await tocca('chiesa');
+  await page.waitForFunction(() => stato.idStanza === 'chiesa');
+  await expect(page.locator('#luogo')).toHaveText('Chiesa del Castello');
+
+  // Il portone porta alla sala delle reliquie.
+  await page.click('[data-id="portone"] .area', { force: true });
+  await page.waitForFunction(() => stato.idStanza === 'reliquie', null, { timeout: 8000 });
+
+  // Il libro delle reliquie è una fonte.
+  await page.click('[data-id="libro-reliquie"] .area', { force: true });
+  await page.waitForFunction(() => !stato.cammina);
+  await expect(page.locator('#foglio-testo')).toContainText('Cranach');
+  await page.click('#foglio-chiudi');
+  expect(await page.evaluate(() => stato.fonti)).toContain('libro-reliquie');
+
+  // Spalatino racconta, poi la domanda del Taccuino.
+  await tocca('spalatino');
+  await expect(page.locator('#testo')).toContainText('biglietto');
+  for (let i = 0; i < 30 && !(await page.locator('#scelte button', { hasText: 'protestante' }).count()); i++) {
+    await tuttoIlTesto();
+    await page.click('#scelte button');
+    await page.waitForTimeout(80);
+  }
+  expect(await page.evaluate(() => stato.borsa)).toEqual([]);
+  // Risposta sbagliata: spiegazione, poi la domanda torna.
+  await page.click('#scelte button:has-text("protestante")');
+  await tuttoIlTesto();
+  await expect(page.locator('#testo')).toContainText('1529');
+  await page.click('#scelte button:has-text("Rispondi di nuovo")');
+  await tuttoIlTesto();
+  // Risposta giusta.
+  await page.click('#scelte button:has-text("fuori dalla Sassonia")');
+  expect(await page.evaluate(() => flag('divieto'))).toBe(true);
+  await continua();
+  await expect(page.locator('#testo')).toContainText('Jüterbog');
+
+  // Si torna indietro fino alla tipografia.
+  await tocca('chiesa-da-reliquie');
+  await page.waitForFunction(() => stato.idStanza === 'chiesa');
+  await tocca('mercato-da-chiesa');
+  await page.waitForFunction(() => stato.idStanza === 'mercato');
   await tocca('tipografia');
   await page.waitForFunction(() => stato.idStanza === 'tipografia');
   expect(errors).toEqual([]);
+});
+
+test('la chiesa si apre solo dopo la missione di Lutero', async ({ page }) => {
+  const { tocca, tuttoIlTesto } = aiuti(page);
+  await page.goto('./');
+  await page.evaluate(() => { setFlag('risma'); setFlag('agnes-2'); entra('mercato'); });
+  await tuttoIlTesto();
+  await tocca('chiesa');
+  expect(await page.evaluate(() => stato.idStanza)).toBe('mercato');
+  await expect(page.locator('#testo')).toContainText('dottor Martin');
 });
 
 test('il convento si apre solo dopo aver aiutato Frau Agnes', async ({ page }) => {
@@ -124,7 +175,7 @@ test('il convento si apre solo dopo aver aiutato Frau Agnes', async ({ page }) =
   await expect(page.locator('#testo')).toContainText('Frau Agnes');
 });
 
-for (const stanza of ['mercato', 'cortile', 'cella']) {
+for (const stanza of ['mercato', 'cortile', 'cella', 'chiesa', 'reliquie']) {
   test(`${stanza}: ogni cosa da toccare è libera e ha un testo`, async ({ page }) => {
     const { tuttoIlTesto, fermo } = aiuti(page);
     await page.goto('./');

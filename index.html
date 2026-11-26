@@ -7,8 +7,8 @@
 <meta name="description" content="Gioco di storia su Martin Lutero e la Riforma, per la scuola media.">
 <meta name="theme-color" content="#0b0b0b">
 <!-- ?v=N: cambia N a ogni versione, così il telefono scarica subito i file nuovi. -->
-<link rel="stylesheet" href="fonts/fonts.css?v=15">
-<link rel="stylesheet" href="style.css?v=15">
+<link rel="stylesheet" href="fonts/fonts.css?v=16">
+<link rel="stylesheet" href="style.css?v=16">
 </head>
 <body>
 <div id="app">
@@ -43,30 +43,35 @@
       <g id="uscite"></g>
     </svg>
     <button id="mostra-oggetti" class="aiuto" aria-label="Mostra gli oggetti">👁 Oggetti</button>
+    <button id="apri-lettura" class="aiuto a-sinistra" aria-label="Opzioni di lettura">Aa Lettura</button>
   </main>
 
   <div id="foglio-box" hidden>
     <div id="foglio-carta" role="dialog" aria-modal="true" aria-labelledby="foglio-titolo">
       <div id="foglio-titolo"></div>
       <div id="foglio-testo"></div>
-      <button id="foglio-chiudi">Chiudi</button>
+      <div class="riga-pulsanti"><button id="foglio-chiudi">Chiudi</button><button class="ascolta" type="button" aria-pressed="false">🔈 Ascolta</button></div>
     </div>
   </div>
   <div id="glossario" hidden role="dialog" aria-modal="true">
-    <div id="glossario-carta"><div id="glossario-parola"></div><div id="glossario-testo"></div><button id="glossario-chiudi">Ho capito</button></div>
+    <div id="glossario-carta"><div id="glossario-parola"></div><div id="glossario-testo"></div><div class="riga-pulsanti"><button id="glossario-chiudi">Ho capito</button><button class="ascolta" type="button" aria-pressed="false">🔈 Ascolta</button></div></div>
   </div>
   <div id="mini" hidden role="dialog" aria-modal="true" aria-labelledby="mini-titolo">
     <div id="mini-carta"><div id="mini-titolo"></div><div id="mini-corpo"></div></div>
   </div>
+  <div id="lettura" hidden role="dialog" aria-modal="true" aria-labelledby="lettura-titolo">
+    <div id="lettura-carta"><div id="lettura-titolo">Opzioni di lettura</div><div id="lettura-corpo"></div><button id="lettura-chiudi">Chiudi</button></div>
+  </div>
   <div id="avviso-borsa" aria-live="polite" hidden></div>
   <section id="dialogo" aria-live="polite">
-    <div id="chi"></div>
+    <div class="dialogo-testa"><div id="chi"></div><button class="ascolta" type="button" aria-pressed="false">🔈 Ascolta</button></div>
     <div id="testo"></div>
     <div id="scelte"></div>
   </section>
 </div>
-<script src="js/stanze.js?v=15"></script>
-<script src="js/gioco.js?v=15"></script>
-<script src="js/minigiochi.js?v=15"></script>
+<script src="js/lettura.js?v=16"></script>
+<script src="js/stanze.js?v=16"></script>
+<script src="js/gioco.js?v=16"></script>
+<script src="js/minigiochi.js?v=16"></script>
 </body>
 </html>

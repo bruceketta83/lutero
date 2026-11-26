@@ -4,3 +4,10 @@
 @font-face { font-family: "Fell"; src: url("fell-pica.woff2") format("woff2"); font-style: normal; font-display: swap; }
 @font-face { font-family: "Fell"; src: url("fell-pica-italic.woff2") format("woff2"); font-style: italic; font-display: swap; }
 @font-face { font-family: "Fraktur"; src: url("fraktur.woff2") format("woff2"); font-display: swap; }
+
+/* Opzioni di lettura (SIL Open Font License 1.1, licenze in questa cartella).
+   Atkinson Hyperlegible: carattere molto leggibile. OpenDyslexic: aiuta chi ha la dislessia. */
+@font-face { font-family: "Atkinson Hyperlegible"; src: url("atkinson-hyperlegible-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Atkinson Hyperlegible"; src: url("atkinson-hyperlegible-latin-700-normal.woff2") format("woff2"); font-weight: 600 900; font-display: swap; }
+@font-face { font-family: "OpenDyslexic"; src: url("opendyslexic-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "OpenDyslexic"; src: url("opendyslexic-latin-700-normal.woff2") format("woff2"); font-weight: 600 900; font-display: swap; }

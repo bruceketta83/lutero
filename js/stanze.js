@@ -23,6 +23,8 @@ const GLOSSARIO = {
   'principe elettore': 'Uno dei sette principi tedeschi che scelgono l\'imperatore. Federico di Sassonia è uno di loro: per questo è molto potente.',
   domenicani: 'Frati dell\'Ordine dei Predicatori, fondato da san Domenico. Erano famosi per le loro prediche. Frate Tetzel era domenicano.',
   grosso: 'Una moneta d\'argento usata in Sassonia. Un fiorino d\'oro valeva circa venti grossi.',
+  compositoio: 'Un piccolo vassoio di metallo. Il compositore ci mette le lettere di piombo una dopo l\'altra, per formare una riga.',
+  'caratteri mobili': 'Lettere di metallo (piombo, stagno e antimonio) fuse una per una. Si mettono in fila per comporre il testo. Dopo la stampa tornano nella cassa e si usano di nuovo.',
   torchio: 'La pressa della tipografia. Una grande vite spinge un piano di legno che preme il foglio sui caratteri inchiostrati.',
 };
 const gl = (parola, testo) => `<a class="gl" data-gl="${parola}" href="#">${testo || parola}</a>`;
@@ -84,6 +86,10 @@ const STANZE = {
       [210, 205, 150, false], // centro del pavimento
     ],
     ingresso() {
+      if (flag('ritorno') && !flag('vista-ritorno')) {
+        setFlag('vista-ritorno');
+        return 'Due giorni dopo, di nuovo in bottega. Ho ancora la polvere della strada sulle scarpe. Mastro Grunenberg mi guarda e non dice niente.';
+      }
       if (!flag('vista-tipografia')) {
         setFlag('vista-tipografia');
         return 'La bottega odora di inchiostro e olio. Mastro Grunenberg conta i fogli e borbotta. <br>Tocca il pavimento per camminare, tocca le cose e le persone per guardarle o parlare.';
@@ -95,6 +101,11 @@ const STANZE = {
         id: 'grunenberg', nome: 'Mastro Grunenberg', img: 'img/chars/grunenberg.webp',
         x: 300, verso: -1, alto: 1.15,
         parla() {
+          if (flag('ritorno')) { grunenbergRitorno(); return; }
+          if (flag('missione')) {
+            dialogo('Mastro Grunenberg', 'Il dottor Martin mi ha mandato un ragazzo con un biglietto: per qualche giorno lavori per lui. Vai, ma torna presto.');
+            return;
+          }
           if (!flag('compito')) {
             conversa([
               ['Mastro Grunenberg', 'Lena. Finalmente. Hai finito di sciacquare i mazzi? Bene.'],
@@ -120,6 +131,10 @@ const STANZE = {
     oggetti: [
       {
         id: 'casse', nome: 'Casse dei caratteri', zona: [14, 88, 106, 52], vaiA: 95,
+        azione() {
+          if (flag('salmi') && !flag('riga')) { minigiocoSalmi(); return; }
+          dialogo('Lena', variante('casse', this.testo));
+        },
         testo: [
           'Migliaia di lettere di piombo, ognuna nel suo scomparto. Mastro Grunenberg sa dov\'è ogni <em>a</em> anche al buio.',
           'Le lettere sono al contrario, come in uno specchio. All\'inizio mi facevano girare la testa.',
@@ -858,10 +873,17 @@ const STANZE = {
               });
             });
           } else {
-            dialogo('Hans il carrettiere', variante('hans-j-dopo', [
-              'Quando hai finito, ti riporto a Wittenberg. La birra non aspetta.',
-              'Quel foglio l\'ho messo nella camicia. Vicino al cuore.',
-            ]));
+            dialogo('Hans il carrettiere', 'La birra è sul carro. Torniamo a Wittenberg?', [
+              { testo: 'Sì, torniamo a Wittenberg', fai: (e) => {
+                e.stopPropagation();
+                setFlag('ritorno');
+                cambiaStanza('tipografia', 200);
+              } },
+              { testo: 'Non ancora', fai: (e) => {
+                e.stopPropagation();
+                dialogo('Hans il carrettiere', 'Va bene. Ma la birra non aspetta.');
+              } },
+            ]);
           }
         },
       },
@@ -875,7 +897,7 @@ const STANZE = {
             { testo: 'Continua', fai: (e) => {
               e.stopPropagation();
               disegnaPersonaggi();
-              dialogo('Lena', 'Ho le parole del predicatore e la copia della lettera. Devo tornare dal dottor Martin.<br><br><em>Qui finisce la parte del capitolo 1 che si può giocare. Il ritorno a Wittenberg e le domande di Lutero arrivano presto.</em>');
+              dialogo('Lena', 'Ho le parole del predicatore e la copia della lettera. Hans mi riporta a Wittenberg con il carro.');
             } },
           ]);
         },
@@ -963,5 +985,53 @@ function leggiFoglioHans() {
         ], () => dialogo('Lena', 'Hans mi porta a Jüterbog. La strada passa oltre la sbarra, a destra.'));
       } },
     ]);
+  });
+}
+
+/* Al ritorno da Jüterbog: Grunenberg dà il lavoro della prima riga. */
+function grunenbergRitorno() {
+  if (!flag('salmi')) {
+    conversa([
+      ['Mastro Grunenberg', 'Eccola. Due giorni a Jüterbog. Il dottor Martin mi ha detto tutto, e mi ha pagato il tuo tempo. Per una volta.'],
+      ['Mastro Grunenberg', 'E ha portato lavoro. Un suo libretto sui sette salmi della penitenza. In tedesco, per chi non sa il latino.'],
+      ['Lena', 'Un libro del dottor Martin? Stampato qui?'],
+      ['Mastro Grunenberg', 'Qui. Componi tu la prima riga del salmo: «pietà di me». Sono undici pezzi di piombo, spazi compresi.'],
+      ['Mastro Grunenberg', 'Le lettere nella cassa sono allo specchio. Guarda bene la «p» e la «d». Poi al ' + gl('torchio') + '.'],
+    ], () => {
+      setFlag('salmi');
+      dialogo('Lena', 'La cassa dei caratteri è a sinistra. Prendo il ' + gl('compositoio') + '.');
+    });
+  } else if (!flag('riga')) {
+    dialogo('Mastro Grunenberg', variante('gr-riga', [
+      'La cassa è a sinistra. «Pietà di me». E guarda bene le lettere.',
+      'Una riga sola, Lena. Non un libro intero.',
+    ]));
+  } else {
+    dialogo('Mastro Grunenberg', variante('gr-dopo', [
+      'Domani porti al dottor Martin quello che hai scritto a Jüterbog. Oggi si stampa.',
+      'La carta costa. Il piombo costa. Ma una pagina stampata va più lontano di un uomo a cavallo.',
+    ]));
+  }
+}
+
+/* Il minigioco: comporre «pietà di me» e stamparlo. */
+function minigiocoSalmi() {
+  componiRiga({
+    titolo: 'Comporre una riga',
+    testo: 'pietà di me',
+    cassa: ['p', 'q', 'i', 'e', 't', 'à', 'd', 'b', 'm', 'n'],
+    poi: () => {
+      setFlag('riga');
+      fonte('salmi');
+      conversa([
+        ['Mastro Grunenberg', 'Fammi vedere. Diritta, pulita. Non male, per una che due giorni fa era a Jüterbog.'],
+        ['Lena', 'Nel piombo era tutta al contrario, e io la leggevo a testa in giù. Sulla carta si legge diritta.'],
+        ['Mastro Grunenberg', 'È il nostro mestiere. Un amanuense copia un libro in mesi. Noi in un giorno facciamo centinaia di fogli uguali.'],
+        ['Taccuino dello storico', 'Nel 1517 la bottega di Johann Rhau-Grunenberg stampò a Wittenberg «I sette salmi penitenziali» di Lutero, con una spiegazione in tedesco. È il primo libro scritto da Lutero e stampato.'],
+        ['Taccuino dello storico', 'Il salmo 51 comincia così: «Pietà di me, o Dio». Lutero scriveva in tedesco per chi non sapeva il latino.'],
+      ], () => {
+        dialogo('Lena', 'Domani porto al dottor Martin le prove di Jüterbog.<br><br><em>Qui finisce la parte del capitolo 1 che si può giocare. Le domande di Lutero e le 95 tesi arrivano presto.</em>');
+      });
+    },
   });
 }

@@ -279,7 +279,7 @@ test('il viaggio: Hans al confine, poi Tetzel e la lettera a Jüterbog', async (
   await page.click('#scelte button');
   await expect(page.locator('[data-id="cercatore"]')).toHaveCount(0);
   await tuttoIlTesto();
-  await expect(page.locator('#testo')).toContainText('dottor Martin');
+  await expect(page.locator('#testo')).toContainText('Hans mi riporta');
 
   // Agnes ha dato il suo fiorino.
   await tocca('agnes-j');

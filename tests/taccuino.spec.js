@@ -102,3 +102,30 @@ test('sul telefono scorre solo la parte centrale: schede e «Chiudi» restano fi
   await expect(page.locator('#taccuino')).toBeHidden();
   await ctx.close();
 });
+
+test('sul telefono anche i fogli e il pannello di lettura tengono fissi titolo e «Chiudi»', async ({ browser }) => {
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 664 }, isMobile: true, hasTouch: true });
+  const page = await ctx.newPage();
+  await page.goto('./');
+  const fisso = async (corpo, sels) => {
+    const c = page.locator(corpo);
+    expect(await c.evaluate(e => e.scrollHeight > e.clientHeight), corpo).toBe(true);
+    await c.evaluate(e => { e.scrollTop = e.scrollHeight; });
+    for (const sel of sels) {
+      const b = await page.locator(sel).boundingBox();
+      expect(b.y, sel).toBeGreaterThanOrEqual(0);
+      expect(b.y + b.height, sel).toBeLessThanOrEqual(664);
+    }
+  };
+  // Il foglio più lungo: le tesi.
+  await page.evaluate(() => leggi('Le tesi del dottor Martin', TESI));
+  await fisso('#foglio-testo', ['#foglio-titolo', '#foglio-chiudi']);
+  await page.click('#foglio-chiudi');
+  // Il pannello di lettura, con tutte le opzioni della voce aperte.
+  await page.evaluate(() => { cambiaLettura('grandezza', 2); });
+  await page.click('#apri-lettura');
+  await fisso('#lettura-corpo', ['#lettura-titolo', '#lettura-chiudi']);
+  await page.click('#lettura-chiudi');
+  await expect(page.locator('#lettura')).toBeHidden();
+  await ctx.close();
+});

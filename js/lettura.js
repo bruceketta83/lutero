@@ -159,7 +159,7 @@ function apriLettura(e) {
   if (e) e.stopPropagation();
   disegnaPannelloLettura();
   _el('lettura').hidden = false;
-  _el('lettura-carta').scrollTop = 0;
+  _el('lettura-corpo').scrollTop = 0;
   _el('lettura-chiudi').focus({ preventScroll: true });
 }
 

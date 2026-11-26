@@ -80,7 +80,7 @@ test('Hans riporta Lena a Wittenberg; Lena compone e stampa la prima riga', asyn
 
   expect(await page.evaluate(() => [flag('riga'), stato.fonti.includes('salmi')])).toEqual([true, true]);
   await continua();
-  await expect(page.locator('#testo')).toContainText('95 tesi');
+  await expect(page.locator('#testo')).toContainText('Convento Nero');
   expect(errors).toEqual([]);
 });
 

@@ -89,6 +89,6 @@ test('dopo la missione Grunenberg lascia andare Lena', async ({ page }) => {
   await page.evaluate(() => { ['compito', 'risma', 'missione'].forEach(setFlag); entra('tipografia'); });
   await page.click('[data-id="grunenberg"] .area', { force: true });
   await page.waitForFunction(() => !stato.cammina);
-  await page.click('#dialogo');
+  await page.click('#dialogo', { position: { x: 4, y: 4 } });
   await expect(page.locator('#testo')).toContainText('lavori per lui');
 });

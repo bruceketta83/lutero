@@ -60,7 +60,12 @@ function prendi(id, nome) {
 function lascia(id) { stato.borsa = stato.borsa.filter(x => x !== id); salva(); }
 
 /* Segna una fonte trovata (andrà nel Taccuino dello storico). */
-function fonte(id) { if (!stato.fonti.includes(id)) stato.fonti.push(id); salva(); }
+function fonte(id) {
+  if (stato.fonti.includes(id)) return;
+  stato.fonti.push(id);
+  salva();
+  if (typeof avvisoFonte === 'function') avvisoFonte(id);
+}
 
 function el(tag, attrs = {}, parent) {
   const e = document.createElementNS(SVGNS, tag);
@@ -153,9 +158,10 @@ function leggi(titolo, html, poi) {
   $('foglio-titolo').textContent = titolo;
   $('foglio-testo').innerHTML = html;
   $('foglio-box').hidden = false;
+  $('foglio-carta').scrollTop = 0;
   leggi.poi = poi;
   if (typeof letturaSuFoglio === 'function') letturaSuFoglio(titolo, html);
-  $('foglio-chiudi').focus();
+  $('foglio-chiudi').focus({ preventScroll: true });
 }
 function chiudiFoglio() {
   $('foglio-box').hidden = true;

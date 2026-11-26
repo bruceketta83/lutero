@@ -70,7 +70,7 @@ test('il testo compare lettera per lettera; un tocco lo mostra tutto', async ({ 
   await page.waitForTimeout(60);
   const nascoste = await page.locator('#testo .l[style*="hidden"]').count();
   expect(nascoste).toBeGreaterThan(0);
-  await page.click('#dialogo');
+  await page.click('#dialogo', { position: { x: 4, y: 4 } });
   await expect(page.locator('#testo .l[style*="hidden"]')).toHaveCount(0);
 });
 

@@ -19,14 +19,14 @@ test('si può ricominciare da capo, con una conferma', async ({ page }) => {
   await page.evaluate(() => { ['compito', 'risma'].forEach(setFlag); entra('mercato'); });
   await page.reload();
   await page.click('#scelte button:has-text("Ricomincia da capo")');
-  await page.click('#dialogo');
+  await page.click('#dialogo', { position: { x: 4, y: 4 } });
   // Con "No" non si perde niente.
   await page.click('#scelte button:has-text("No, continua")');
   expect(await page.evaluate(() => flag('risma'))).toBe(true);
 
   await page.reload();
   await page.click('#scelte button:has-text("Ricomincia da capo")');
-  await page.click('#dialogo');
+  await page.click('#dialogo', { position: { x: 4, y: 4 } });
   await page.click('#scelte button:has-text("Sì, ricomincia")');
   expect(await page.evaluate(() => [stato.idStanza, flag('risma'), stato.borsa])).toEqual(['tipografia', false, []]);
   await page.reload();

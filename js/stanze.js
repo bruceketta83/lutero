@@ -1245,6 +1245,7 @@ function scenaPorta() {
     ['Taccuino dello storico', 'Il portone era la bacheca dell\'università: chi voleva una disputa ci appendeva le sue tesi. Ma per quel giorno abbiamo un solo racconto.'],
   ], () => prova('Taccuino dello storico', DOMANDA_PORTA, () => {
     setFlag('porta');
+    fonte('melantone');
     dialogo('Lena', 'Che le tesi siano state appese qui o no, domani tutti ne parleranno. Ora porto la copia a Mastro Grunenberg.');
   }));
 }

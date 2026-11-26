@@ -164,12 +164,14 @@ a.gl { color: inherit; text-decoration: underline dotted var(--azzurro); text-de
 /* ---------- Opzioni di lettura ----------
    Grandezza, carattere e spazio valgono solo per i testi da leggere.
    Le lettere di piombo del minigioco restano in carattere da stampa. */
-#dialogo, #foglio-carta, #glossario-carta, #mini-carta, #lettura-carta { zoom: var(--zoom-lettura, 1); }
-html.car-leggibile :is(#dialogo, #foglio-carta, #glossario-carta, #mini-carta) :is(*:not(.cassetto):not(.piombo):not(.piombo *):not(.cassetto *):not(.foglio-stampato):not(.foglio-stampato *)) { font-family: "Atkinson Hyperlegible", sans-serif; }
-html.car-dislessia :is(#dialogo, #foglio-carta, #glossario-carta, #mini-carta) :is(*:not(.cassetto):not(.piombo):not(.piombo *):not(.cassetto *):not(.foglio-stampato):not(.foglio-stampato *)) { font-family: "OpenDyslexic", sans-serif; }
+#dialogo, #foglio-carta, #glossario-carta, #mini-carta, #lettura-carta, #taccuino-carta { zoom: var(--zoom-lettura, 1); }
+html.car-leggibile :is(#dialogo, #foglio-carta, #glossario-carta, #mini-carta, #taccuino-carta) :is(*:not(.cassetto):not(.piombo):not(.piombo *):not(.cassetto *):not(.foglio-stampato):not(.foglio-stampato *)) { font-family: "Atkinson Hyperlegible", sans-serif; }
+html.car-dislessia :is(#dialogo, #foglio-carta, #glossario-carta, #mini-carta, #taccuino-carta) :is(*:not(.cassetto):not(.piombo):not(.piombo *):not(.cassetto *):not(.foglio-stampato):not(.foglio-stampato *)) { font-family: "OpenDyslexic", sans-serif; }
 html.lettura-spazio :is(#testo, #scelte button, #foglio-testo, #glossario-testo, .mini-aiuto, .mini-msg) { letter-spacing: .05em; word-spacing: .15em; line-height: 1.75; }
 
-.aiuto.a-sinistra { right: auto; left: 8px; }
+/* Strumenti sotto il nome del luogo: fuori dalla scena, così non coprono le cose da toccare. */
+#strumenti { display: flex; gap: 8px; padding: 0 14px 8px; background: var(--nero); }
+.strumento { font: 15px "Fell", Georgia, serif; color: #0b0b0b; background: var(--azzurro); border: 0; border-radius: 6px; padding: 6px 10px; cursor: pointer; }
 .dialogo-testa { display: flex; align-items: center; gap: 10px; }
 .dialogo-testa #chi { flex: 1; }
 .riga-pulsanti { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
@@ -194,6 +196,33 @@ html.lettura-spazio .let-prova { letter-spacing: .05em; word-spacing: .15em; lin
 .let-opz.on { background: var(--azzurro); border-color: var(--azzurro); }
 .let-opz:disabled { opacity: .4; cursor: not-allowed; }
 #lettura-chiudi { margin-top: 14px; font: 18px "Fell", Georgia, serif; color: var(--inchiostro); background: transparent; border: 2px solid var(--inchiostro); border-radius: 4px; padding: 8px 14px; cursor: pointer; }
+
+/* ---------- Taccuino dello storico (azzurro = aiuto) ----------
+   Sotto i fogli da leggere, così «Rileggi» apre il foglio sopra il Taccuino. */
+#taccuino { position: fixed; inset: 0; z-index: 19; background: rgba(0,0,0,.78); display: flex; align-items: center; justify-content: center; padding: 12px; }
+#taccuino[hidden] { display: none; }
+#taccuino-carta { background: var(--carta); color: var(--inchiostro); max-width: 600px; width: 100%; max-height: 92vh; overflow: auto; padding: 16px 18px; border-radius: 3px; border-left: 6px solid var(--azzurro); box-shadow: 0 10px 40px rgba(0,0,0,.6); }
+#taccuino-titolo { font: 24px/1.2 "Fraktur", "Fell", Georgia, serif; margin-bottom: 10px; }
+.tac-schede { display: flex; gap: 6px; margin-bottom: 10px; }
+.tac-scheda { flex: 1; min-height: 40px; font: 17px "Fell", Georgia, serif; color: var(--inchiostro); background: transparent; border: 2px solid var(--inchiostro); border-radius: 4px; cursor: pointer; }
+.tac-scheda.on { background: var(--azzurro); border-color: var(--azzurro); }
+.tac-conto { margin: 0 0 8px; font-size: 17px; }
+.tac-fonte { border: 1px solid #c9bfa9; border-radius: 4px; padding: 10px 12px; margin-bottom: 8px; background: #f3eee2; }
+.tac-fonte.chiusa { opacity: .55; background: transparent; border-style: dashed; }
+.tac-titolo { font-weight: bold; font-size: 18px; }
+.tac-tipo { font-size: 15px; font-style: italic; color: var(--grigio); }
+.tac-domande { margin: 6px 0 0; display: grid; grid-template-columns: max-content 1fr; gap: 2px 10px; font-size: 16px; }
+.tac-domande dt { font-style: italic; color: var(--grigio); }
+.tac-domande dd { margin: 0; }
+.tac-rileggi { margin-top: 8px; font: 16px "Fell", Georgia, serif; color: var(--inchiostro); background: transparent; border: 2px solid var(--inchiostro); border-radius: 4px; padding: 5px 12px; cursor: pointer; }
+.tac-linea { list-style: none; margin: 0; padding: 0 0 0 14px; border-left: 3px solid var(--azzurro); }
+.tac-linea li { position: relative; padding: 0 0 12px 10px; display: flex; flex-direction: column; font-size: 17px; }
+.tac-linea li::before { content: ""; position: absolute; left: -22px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--azzurro); border: 2px solid var(--carta); }
+.tac-linea li.chiuso { opacity: .5; }
+.tac-linea li.chiuso::before { background: var(--carta); border-color: var(--grigio); }
+.tac-data { font-weight: bold; }
+#taccuino-chiudi { margin-top: 12px; font: 18px "Fell", Georgia, serif; color: var(--inchiostro); background: transparent; border: 2px solid var(--inchiostro); border-radius: 4px; padding: 8px 14px; cursor: pointer; }
+@media (max-width: 420px) { .tac-domande { grid-template-columns: 1fr; } .tac-domande dd { margin-bottom: 4px; } }
 
 @media (prefers-reduced-motion: reduce) {
   .via-tesi { animation: none; stroke-dashoffset: 0; }

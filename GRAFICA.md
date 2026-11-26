@@ -31,7 +31,7 @@ Le immagini sono **in bianco e nero, con i grigi del tratteggio**. Il colore ser
    - **IM Fell DW Pica** per tutti i testi: tipi fusi a Oxford nel Seicento, leggibili e con l'aspetto della stampa a mano;
    - **UnifrakturMaguntia** (gotico tedesco, Fraktur) solo per il nome del luogo e del personaggio che parla. Mai per testi lunghi: è difficile da leggere.
 3. **Effetto stampa:** il testo compare lettera per lettera, con un po' d'inchiostro in più che si asciuga. Un tocco sul riquadro mostra subito tutto. Con "riduci movimento" il testo compare tutto insieme.
-4. Restano da portare le opzioni di lettura di Espo-Nentia (testo grande, OpenDyslexic, spaziatura, lettura ad alta voce): chi le sceglie vede i testi in un carattere moderno.
+4. **Opzioni di lettura** (pulsante «Aa Lettura», azzurro, in alto a sinistra nella scena), come in Espo-Nentia: grandezza del testo, carattere (Stampa antica, Leggibile = Atkinson Hyperlegible, OpenDyslexic), più spazio tra lettere e righe, testo subito, lettura ad alta voce con il pulsante «Ascolta». Chi sceglie un carattere moderno lo vede in dialoghi, fogli, glossario e minigioco; le lettere di piombo del minigioco restano in carattere da stampa. Le opzioni sono salvate a parte dalla partita (`js/lettura.js`).
 5. **Pulsanti:** contorno a inchiostro, come in una xilografia.
 6. **Oggetti da toccare:** leggero alone oro e lieve oscillazione, come in Espo-Nentia.
 

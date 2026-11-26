@@ -161,6 +161,40 @@ a.gl { color: inherit; text-decoration: underline dotted var(--azzurro); text-de
 .citta text, .rosa { font: 13px "Fell", Georgia, serif; fill: var(--inchiostro); }
 @keyframes viaggio { to { stroke-dashoffset: 0; } }
 
+/* ---------- Opzioni di lettura ----------
+   Grandezza, carattere e spazio valgono solo per i testi da leggere.
+   Le lettere di piombo del minigioco restano in carattere da stampa. */
+#dialogo, #foglio-carta, #glossario-carta, #mini-carta, #lettura-carta { zoom: var(--zoom-lettura, 1); }
+html.car-leggibile :is(#dialogo, #foglio-carta, #glossario-carta, #mini-carta) :is(*:not(.cassetto):not(.piombo):not(.piombo *):not(.cassetto *):not(.foglio-stampato):not(.foglio-stampato *)) { font-family: "Atkinson Hyperlegible", sans-serif; }
+html.car-dislessia :is(#dialogo, #foglio-carta, #glossario-carta, #mini-carta) :is(*:not(.cassetto):not(.piombo):not(.piombo *):not(.cassetto *):not(.foglio-stampato):not(.foglio-stampato *)) { font-family: "OpenDyslexic", sans-serif; }
+html.lettura-spazio :is(#testo, #scelte button, #foglio-testo, #glossario-testo, .mini-aiuto, .mini-msg) { letter-spacing: .05em; word-spacing: .15em; line-height: 1.75; }
+
+.aiuto.a-sinistra { right: auto; left: 8px; }
+.dialogo-testa { display: flex; align-items: center; gap: 10px; }
+.dialogo-testa #chi { flex: 1; }
+.riga-pulsanti { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.ascolta { display: none; font: 16px "Fell", Georgia, serif; color: #0b0b0b; background: var(--azzurro); border: 0; border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+.riga-pulsanti .ascolta { margin-top: 14px; }
+html.lettura-voce .ascolta { display: inline-block; }
+.ascolta[aria-pressed="true"] { background: var(--oro); }
+
+#lettura { position: fixed; inset: 0; z-index: 30; background: rgba(0,0,0,.78); display: flex; align-items: center; justify-content: center; padding: 12px; }
+#lettura[hidden] { display: none; }
+#lettura-carta { background: var(--carta); color: var(--inchiostro); max-width: 560px; width: 100%; max-height: 92vh; overflow: auto; padding: 16px 18px; border-radius: 3px; border-left: 6px solid var(--azzurro); box-shadow: 0 10px 40px rgba(0,0,0,.6); }
+#lettura-titolo { font: 24px/1.2 "Fell", Georgia, serif; margin-bottom: 10px; }
+#lettura-corpo { display: flex; flex-direction: column; gap: 12px; }
+.let-prova { border: 1px dashed var(--azzurro); border-radius: 4px; padding: 8px 10px; font-size: 18px; }
+html.car-leggibile .let-prova { font-family: "Atkinson Hyperlegible", sans-serif; }
+html.car-dislessia .let-prova { font-family: "OpenDyslexic", sans-serif; }
+html.lettura-spazio .let-prova { letter-spacing: .05em; word-spacing: .15em; line-height: 1.75; }
+.let-titolo { font-weight: bold; font-size: 18px; }
+.let-nota { font-size: 15px; color: var(--grigio); font-style: italic; }
+.let-scelte { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.let-opz { flex: 1 1 auto; min-height: 42px; padding: 6px 10px; font: 16px "Fell", Georgia, serif; color: var(--inchiostro); background: transparent; border: 2px solid var(--inchiostro); border-radius: 4px; cursor: pointer; }
+.let-opz.on { background: var(--azzurro); border-color: var(--azzurro); }
+.let-opz:disabled { opacity: .4; cursor: not-allowed; }
+#lettura-chiudi { margin-top: 14px; font: 18px "Fell", Georgia, serif; color: var(--inchiostro); background: transparent; border: 2px solid var(--inchiostro); border-radius: 4px; padding: 8px 14px; cursor: pointer; }
+
 @media (prefers-reduced-motion: reduce) {
   .via-tesi { animation: none; stroke-dashoffset: 0; }
   .foglio-stampato { animation: none; }

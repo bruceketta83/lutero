@@ -104,7 +104,8 @@ function dialogo(chi, testo, scelte = []) {
     }
     t.replaceWith(frag);
   }
-  const ridotto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ridotto = window.matchMedia('(prefers-reduced-motion: reduce)').matches || letturaSubito();
+  if (typeof letturaSuDialogo === 'function') letturaSuDialogo(chi, testo);
   const sc = $('scelte');
   sc.innerHTML = '';
   const mostraScelte = () => {
@@ -153,6 +154,7 @@ function leggi(titolo, html, poi) {
   $('foglio-testo').innerHTML = html;
   $('foglio-box').hidden = false;
   leggi.poi = poi;
+  if (typeof letturaSuFoglio === 'function') letturaSuFoglio(titolo, html);
   $('foglio-chiudi').focus();
 }
 function chiudiFoglio() {

@@ -104,9 +104,12 @@ Keep the exact look of the first frame: photorealistic live-action film,
 extreme high-contrast black and white, crushed blacks, blown-out whites,
 the only colour is the deep red detail. Do not turn it into colour, a drawing
 or a cartoon.
-Slow, dramatic movement. The camera is almost still: only a slow push-in or a
-slow pan. Do not change faces, clothes or the place. No new people. No text.
-Nobody speaks: mouths stay closed.
+The camera moves slowly (a slow push-in or a slow pan), but the people move
+clearly and naturally, like actors in a film: they breathe, turn their heads,
+move their arms and hands. Nobody stands still like a statue.
+Do not change faces, clothes or the place. No new people. No text.
+No voices are heard: if a person talks, his lips move but there is no sound
+of his voice.
 Sound: very quiet ambient sounds only (rain, wind, fire, paper). No music,
 no speech, no narration.
 ```
@@ -177,7 +180,8 @@ one hand raised high, mouth closed, lit hard from the side.
 Next to him, a tall wooden cross with a hanging banner of the papal coat of
 arms (two crossed keys and a tiara): the banner is deep red (#8b1e1e), the keys
 and the tiara are white and grey, not gold. In front of the platform, a heavy
-iron-bound wooden chest for the offerings. In the foreground, the black
+iron-bound wooden chest for the offerings, with the lid OPEN and tilted back:
+inside, a few silver coins shine white in the dark. In the foreground, the black
 silhouettes of the crowd, seen from behind, looking up at him.
 Low camera from inside the crowd.
 Red detail: the banner of the coat of arms only.
@@ -262,16 +266,28 @@ mouth closed. Close-up.
 Red detail: the wax seal only.
 ```
 
+**Se nell'immagine 1 la cassa è chiusa,** non rigenerare tutto: in Gemini allega l'immagine e chiedi questa modifica.
+```
+Edit the attached image. Keep everything exactly the same: the same man, the
+same light, the same black and white style and the same red banner. Change one
+thing only: the lid of the wooden chest on the platform is open, tilted back,
+and the inside of the chest is dark, with a few silver coins shining white.
+```
+
 ### I movimenti (Seedance)
 
 Prima il **blocco di stile per il movimento**, poi il prompt dell'inquadratura.
 
 **1 — `cap1-1`** (10 s)
 ```
-The friar moves his raised hand slowly, as when he preaches, mouth closed.
-A hand from the crowd drops a coin into the chest: the coin flashes white.
-Rain falls, the crowd moves a little. Slow push-in towards the chest.
-Sound: rain, murmur of a crowd, one coin falling into a wooden chest.
+The friar preaches with energy, like a real preacher: he sweeps his raised
+arm over the crowd, leans forward, turns his head from one side of the crowd
+to the other, then points down at the open chest with his other hand. His lips
+move as he speaks, but his voice is not heard.
+A man from the crowd steps forward and drops a silver coin into the open
+chest: the coin flashes white in the light and falls inside.
+Rain falls hard, the crowd moves and murmurs. Slow push-in towards the chest.
+Sound: heavy rain, murmur of a crowd, one coin falling into a wooden chest.
 ```
 
 **2 — `cap1-2`** (5 s)
